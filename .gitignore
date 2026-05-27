@@ -1,0 +1,59 @@
+# ====== macOS ======
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# ====== Claude Code ======
+.superpowers/
+
+# ====== Java / Spring Boot ======
+target/
+!.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.log
+*.pid
+!.mvn/wrapper/maven-wrapper.properties
+
+# ====== Gradle ======
+.gradle/
+build/
+!gradle-wrapper.jar
+
+# ====== Node / Vue ======
+node_modules/
+dist/
+.eslintcache
+*.tsbuildinfo
+
+# ====== UniApp ======
+unpackage/
+
+# ====== Env ======
+.env.local
+.env.*.local
+*.local.properties
+
+# ====== IDE ======
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.swp
+*.swo
+*~
+
+# ====== OS ======
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ====== Uploads ======
+upload/
