@@ -1,0 +1,76 @@
+/* ========== 品牌色 ========== */
+:root {
+  --color-primary: #F0524A;
+  --color-primary-light: #FFF1EF;
+  --color-primary-border: #FFD8D4;
+  --color-warning: #F6B75C;
+  --color-link: #4AA3FF;
+
+  /* ========== 中性色 ========== */
+  --color-text-primary: #202331;
+  --color-text-secondary: #5E6370;
+  --color-text-tertiary: #9AA0AA;
+  --color-border: #EEF0F4;
+  --color-page-bg: #F7F8FB;
+  --color-card-bg: #FFFFFF;
+
+  /* ========== 功能图标底色 ========== */
+  --color-icon-blue-bg: #EEF9FF;
+  --color-icon-blue-border: #CBEFFF;
+  --color-icon-red-bg: #FFF0F0;
+  --color-icon-red-border: #FFD8D8;
+  --color-icon-yellow-bg: #FFF8E7;
+  --color-icon-yellow-border: #FFE8A8;
+  --color-icon-green-bg: #EEFFF6;
+  --color-icon-green-border: #CFF2DD;
+  --color-icon-purple-bg: #F3F0FF;
+  --color-icon-purple-border: #DDD4FF;
+
+  /* ========== 字号（rpx 适配） ========== */
+  --font-title-page: 60rpx;
+  --font-title-section: 48rpx;
+  --font-title-card: 36rpx;
+  --font-body: 30rpx;
+  --font-auxiliary: 26rpx;
+  --font-tab: 24rpx;
+
+  /* ========== 间距 ========== */
+  --spacing-page-h: 32rpx;
+  --spacing-card-padding: 32rpx;
+  --spacing-section-gap: 56rpx;
+  --spacing-icon-text: 18rpx;
+  --spacing-list-item: 28rpx;
+
+  /* ========== 圆角 ========== */
+  --radius-search: 44rpx;
+  --radius-icon-container: 36rpx;
+  --radius-card: 32rpx;
+  --radius-cover: 24rpx;
+  --radius-bottom-nav: 64rpx;
+  --radius-button: 48rpx;
+
+  /* ========== 底部导航 ========== */
+  --nav-height: 140rpx;
+  --nav-bg: rgba(255, 255, 255, 0.92);
+  --nav-shadow: 0 16rpx 56rpx rgba(32, 35, 49, 0.10);
+  --nav-selected-bg: #EEF0F4;
+  --nav-selected-color: #F0524A;
+  --nav-unselected-color: #202331;
+
+  /* ========== 安全区 ========== */
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ========== 全局 reset ========== */
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC',
+               'SF Pro', system-ui, 'Noto Sans CJK SC', sans-serif;
+  font-size: var(--font-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-page-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+view, text, image, scroll-view, swiper, swiper-item {
+  box-sizing: border-box;
+}
