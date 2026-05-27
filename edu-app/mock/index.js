@@ -1,7 +1,6 @@
 const mockRoutes = {
-  // M1 开始逐步扩充：
-  // 'GET /course/categories': () => require('./course/categories.json'),
-  // 'GET /course/list': () => require('./course/list.json'),
+  'POST /auth/sms-code': () => require('./auth/sms-code.json'),
+  'POST /auth/login-by-sms': () => require('./auth/login.json'),
 }
 
 export function mockInterceptor(options) {
@@ -15,6 +14,6 @@ export function mockInterceptor(options) {
   }
 
   const data = handler()
-  console.log(`[Mock] ${key}`, data)
+  console.log(`[Mock] ${key}`, JSON.stringify(data))
   return data
 }
