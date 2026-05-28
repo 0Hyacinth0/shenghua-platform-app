@@ -51,9 +51,11 @@
 
   /* ========== 底部导航 ========== */
   --nav-height: 140rpx;
-  --nav-bg: rgba(255, 255, 255, 0.92);
-  --nav-shadow: 0 16rpx 56rpx rgba(32, 35, 49, 0.10);
-  --nav-selected-bg: #EEF0F4;
+  --nav-bg: rgba(255, 255, 255, 0.75);
+  --nav-bg-blur: 40px;
+  --nav-shadow: 0 8rpx 32rpx rgba(32, 35, 49, 0.08), 0 2rpx 8rpx rgba(32, 35, 49, 0.04);
+  --nav-border: rgba(255, 255, 255, 0.6);
+  --nav-selected-bg: rgba(238, 240, 244, 0.8);
   --nav-selected-color: #F0524A;
   --nav-unselected-color: #202331;
 

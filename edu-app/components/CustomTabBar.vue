@@ -49,7 +49,9 @@ function switchTab(index) {
   align-items: center;
   justify-content: space-around;
   z-index: 999;
-  backdrop-filter: blur(20px);
+  backdrop-filter: saturate(180%) blur(var(--nav-bg-blur));
+  -webkit-backdrop-filter: saturate(180%) blur(var(--nav-bg-blur));
+  border: 1rpx solid var(--nav-border);
 }
 
 .tab-item {

@@ -11,33 +11,38 @@
       "path": "pages/index/index",
       "style": {
         "navigationBarTitleText": "首页",
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "backgroundColor": "#FFFFFF"
       }
     },
     {
       "path": "pages/course/index",
       "style": {
         "navigationBarTitleText": "课程",
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "backgroundColor": "#F7F8FB"
       }
     },
     {
       "path": "pages/message/index",
       "style": {
         "navigationBarTitleText": "消息",
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "backgroundColor": "#FFFFFF"
       }
     },
     {
       "path": "pages/mine/index",
       "style": {
         "navigationBarTitleText": "我的",
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "backgroundColor": "#F7F8FB"
       }
     }
   ],
   "tabBar": {
     "custom": true,
+    "borderStyle": "white",
     "list": [
       { "pagePath": "pages/index/index", "text": "首页" },
       { "pagePath": "pages/course/index", "text": "课程" },
