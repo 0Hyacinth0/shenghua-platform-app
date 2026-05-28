@@ -6,8 +6,6 @@ defineProps({
   },
 })
 
-const emit = defineEmits(['change'])
-
 const tabs = [
   { text: '首页', path: '/pages/index/index' },
   { text: '课程', path: '/pages/course/index' },
@@ -16,7 +14,6 @@ const tabs = [
 ]
 
 function switchTab(index) {
-  emit('change', index)
   uni.switchTab({ url: tabs[index].path })
 }
 </script>

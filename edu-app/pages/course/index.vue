@@ -8,7 +8,7 @@ const currentTab = ref(1)
 <template>
   <view class="page">
     <view class="page-placeholder">课程</view>
-    <CustomTabBar :current="currentTab" @change="currentTab = $event" />
+    <CustomTabBar :current="currentTab" />
   </view>
 </template>
 
