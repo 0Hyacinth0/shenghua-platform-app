@@ -1,0 +1,64 @@
+{
+  "success": true,
+  "code": 200,
+  "message": "操作成功",
+  "result": {
+    "records": [
+      {
+        "id": 1,
+        "title": "3天拿捏事业编做题技巧课",
+        "coverUrl": "",
+        "teacherName": "付晓鹏",
+        "lessonCount": 3,
+        "studentCount": 1230,
+        "price": 0,
+        "tags": ["热门", "新上"]
+      },
+      {
+        "id": 2,
+        "title": "2026考研数学全程班",
+        "coverUrl": "",
+        "teacherName": "张明",
+        "lessonCount": 24,
+        "studentCount": 856,
+        "price": 0,
+        "tags": ["考研"]
+      },
+      {
+        "id": 3,
+        "title": "Python数据分析实战",
+        "coverUrl": "",
+        "teacherName": "李华",
+        "lessonCount": 15,
+        "studentCount": 2103,
+        "price": 0,
+        "tags": ["热门"]
+      },
+      {
+        "id": 4,
+        "title": "职场英语沟通技巧",
+        "coverUrl": "",
+        "teacherName": "陈思",
+        "lessonCount": 8,
+        "studentCount": 567,
+        "price": 0,
+        "tags": null
+      },
+      {
+        "id": 5,
+        "title": "零基础学公文写作",
+        "coverUrl": "",
+        "teacherName": "王磊",
+        "lessonCount": 12,
+        "studentCount": 432,
+        "price": 0,
+        "tags": ["新上"]
+      }
+    ],
+    "total": 5,
+    "size": 10,
+    "current": 1,
+    "pages": 1
+  },
+  "timestamp": 1748332800000
+}

@@ -1,8 +1,13 @@
 <script setup>
 import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import CustomTabBar from '@/components/CustomTabBar.vue'
 
 const currentTab = ref(0)
+
+onShow(() => {
+  uni.hideTabBar()
+})
 </script>
 
 <template>

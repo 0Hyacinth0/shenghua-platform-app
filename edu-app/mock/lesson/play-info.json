@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "code": 200,
+  "message": "操作成功",
+  "result": {
+    "lessonId": 1,
+    "courseId": 1,
+    "title": "拿捏核心技法",
+    "coverUrl": "",
+    "duration": 3600,
+    "playAuth": {
+      "type": "url",
+      "url": "https://vod.example.com/play/sample.m3u8",
+      "expireAt": "2026-05-28 23:59:59"
+    },
+    "lastPosition": 120
+  },
+  "timestamp": 1748332800000
+}

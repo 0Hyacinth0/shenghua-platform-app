@@ -73,6 +73,9 @@ function openPrivacy() {
 
 <template>
   <view class="login-page">
+    <view class="nav-back" @tap="() => switchTab('/pages/index/index')">
+      <text class="back-arrow">←</text>
+    </view>
     <view class="login-header">
       <text class="login-title">手机号登录</text>
       <text class="login-desc">首次登录将自动注册账号</text>
@@ -135,6 +138,15 @@ function openPrivacy() {
   min-height: 100vh;
   background: #FFFFFF;
   padding: 0 64rpx;
+}
+
+.nav-back {
+  padding-top: calc(var(--status-bar-height, 44px) + 24rpx);
+}
+.back-arrow {
+  font-size: 40rpx;
+  color: var(--color-text-primary);
+  font-weight: 700;
 }
 
 .login-header {
