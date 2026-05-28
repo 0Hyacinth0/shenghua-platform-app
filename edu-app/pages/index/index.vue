@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import CustomTabBar from '@/components/CustomTabBar.vue'
+import MotionView from '@/components/MotionView.vue'
 
 const currentTab = ref(0)
 
@@ -12,7 +13,9 @@ onShow(() => {
 
 <template>
   <view class="page">
-    <view class="page-placeholder">首页</view>
+    <MotionView custom-class="page-content">
+      <view class="page-placeholder">首页</view>
+    </MotionView>
     <CustomTabBar :current="currentTab" />
   </view>
 </template>

@@ -1,6 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import MotionView from '@/components/MotionView.vue'
+import SkeletonBlock from '@/components/SkeletonBlock.vue'
 import { getCourseDetail } from '@/api/course'
 import { navigateTo, ROUTES } from '@/utils/router'
 
@@ -37,75 +39,113 @@ function formatDuration(seconds) {
 </script>
 
 <template>
-  <view class="page" v-if="!loading && course">
-    <!-- 封面 -->
-    <view class="detail-cover">
-      <view class="cover-placeholder"></view>
-    </view>
+  <view class="page">
+    <view v-if="loading" class="detail-skeleton">
+      <SkeletonBlock height="400rpx" radius="0" />
 
-    <!-- 基本信息 -->
-    <view class="detail-section">
-      <view class="detail-title">{{ course.title }}</view>
-      <view class="detail-subtitle" v-if="course.subtitle">{{ course.subtitle }}</view>
-      <view class="detail-stats">
-        <text>{{ course.lessonCount }}课时</text>
-        <text>·</text>
-        <text>{{ course.studentCount }}人学习</text>
-        <text>·</text>
-        <text class="tag-free">免费</text>
+      <view class="detail-section">
+        <SkeletonBlock width="88%" height="44rpx" radius="12rpx" />
+        <SkeletonBlock width="64%" height="28rpx" radius="10rpx" custom-class="skeleton-gap" />
+        <SkeletonBlock width="52%" height="24rpx" radius="10rpx" custom-class="skeleton-gap" />
       </view>
-    </view>
 
-    <!-- 讲师 -->
-    <view class="detail-section teacher-section">
-      <view class="section-title">讲师介绍</view>
-      <view class="teacher-card" v-if="course.teacher">
-        <view class="teacher-avatar">
-          <view class="avatar-placeholder"></view>
-        </view>
-        <view class="teacher-info">
-          <text class="teacher-name">{{ course.teacher.name }}</text>
-          <text class="teacher-title" v-if="course.teacher.title">{{ course.teacher.title }}</text>
-          <text class="teacher-intro" v-if="course.teacher.intro">{{ course.teacher.intro }}</text>
+      <view class="detail-section">
+        <SkeletonBlock width="160rpx" height="34rpx" radius="10rpx" />
+        <view class="teacher-card skeleton-gap">
+          <SkeletonBlock width="96rpx" height="96rpx" radius="50%" />
+          <view class="teacher-info">
+            <SkeletonBlock width="160rpx" height="28rpx" radius="10rpx" />
+            <SkeletonBlock width="240rpx" height="24rpx" radius="10rpx" />
+          </view>
         </view>
       </view>
-    </view>
 
-    <!-- 课节目录 -->
-    <view class="detail-section">
-      <view class="section-title">课节目录（{{ course.lessons.length }}课时）</view>
-      <view class="lesson-list">
-        <view
-          v-for="lesson in course.lessons"
-          :key="lesson.id"
-          class="lesson-item"
-          @tap="onLessonTap(lesson)"
-        >
+      <view class="detail-section">
+        <SkeletonBlock width="220rpx" height="34rpx" radius="10rpx" />
+        <view v-for="n in 3" :key="n" class="lesson-item">
           <view class="lesson-left">
-            <text class="lesson-num">{{ lesson.sortNo }}</text>
+            <SkeletonBlock width="48rpx" height="48rpx" radius="50%" />
             <view class="lesson-text">
-              <text class="lesson-title">{{ lesson.title }}</text>
-              <view class="lesson-meta">
-                <text v-if="lesson.isTrial" class="trial-tag">试看</text>
-                <text class="lesson-duration">{{ formatDuration(lesson.duration) }}</text>
-              </view>
+              <SkeletonBlock width="86%" height="30rpx" radius="10rpx" />
+              <SkeletonBlock width="36%" height="22rpx" radius="8rpx" custom-class="skeleton-gap-small" />
             </view>
           </view>
-          <text class="lesson-arrow">▶</text>
         </view>
       </view>
     </view>
 
-    <!-- 课程简介 -->
-    <view class="detail-section">
-      <view class="section-title">课程简介</view>
-      <view class="intro-text">{{ course.intro }}</view>
-    </view>
+    <template v-else-if="course">
+      <MotionView animation="fadeInUp" custom-class="detail-content">
+        <!-- 封面 -->
+        <view class="detail-cover">
+          <view class="cover-placeholder"></view>
+        </view>
 
-    <!-- 底部按钮 -->
-    <view class="bottom-bar">
-      <view class="btn-start" @tap="onStartLearn">开始学习</view>
-    </view>
+        <!-- 基本信息 -->
+        <view class="detail-section">
+          <view class="detail-title">{{ course.title }}</view>
+          <view class="detail-subtitle" v-if="course.subtitle">{{ course.subtitle }}</view>
+          <view class="detail-stats">
+            <text>{{ course.lessonCount }}课时</text>
+            <text>·</text>
+            <text>{{ course.studentCount }}人学习</text>
+            <text>·</text>
+            <text class="tag-free">免费</text>
+          </view>
+        </view>
+
+        <!-- 讲师 -->
+        <view class="detail-section teacher-section">
+          <view class="section-title">讲师介绍</view>
+          <view class="teacher-card" v-if="course.teacher">
+            <view class="teacher-avatar">
+              <view class="avatar-placeholder"></view>
+            </view>
+            <view class="teacher-info">
+              <text class="teacher-name">{{ course.teacher.name }}</text>
+              <text class="teacher-title" v-if="course.teacher.title">{{ course.teacher.title }}</text>
+              <text class="teacher-intro" v-if="course.teacher.intro">{{ course.teacher.intro }}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 课节目录 -->
+        <view class="detail-section">
+          <view class="section-title">课节目录（{{ course.lessons.length }}课时）</view>
+          <view class="lesson-list">
+            <view
+              v-for="lesson in course.lessons"
+              :key="lesson.id"
+              class="lesson-item"
+              @tap="onLessonTap(lesson)"
+            >
+              <view class="lesson-left">
+                <text class="lesson-num">{{ lesson.sortNo }}</text>
+                <view class="lesson-text">
+                  <text class="lesson-title">{{ lesson.title }}</text>
+                  <view class="lesson-meta">
+                    <text v-if="lesson.isTrial" class="trial-tag">试看</text>
+                    <text class="lesson-duration">{{ formatDuration(lesson.duration) }}</text>
+                  </view>
+                </view>
+              </view>
+              <text class="lesson-arrow">▶</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 课程简介 -->
+        <view class="detail-section">
+          <view class="section-title">课程简介</view>
+          <view class="intro-text">{{ course.intro }}</view>
+        </view>
+      </MotionView>
+
+      <!-- 底部按钮 -->
+      <view class="bottom-bar">
+        <view class="btn-start" @tap="onStartLearn">开始学习</view>
+      </view>
+    </template>
   </view>
 </template>
 
@@ -133,6 +173,18 @@ function formatDuration(seconds) {
   background: #FFFFFF;
   padding: 32rpx;
   margin-bottom: 20rpx;
+}
+.detail-skeleton {
+  min-height: 100vh;
+}
+.detail-content {
+  display: block;
+}
+.skeleton-gap {
+  margin-top: 20rpx;
+}
+.skeleton-gap-small {
+  margin-top: 12rpx;
 }
 .detail-title {
   font-size: 40rpx;

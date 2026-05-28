@@ -59,6 +59,16 @@
   --nav-selected-color: #F0524A;
   --nav-unselected-color: #202331;
 
+  /* ========== 动效与骨架屏 ========== */
+  --motion-duration-fast: 180ms;
+  --motion-duration-base: 320ms;
+  --motion-duration-slow: 520ms;
+  --motion-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --skeleton-bg: #EEF0F4;
+  --skeleton-highlight: #F8F9FC;
+  --skeleton-dark-bg: #242424;
+  --skeleton-dark-highlight: #343434;
+
   /* ========== 安全区 ========== */
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -75,4 +85,33 @@ page {
 
 view, text, image, scroll-view, swiper, swiper-item {
   box-sizing: border-box;
+}
+
+.skeleton-block {
+  position: relative;
+  overflow: hidden;
+  background: var(--skeleton-bg);
+}
+
+.skeleton-block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, var(--skeleton-highlight), transparent);
+  animation: skeleton-shimmer 1.2s infinite;
+}
+
+.skeleton-block.dark {
+  background: var(--skeleton-dark-bg);
+}
+
+.skeleton-block.dark::after {
+  background: linear-gradient(90deg, transparent, var(--skeleton-dark-highlight), transparent);
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }

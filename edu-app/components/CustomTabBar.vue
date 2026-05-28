@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from 'vue'
+
 defineProps({
   current: {
     type: Number,
@@ -13,8 +15,18 @@ const tabs = [
   { text: '我的', path: '/pages/mine/index' },
 ]
 
+const pressedIndex = ref(-1)
+
 function switchTab(index) {
   uni.switchTab({ url: tabs[index].path })
+}
+
+function onPressStart(index) {
+  pressedIndex.value = index
+}
+
+function onPressEnd() {
+  pressedIndex.value = -1
 }
 </script>
 
@@ -24,7 +36,10 @@ function switchTab(index) {
       v-for="(item, index) in tabs"
       :key="index"
       class="tab-item"
-      :class="{ active: current === index }"
+      :class="{ active: current === index, 'tab-item-press': pressedIndex === index }"
+      @touchstart="onPressStart(index)"
+      @touchend="onPressEnd"
+      @touchcancel="onPressEnd"
       @tap="switchTab(index)"
     >
       <view class="tab-icon">
@@ -61,11 +76,17 @@ function switchTab(index) {
   justify-content: center;
   padding: 12rpx 28rpx;
   border-radius: 48rpx;
-  transition: background 0.2s;
+  transition: background var(--motion-duration-fast) var(--motion-ease-standard),
+              transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .tab-item.active {
   background: var(--nav-selected-bg);
+  transform: scale(1.03);
+}
+
+.tab-item-press {
+  transform: scale(0.96);
 }
 
 .tab-icon {
@@ -80,10 +101,13 @@ function switchTab(index) {
   font-size: 36rpx;
   font-weight: 700;
   color: var(--nav-unselected-color);
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard),
+              transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .tab-item.active .icon-placeholder {
   color: var(--nav-selected-color);
+  transform: translateY(-2rpx);
 }
 
 .tab-text {
@@ -91,6 +115,8 @@ function switchTab(index) {
   font-weight: 500;
   color: var(--nav-unselected-color);
   margin-top: 4rpx;
+  transition: color var(--motion-duration-fast) var(--motion-ease-standard),
+              transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .tab-item.active .tab-text {

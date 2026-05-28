@@ -1,6 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import MotionView from '@/components/MotionView.vue'
+import SkeletonBlock from '@/components/SkeletonBlock.vue'
 import { getLessonPlayInfo } from '@/api/course'
 import { goBack } from '@/utils/router'
 
@@ -44,7 +46,10 @@ function onError() {
 
     <!-- 播放器区域 -->
     <view class="player-area">
-      <view v-if="loading" class="player-loading">加载中...</view>
+      <view v-if="loading" class="player-skeleton">
+        <SkeletonBlock width="120rpx" height="120rpx" radius="50%" dark />
+        <SkeletonBlock width="260rpx" height="28rpx" radius="10rpx" dark />
+      </view>
       <view v-else-if="lessonInfo" class="player-wrapper">
         <!-- H5 和 App 端使用 video 组件 -->
         <!-- #ifdef H5 || APP-PLUS -->
@@ -72,12 +77,12 @@ function onError() {
     </view>
 
     <!-- 课节信息 -->
-    <view class="info-bar" v-if="lessonInfo">
+    <MotionView v-if="lessonInfo" animation="fadeInUp" custom-class="info-bar">
       <text class="info-text">正在播放：{{ lessonInfo.title }}</text>
       <text class="info-text" v-if="lessonInfo.lastPosition > 0">
         上次播放到 {{ Math.floor(lessonInfo.lastPosition / 60) }}:{{ String(lessonInfo.lastPosition % 60).padStart(2, '0') }}
       </text>
-    </view>
+    </MotionView>
   </view>
 </template>
 
@@ -127,9 +132,14 @@ function onError() {
   align-items: center;
   justify-content: center;
 }
-.player-loading {
-  color: #FFFFFF;
-  font-size: var(--font-body);
+.player-skeleton {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24rpx;
 }
 .player-wrapper {
   width: 100%;
