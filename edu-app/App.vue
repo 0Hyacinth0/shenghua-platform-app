@@ -45,7 +45,7 @@ function onPrivacyDisagree() {
 
 <template>
   <PrivacyModal
-    v-if="showPrivacy"
+    v-model:show="showPrivacy"
     @agree="onPrivacyAgree"
     @disagree="onPrivacyDisagree"
   />

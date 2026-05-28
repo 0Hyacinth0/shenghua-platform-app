@@ -1,6 +1,9 @@
+import smsCodeResponse from './auth/sms-code.json'
+import loginResponse from './auth/login.json'
+
 const mockRoutes = {
-  'POST /auth/sms-code': () => require('./auth/sms-code.json'),
-  'POST /auth/login-by-sms': () => require('./auth/login.json'),
+  'POST /auth/sms-code': () => smsCodeResponse,
+  'POST /auth/login-by-sms': () => loginResponse,
 }
 
 export function mockInterceptor(options) {

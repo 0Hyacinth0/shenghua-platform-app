@@ -3,12 +3,14 @@ import { ref } from 'vue'
 import { sendSmsCode, loginBySms } from '@/api/auth'
 import { setToken, setUserInfo } from '@/utils/storage'
 import { switchTab } from '@/utils/router'
+import PrivacyModal from '@/components/PrivacyModal.vue'
 
 const phone = ref('')
 const smsCode = ref('')
 const agreed = ref(false)
 const codeSending = ref(false)
 const countdown = ref(0)
+const showPrivacy = ref(false)
 
 let timer = null
 
@@ -63,6 +65,10 @@ function handleLogin() {
       uni.showToast({ title: '验证码错误或已过期', icon: 'none' })
     })
 }
+
+function openPrivacy() {
+  showPrivacy.value = true
+}
 </script>
 
 <template>
@@ -107,15 +113,20 @@ function handleLogin() {
         </view>
       </view>
 
-      <view class="privacy-check" @tap="agreed = !agreed">
-        <view class="checkbox" :class="{ checked: agreed }">
+      <view class="privacy-check">
+        <view class="checkbox" :class="{ checked: agreed }" @tap="agreed = !agreed">
           <text v-if="agreed" class="check-icon">✓</text>
         </view>
-        <text class="privacy-check-text">已阅读并同意《隐私协议》</text>
+        <text class="privacy-check-text">
+          已阅读并同意
+          <text class="privacy-link" @tap.stop="openPrivacy">《隐私协议》</text>
+        </text>
       </view>
 
       <view class="btn-login" @tap="handleLogin">登录</view>
     </view>
+
+    <PrivacyModal v-model:show="showPrivacy" />
   </view>
 </template>
 
@@ -212,6 +223,7 @@ function handleLogin() {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .checkbox.checked {
@@ -228,6 +240,10 @@ function handleLogin() {
 .privacy-check-text {
   font-size: var(--font-auxiliary);
   color: var(--color-text-tertiary);
+}
+
+.privacy-link {
+  color: var(--color-link);
 }
 
 .btn-login {

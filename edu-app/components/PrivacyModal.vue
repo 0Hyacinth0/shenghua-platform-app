@@ -1,13 +1,25 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { setPrivacyAgreed } from '@/utils/storage'
 
-const emit = defineEmits(['agree', 'disagree'])
-const visible = ref(true)
+const props = defineProps({
+  show: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emit = defineEmits(['agree', 'disagree', 'update:show'])
+const visible = ref(props.show)
+
+watch(() => props.show, (val) => {
+  visible.value = val
+})
 
 function handleAgree() {
   setPrivacyAgreed(true)
   visible.value = false
+  emit('update:show', false)
   emit('agree')
 }
 
@@ -15,11 +27,16 @@ function handleDisagree() {
   uni.showToast({ title: '需同意隐私协议才能使用', icon: 'none' })
   emit('disagree')
 }
+
+function handleClose() {
+  visible.value = false
+  emit('update:show', false)
+}
 </script>
 
 <template>
-  <view v-if="visible" class="privacy-overlay">
-    <view class="privacy-card">
+  <view v-if="visible" class="privacy-overlay" @tap="handleClose">
+    <view class="privacy-card" @tap.stop>
       <view class="privacy-title">隐私协议</view>
       <view class="privacy-body">
         <text class="privacy-text">
