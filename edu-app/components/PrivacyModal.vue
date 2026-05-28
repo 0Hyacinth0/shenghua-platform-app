@@ -2,6 +2,20 @@
 import { ref, watch } from 'vue'
 import { setPrivacyAgreed } from '@/utils/storage'
 
+const PRIVACY_TEXT = `欢迎使用盛桦教育。我们重视您的隐私和个人信息保护。
+
+在您使用本应用前，请仔细阅读以下内容：
+
+1. 信息收集：我们会收集您的手机号码用于账号注册和登录，收集您的学习进度用于提供继续学习服务。
+
+2. 信息使用：您的信息仅用于提供课程学习、消息通知等核心功能，不会用于其他商业用途。
+
+3. 信息保护：我们采用业界通行的安全技术保护您的个人信息，未经您同意不会向第三方提供。
+
+4. 协议更新：我们可能会更新本隐私协议，更新后的协议将在应用内公示。
+
+如您同意以上条款，请点击"同意并继续"进入应用。如您不同意，将无法使用本应用的任何服务。`
+
 const props = defineProps({
   show: {
     type: Boolean,
@@ -39,21 +53,7 @@ function handleClose() {
     <view class="privacy-card" @tap.stop>
       <view class="privacy-title">隐私协议</view>
       <view class="privacy-body">
-        <text class="privacy-text">
-欢迎使用盛桦教育。我们重视您的隐私和个人信息保护。
-
-在您使用本应用前，请仔细阅读以下内容：
-
-1. 信息收集：我们会收集您的手机号码用于账号注册和登录，收集您的学习进度用于提供继续学习服务。
-
-2. 信息使用：您的信息仅用于提供课程学习、消息通知等核心功能，不会用于其他商业用途。
-
-3. 信息保护：我们采用业界通行的安全技术保护您的个人信息，未经您同意不会向第三方提供。
-
-4. 协议更新：我们可能会更新本隐私协议，更新后的协议将在应用内公示。
-
-如您同意以上条款，请点击"同意并继续"进入应用。如您不同意，将无法使用本应用的任何服务。
-        </text>
+        <text class="privacy-text">{{ PRIVACY_TEXT }}</text>
       </view>
       <view class="privacy-actions">
         <view class="btn-disagree" @tap="handleDisagree">不同意</view>
