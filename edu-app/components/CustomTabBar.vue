@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
-defineProps({
+const props = defineProps({
   current: {
     type: Number,
     default: 0,
@@ -28,10 +28,18 @@ function onPressStart(index) {
 function onPressEnd() {
   pressedIndex.value = -1
 }
+
+const indicatorStyle = computed(() => ({
+  left: `${(2 * props.current + 1) / 8 * 100}%`,
+}))
 </script>
 
 <template>
   <view class="custom-tab-bar">
+    <view
+      class="tab-indicator"
+      :style="indicatorStyle"
+    />
     <view
       v-for="(item, index) in tabs"
       :key="index"
@@ -67,6 +75,30 @@ function onPressEnd() {
   backdrop-filter: saturate(180%) blur(var(--nav-bg-blur));
   -webkit-backdrop-filter: saturate(180%) blur(var(--nav-bg-blur));
   border: 1rpx solid var(--nav-border);
+  overflow: hidden;
+}
+
+.tab-indicator {
+  position: absolute;
+  top: 10rpx;
+  bottom: 10rpx;
+  width: 22%;
+  background: var(--nav-selected-bg);
+  border-radius: 48rpx;
+  transform: translateX(-50%);
+  animation: indicator-in 380ms var(--motion-ease-standard) both;
+  z-index: 0;
+}
+
+@keyframes indicator-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.75);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
 }
 
 .tab-item {
@@ -76,17 +108,12 @@ function onPressEnd() {
   justify-content: center;
   padding: 12rpx 28rpx;
   border-radius: 48rpx;
-  transition: background var(--motion-duration-fast) var(--motion-ease-standard),
-              transform var(--motion-duration-fast) var(--motion-ease-standard);
-}
-
-.tab-item.active {
-  background: var(--nav-selected-bg);
-  transform: scale(1.03);
+  z-index: 1;
+  transition: transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .tab-item-press {
-  transform: scale(0.96);
+  transform: scale(0.94);
 }
 
 .tab-icon {
@@ -102,7 +129,7 @@ function onPressEnd() {
   font-weight: 700;
   color: var(--nav-unselected-color);
   transition: color var(--motion-duration-fast) var(--motion-ease-standard),
-              transform var(--motion-duration-fast) var(--motion-ease-standard);
+              transform var(--motion-duration-base) var(--motion-ease-standard);
 }
 
 .tab-item.active .icon-placeholder {
@@ -116,7 +143,7 @@ function onPressEnd() {
   color: var(--nav-unselected-color);
   margin-top: 4rpx;
   transition: color var(--motion-duration-fast) var(--motion-ease-standard),
-              transform var(--motion-duration-fast) var(--motion-ease-standard);
+              font-weight var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .tab-item.active .tab-text {
