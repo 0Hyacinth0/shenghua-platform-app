@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import CustomTabBar from '@/components/CustomTabBar.vue'
+import MotionView from '@/components/MotionView.vue'
+import SkeletonBlock from '@/components/SkeletonBlock.vue'
 import { getCategories, getCourseList } from '@/api/course'
 import { navigateTo, ROUTES } from '@/utils/router'
 
@@ -69,31 +71,50 @@ function formatCount(n) {
     </view>
 
     <!-- 课程列表 -->
-    <scroll-view scroll-y class="course-list" v-if="!loading">
-      <view
-        v-for="course in courses"
-        :key="course.id"
-        class="course-card"
-        @tap="onCourseTap(course)"
-      >
-        <view class="card-cover">
-          <view class="cover-placeholder"></view>
-        </view>
-        <view class="card-info">
-          <view class="card-title">{{ course.title }}</view>
-          <view class="card-meta">
-            <text class="card-teacher">{{ course.teacherName }}</text>
-            <text class="card-lessons">{{ course.lessonCount }}课时</text>
-          </view>
-          <view class="card-bottom">
-            <view class="card-tags" v-if="course.tags">
-              <text v-for="tag in course.tags" :key="tag" class="card-tag">{{ tag }}</text>
+    <scroll-view scroll-y class="course-list">
+      <template v-if="loading">
+        <view v-for="n in 4" :key="n" class="course-card course-skeleton-card">
+          <SkeletonBlock width="240rpx" height="160rpx" radius="var(--radius-cover)" />
+          <view class="card-info">
+            <SkeletonBlock width="88%" height="34rpx" radius="12rpx" />
+            <SkeletonBlock width="58%" height="24rpx" radius="10rpx" />
+            <view class="skeleton-row">
+              <SkeletonBlock width="120rpx" height="28rpx" radius="8rpx" />
+              <SkeletonBlock width="150rpx" height="24rpx" radius="10rpx" />
             </view>
-            <text class="card-students">{{ formatCount(course.studentCount) }}人学习</text>
           </view>
         </view>
-      </view>
-      <view v-if="courses.length === 0" class="empty-state">暂无课程</view>
+      </template>
+
+      <template v-else>
+        <MotionView
+          v-for="(course, index) in courses"
+          :key="course.id"
+          animation="fadeInUp"
+          :delay="`${Math.min(index * 45, 180)}ms`"
+          custom-class="course-motion-item"
+        >
+          <view class="course-card" @tap="onCourseTap(course)">
+            <view class="card-cover">
+              <view class="cover-placeholder"></view>
+            </view>
+            <view class="card-info">
+              <view class="card-title">{{ course.title }}</view>
+              <view class="card-meta">
+                <text class="card-teacher">{{ course.teacherName }}</text>
+                <text class="card-lessons">{{ course.lessonCount }}课时</text>
+              </view>
+              <view class="card-bottom">
+                <view class="card-tags" v-if="course.tags">
+                  <text v-for="tag in course.tags" :key="tag" class="card-tag">{{ tag }}</text>
+                </view>
+                <text class="card-students">{{ formatCount(course.studentCount) }}人学习</text>
+              </view>
+            </view>
+          </view>
+        </MotionView>
+        <view v-if="courses.length === 0" class="empty-state">暂无课程</view>
+      </template>
     </scroll-view>
 
     <CustomTabBar :current="currentTab" />
@@ -125,11 +146,15 @@ function formatCount(n) {
   color: var(--color-text-secondary);
   border-radius: 48rpx;
   flex-shrink: 0;
+  transition: background var(--motion-duration-fast) var(--motion-ease-standard),
+              color var(--motion-duration-fast) var(--motion-ease-standard),
+              transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 .category-item.active {
   background: var(--color-primary);
   color: #FFFFFF;
   font-weight: 600;
+  transform: scale(1.02);
 }
 
 /* 课程列表 */
@@ -143,6 +168,17 @@ function formatCount(n) {
   border-radius: var(--radius-card);
   padding: 24rpx;
   margin-bottom: 24rpx;
+}
+.course-skeleton-card {
+  pointer-events: none;
+}
+.course-motion-item {
+  display: block;
+}
+.skeleton-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .card-cover {
   width: 240rpx;

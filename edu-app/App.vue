@@ -52,5 +52,6 @@ function onPrivacyDisagree() {
 </template>
 
 <style>
+@import 'animate.css/animate.min.css';
 @import '@/styles/variables.css';
 </style>

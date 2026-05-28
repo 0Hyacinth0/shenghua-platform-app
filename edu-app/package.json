@@ -1,0 +1,12 @@
+{
+  "name": "edu-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:motion": "node tests/motion-contract.test.mjs"
+  },
+  "dependencies": {
+    "animate.css": "^4.1.1"
+  }
+}
