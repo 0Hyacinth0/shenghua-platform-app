@@ -4,7 +4,7 @@
       v-for="cat in categories"
       :key="cat.id"
       :name="cat.name"
-      :icon-component="getIcon(cat.icon)"
+      :icon-component="cat.iconComponent"
       :color="cat.color"
       :route="cat.route"
     />
@@ -13,37 +13,19 @@
 
 <script setup lang="ts">
 import type { Component } from 'vue'
-import type { CategoryItem as CategoryItemType } from '@/mock/home'
 import CategoryItem from './CategoryItem.vue'
-import {
-  CodeOutlined,
-  BgColorsOutlined,
-  GlobalOutlined,
-  TrophyOutlined,
-  ShoppingOutlined,
-  PlayCircleOutlined,
-  RobotOutlined,
-  AppstoreOutlined,
-} from '@ant-design/icons-vue'
+
+export interface CategoryData {
+  id: string
+  name: string
+  iconComponent: Component
+  color: string
+  route: string
+}
 
 defineProps<{
-  categories: CategoryItemType[]
+  categories: CategoryData[]
 }>()
-
-const iconMap: Record<string, Component> = {
-  CodeOutlined,
-  BgColorsOutlined,
-  GlobalOutlined,
-  TrophyOutlined,
-  ShoppingOutlined,
-  PlayCircleOutlined,
-  RobotOutlined,
-  AppstoreOutlined,
-}
-
-function getIcon(name: string): Component {
-  return iconMap[name] || AppstoreOutlined
-}
 </script>
 
 <style scoped>

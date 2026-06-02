@@ -14,11 +14,20 @@
 </template>
 
 <script setup lang="ts">
-import type { PromoBanner } from '@/mock/home'
 import PromoBannerCard from './PromoBannerCard.vue'
 
+export interface BannerData {
+  id: string
+  title: string
+  subtitle: string
+  bgColor: string
+  textColor: string
+  route: string
+  tag: string
+}
+
 defineProps<{
-  banners: PromoBanner[]
+  banners: BannerData[]
 }>()
 </script>
 
