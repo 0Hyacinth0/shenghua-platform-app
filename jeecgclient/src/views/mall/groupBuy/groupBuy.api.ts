@@ -1,0 +1,74 @@
+import { defHttp } from '/@/utils/http/axios';
+import { Modal } from 'ant-design-vue';
+
+enum Api {
+  list = '/mall/groupBuy/list',
+  save = '/mall/groupBuy/add',
+  edit = '/mall/groupBuy/edit',
+  delete = '/mall/groupBuy/delete',
+  deleteBatch = '/mall/groupBuy/deleteBatch',
+  start = '/mall/groupBuy/start',
+  end = '/mall/groupBuy/end',
+}
+
+/**
+ * 拼团活动列表
+ * @param params
+ */
+export const list = (params) => defHttp.get({ url: Api.list, params });
+
+/**
+ * 保存或更新
+ * @param params
+ * @param isUpdate
+ */
+export const saveOrUpdate = (params, isUpdate) => {
+  const url = isUpdate ? Api.edit : Api.save;
+  return defHttp.post({ url, params });
+};
+
+/**
+ * 删除拼团活动
+ * @param params
+ * @param handleSuccess
+ */
+export const deleteGroupBuy = (params, handleSuccess) => {
+  return defHttp.delete({ url: Api.delete, params }, { joinParamsToUrl: true }).then(() => {
+    handleSuccess();
+  });
+};
+
+/**
+ * 批量删除拼团活动
+ * @param params
+ * @param handleSuccess
+ */
+export const batchDeleteGroupBuy = (params, handleSuccess) => {
+  Modal.confirm({
+    title: '确认删除',
+    content: '是否删除选中数据？',
+    okText: '确认',
+    cancelText: '取消',
+    onOk: () => {
+      return defHttp.delete({ url: Api.deleteBatch, data: params }, { joinParamsToUrl: true }).then(() => {
+        handleSuccess();
+      });
+    },
+  });
+};
+
+/**
+ * 开始活动
+ * @param params
+ */
+export const startActivity = (params) => {
+  return defHttp.put({ url: Api.start, params }, { joinParamsToUrl: true });
+};
+
+/**
+ * 结束活动
+ * @param params
+ */
+export const endActivity = (params) => {
+  return defHttp.put({ url: Api.end, params }, { joinParamsToUrl: true });
+};
