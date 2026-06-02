@@ -1,12 +1,12 @@
 <template>
   <div class="top-search-header">
     <div class="search-bar" @click="$emit('focusSearch')">
-      <span class="search-icon">🔍</span>
+      <SearchOutlined class="search-icon" />
       <span class="search-placeholder">{{ placeholder }}</span>
     </div>
     <div class="header-actions">
       <button class="action-btn" @click="$emit('openMessages')" aria-label="消息">
-        <span class="action-icon">💬</span>
+        <BellOutlined class="action-icon" />
         <span v-if="msgBadge" class="badge">{{ msgBadge > 99 ? '99+' : msgBadge }}</span>
       </button>
     </div>
@@ -14,6 +14,8 @@
 </template>
 
 <script setup lang="ts">
+import { SearchOutlined, BellOutlined } from '@ant-design/icons-vue'
+
 withDefaults(defineProps<{
   placeholder?: string
   msgBadge?: number
@@ -52,7 +54,7 @@ defineEmits<{
 }
 .search-icon {
   font-size: 16px;
-  opacity: 0.6;
+  color: #bbb;
 }
 .search-placeholder {
   font-size: 14px;
@@ -78,7 +80,7 @@ defineEmits<{
 }
 .action-icon {
   font-size: 18px;
-  line-height: 1;
+  color: #666;
 }
 .badge {
   position: absolute;

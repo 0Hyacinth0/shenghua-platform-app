@@ -38,25 +38,25 @@
       <div class="menu-group">
         <h3 class="menu-group-title">我的交易</h3>
         <div class="menu-item" @click="$router.push('/orders')">
-          <span class="menu-icon-wrap" style="background:#D8F0E8">📦</span>
+          <span class="menu-icon-wrap" style="background:#D8F0E8"><SnippetsOutlined /></span>
           <span class="menu-label">我的订单</span>
-          <span class="menu-arrow">→</span>
+          <RightOutlined class="menu-arrow" />
         </div>
         <div class="menu-item" @click="$router.push('/cart')">
-          <span class="menu-icon-wrap" style="background:#FDE8D8">🛒</span>
+          <span class="menu-icon-wrap" style="background:#FDE8D8"><ShoppingCartOutlined /></span>
           <span class="menu-label">购物车</span>
           <span class="menu-badge" v-if="cartBadge > 0">{{ cartBadge }}</span>
-          <span class="menu-arrow">→</span>
+          <RightOutlined class="menu-arrow" />
         </div>
         <div class="menu-item" @click="$router.push('/coupon')">
-          <span class="menu-icon-wrap" style="background:#FDE8F0">🎫</span>
+          <span class="menu-icon-wrap" style="background:#FDE8F0"><GiftOutlined /></span>
           <span class="menu-label">优惠券</span>
-          <span class="menu-arrow">→</span>
+          <RightOutlined class="menu-arrow" />
         </div>
         <div class="menu-item" @click="$router.push('/signIn')">
-          <span class="menu-icon-wrap" style="background:#E8E0F8">✅</span>
+          <span class="menu-icon-wrap" style="background:#E8E0F8"><CheckCircleOutlined /></span>
           <span class="menu-label">每日签到</span>
-          <span class="menu-arrow">→</span>
+          <RightOutlined class="menu-arrow" />
         </div>
       </div>
     </section>
@@ -66,24 +66,24 @@
       <div class="menu-group">
         <h3 class="menu-group-title">更多服务</h3>
         <div class="menu-item" @click="$router.push('/seckill')">
-          <span class="menu-icon-wrap" style="background:#FDE8E8">⚡</span>
+          <span class="menu-icon-wrap" style="background:#FDE8E8"><ThunderboltOutlined /></span>
           <span class="menu-label">限时秒杀</span>
-          <span class="menu-arrow">→</span>
+          <RightOutlined class="menu-arrow" />
         </div>
         <div class="menu-item" @click="$router.push('/groupBuy')">
-          <span class="menu-icon-wrap" style="background:#FFF0E0">👥</span>
+          <span class="menu-icon-wrap" style="background:#FFF0E0"><TeamOutlined /></span>
           <span class="menu-label">拼团优惠</span>
-          <span class="menu-arrow">→</span>
+          <RightOutlined class="menu-arrow" />
         </div>
         <div class="menu-item" @click="$router.push('/address')">
-          <span class="menu-icon-wrap" style="background:#D8E8FD">📍</span>
+          <span class="menu-icon-wrap" style="background:#D8E8FD"><EnvironmentOutlined /></span>
           <span class="menu-label">收货地址</span>
-          <span class="menu-arrow">→</span>
+          <RightOutlined class="menu-arrow" />
         </div>
         <div class="menu-item" @click="$router.push('/merchant/apply')">
-          <span class="menu-icon-wrap" style="background:#E8FDEC">🏪</span>
+          <span class="menu-icon-wrap" style="background:#E8FDEC"><ShopOutlined /></span>
           <span class="menu-label">商家入驻</span>
-          <span class="menu-arrow">→</span>
+          <RightOutlined class="menu-arrow" />
         </div>
       </div>
     </section>
@@ -101,14 +101,15 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { message, Modal } from 'ant-design-vue'
+import {
+  UserOutlined, CrownOutlined, SnippetsOutlined, ShoppingCartOutlined,
+  GiftOutlined, CheckCircleOutlined, ThunderboltOutlined, TeamOutlined,
+  EnvironmentOutlined, ShopOutlined, RightOutlined,
+} from '@ant-design/icons-vue'
 import { getToken, removeToken, getUser } from '@/utils/auth'
 import { getCartList } from '@/api'
 import { getCurrentUserId } from '@/utils/user'
 import http from '@/utils/http'
-import {
-  UserOutlined,
-  CrownOutlined,
-} from '@ant-design/icons-vue'
 
 const router = useRouter()
 
@@ -153,7 +154,6 @@ function handleLogout() {
 
 onMounted(async () => {
   fetchCartCount()
-  // 加载用户积分等补充信息
   if (loggedIn.value) {
     try {
       const userId = getCurrentUserId()
@@ -162,7 +162,7 @@ onMounted(async () => {
         userInfo.value.points = res.availablePoints || res.totalPoints || 0
         userInfo.value.memberLevel = res.memberLevelId ? '会员' : '普通会员'
       }
-    } catch { /* fallback to default */ }
+    } catch { /* fallback */ }
   }
 })
 </script>
@@ -173,59 +173,35 @@ onMounted(async () => {
   max-width: 480px;
   margin: 0 auto;
 }
-.profile-section {
-  margin-bottom: 24px;
-}
+.profile-section { margin-bottom: 24px; }
 
-/* ===== 用户卡片 ===== */
 .user-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  display: flex; align-items: center; gap: 16px;
   padding: 24px 20px;
   background: #fff;
   border-radius: 20px;
   margin-top: 8px;
 }
-.user-detail {
-  flex: 1;
-}
+.user-detail { flex: 1; }
 .user-name {
-  font-size: 20px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 6px;
+  font-size: 20px; font-weight: 600;
+  color: #1a1a1a; margin-bottom: 6px;
   letter-spacing: -0.02em;
 }
-.user-name:not(:only-child) {
-  cursor: pointer;
-}
 .user-sub {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: #999;
-  font-weight: 340;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: #999; font-weight: 340;
 }
-.points-info {
-  font-size: 12px;
-  color: #666;
-}
+.points-info { font-size: 12px; color: #666; }
 
-/* ===== 功能菜单 ===== */
 .menu-group-title {
-  font-size: 12px;
-  color: #bbb;
-  font-weight: 400;
-  margin: 0 0 4px;
-  padding: 0 4px;
+  font-size: 12px; color: #bbb; font-weight: 400;
+  margin: 0 0 4px; padding: 0 4px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 .menu-item {
-  display: flex;
-  align-items: center;
+  display: flex; align-items: center;
   padding: 14px 12px;
   background: #fff;
   border-radius: 14px;
@@ -234,58 +210,35 @@ onMounted(async () => {
   transition: transform 0.15s;
   margin-bottom: 4px;
 }
-.menu-item:active {
-  transform: scale(0.98);
-}
+.menu-item:active { transform: scale(0.98); }
 .menu-icon-wrap {
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px;
   border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: #555;
   margin-right: 12px;
   flex-shrink: 0;
 }
 .menu-label {
   flex: 1;
-  font-size: 15px;
-  color: #1a1a1a;
-  font-weight: 480;
+  font-size: 15px; color: #1a1a1a; font-weight: 480;
 }
 .menu-badge {
-  background: #FF3B30;
-  color: #fff;
-  font-size: 11px;
-  min-width: 18px;
-  height: 18px;
-  line-height: 18px;
-  text-align: center;
+  background: #FF3B30; color: #fff;
+  font-size: 11px; min-width: 18px; height: 18px;
+  line-height: 18px; text-align: center;
   border-radius: 50px;
-  padding: 0 6px;
-  margin-right: 8px;
+  padding: 0 6px; margin-right: 8px;
 }
-.menu-arrow {
-  color: #ccc;
-  font-size: 14px;
-}
+.menu-arrow { color: #ccc; font-size: 14px; }
 
-/* ===== 退出登录 ===== */
 .logout-btn {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  border: none;
-  background: #fff;
-  color: #FF3B30;
-  font-size: 15px;
-  font-weight: 480;
+  width: 100%; padding: 14px;
+  border-radius: 14px; border: none;
+  background: #fff; color: #FF3B30;
+  font-size: 15px; font-weight: 480;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-
-.bottom-spacer {
-  height: 100px;
-}
+.bottom-spacer { height: 100px; }
 </style>

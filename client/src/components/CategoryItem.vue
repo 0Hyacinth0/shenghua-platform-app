@@ -5,16 +5,18 @@
     @click="$router.push(route || '/')"
   >
     <div class="category-icon-wrap">
-      <span class="category-icon">{{ icon }}</span>
+      <component :is="iconComponent" class="category-icon" />
     </div>
     <span class="category-name">{{ name }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { Component } from 'vue'
+
 defineProps<{
   name: string
-  icon: string
+  iconComponent: Component
   color: string
   route?: string
 }>()
@@ -44,7 +46,7 @@ defineProps<{
 }
 .category-icon {
   font-size: 26px;
-  line-height: 1;
+  color: #555;
 }
 .category-name {
   font-size: 12px;

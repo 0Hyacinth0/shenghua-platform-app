@@ -5,7 +5,11 @@
     @click="$router.push(route || '/')"
   >
     <div class="banner-content">
-      <span v-if="tag" class="banner-tag">{{ tag }}</span>
+      <span v-if="tag" class="banner-tag">
+        <FireOutlined v-if="tag.includes('热')" class="tag-icon" />
+        <ClockCircleOutlined v-else class="tag-icon" />
+        {{ tag }}
+      </span>
       <h3 class="banner-title">{{ title }}</h3>
       <p class="banner-subtitle">{{ subtitle }}</p>
     </div>
@@ -17,6 +21,8 @@
 </template>
 
 <script setup lang="ts">
+import { FireOutlined, ClockCircleOutlined } from '@ant-design/icons-vue'
+
 defineProps<{
   title: string
   subtitle: string
@@ -51,14 +57,19 @@ defineProps<{
   z-index: 1;
 }
 .banner-tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 10px;
   font-weight: 540;
   background: rgba(0,0,0,0.08);
-  padding: 2px 8px;
+  padding: 2px 10px;
   border-radius: 50px;
   margin-bottom: 8px;
   letter-spacing: 0.04em;
+}
+.tag-icon {
+  font-size: 11px;
 }
 .banner-title {
   font-size: 18px;

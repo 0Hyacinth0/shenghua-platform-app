@@ -2,13 +2,17 @@
   <div class="recommendation-card" @click="$router.push(route || '/')">
     <div class="card-cover" :style="{ background: coverColor }">
       <span v-if="tag" class="card-badge" :style="{ background: tagColor }">{{ tag }}</span>
-      <span class="cover-placeholder">{{ typeLabel }}</span>
+      <ReadOutlined v-if="type === 'course'" class="cover-icon" />
+      <ShoppingOutlined v-else-if="type === 'product'" class="cover-icon" />
+      <PlayCircleOutlined v-else class="cover-icon" />
     </div>
     <div class="card-body">
       <h4 class="card-title">{{ title }}</h4>
       <div class="card-meta">
         <span class="card-author">{{ author }}</span>
-        <span v-if="rating" class="card-rating">⭐ {{ rating }}</span>
+        <span v-if="rating" class="card-rating">
+          <StarFilled class="star-icon" /> {{ rating }}
+        </span>
       </div>
       <div class="card-footer">
         <span class="card-price" :class="{ free: price === 0 }">
@@ -24,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ReadOutlined, ShoppingOutlined, PlayCircleOutlined, StarFilled } from '@ant-design/icons-vue'
 
 const props = defineProps<{
   title: string
@@ -39,11 +43,6 @@ const props = defineProps<{
   students?: number
   route?: string
 }>()
-
-const typeLabel = computed(() => {
-  const map: Record<string, string> = { course: '📖', product: '🛍️', live: '📺' }
-  return map[props.type] || '📖'
-})
 
 function fmtStudents(n: number): string {
   if (n >= 10000) return (n / 10000).toFixed(1) + '万'
@@ -71,9 +70,9 @@ function fmtStudents(n: number): string {
   justify-content: center;
   position: relative;
 }
-.cover-placeholder {
-  font-size: 32px;
-  opacity: 0.6;
+.cover-icon {
+  font-size: 36px;
+  color: rgba(0,0,0,0.12);
 }
 .card-badge {
   position: absolute;
@@ -113,7 +112,13 @@ function fmtStudents(n: number): string {
 }
 .card-rating {
   font-size: 11px;
-  color: #999;
+  color: #f5a623;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+.star-icon {
+  font-size: 10px;
 }
 .card-footer {
   display: flex;

@@ -3,7 +3,7 @@
     <div class="section-header">
       <h2 class="section-title">免费公开课</h2>
       <span class="section-badge">限时免费</span>
-      <span class="section-more" @click="$emit('viewAll')">全部 →</span>
+      <span class="section-more" @click="$emit('viewAll')">全部 <ArrowRightOutlined /></span>
     </div>
     <div class="free-course-list">
       <div
@@ -13,7 +13,7 @@
         @click="$router.push(item.route || '/')"
       >
         <div class="fc-cover" :style="{ background: item.coverColor }">
-          <span class="fc-emoji">📖</span>
+          <PlayCircleOutlined class="fc-cover-icon" />
         </div>
         <div class="fc-info">
           <h4 class="fc-title">{{ item.title }}</h4>
@@ -23,7 +23,7 @@
             <span class="fc-students">{{ fmtStudents(item.students) }}人在学</span>
           </div>
         </div>
-        <span class="fc-arrow">→</span>
+        <RightOutlined class="fc-arrow" />
       </div>
     </div>
   </section>
@@ -31,6 +31,7 @@
 
 <script setup lang="ts">
 import type { FreeCourseItem } from '@/mock/home'
+import { PlayCircleOutlined, ArrowRightOutlined, RightOutlined } from '@ant-design/icons-vue'
 
 defineProps<{
   courses: FreeCourseItem[]
@@ -82,6 +83,9 @@ function fmtStudents(n: number): string {
   cursor: pointer;
   margin-left: auto;
   font-weight: 340;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
 }
 .free-course-list {
   display: flex;
@@ -111,8 +115,9 @@ function fmtStudents(n: number): string {
   align-items: center;
   justify-content: center;
 }
-.fc-emoji {
-  font-size: 22px;
+.fc-cover-icon {
+  font-size: 24px;
+  color: rgba(0,0,0,0.15);
 }
 .fc-info {
   flex: 1;
@@ -146,7 +151,7 @@ function fmtStudents(n: number): string {
   font-weight: 340;
 }
 .fc-arrow {
-  font-size: 16px;
+  font-size: 14px;
   color: #bbb;
   flex-shrink: 0;
 }

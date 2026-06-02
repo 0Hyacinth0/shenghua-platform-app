@@ -8,7 +8,7 @@
         :class="{ active: modelValue === tab.key }"
         @click="$emit('update:modelValue', tab.key)"
       >
-        <span class="tab-icon">{{ tab.icon }}</span>
+        <component :is="tab.iconComponent" class="tab-icon" />
         <span class="tab-label">{{ tab.label }}</span>
       </button>
     </div>
@@ -16,10 +16,12 @@
 </template>
 
 <script setup lang="ts">
+import type { Component } from 'vue'
+
 export interface TabItem {
   key: string
   label: string
-  icon: string    // emoji
+  iconComponent: Component
 }
 
 defineProps<{

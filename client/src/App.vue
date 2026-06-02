@@ -17,32 +17,35 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import {
+  HomeOutlined,
+  ReadOutlined,
+  CommentOutlined,
+  BellOutlined,
+  UserOutlined,
+} from '@ant-design/icons-vue'
 import FloatingBottomTabBar from '@/components/FloatingBottomTabBar.vue'
 import type { TabItem } from '@/components/FloatingBottomTabBar.vue'
 
 const route = useRoute()
 const router = useRouter()
 
-// 需要 keep-alive 缓存的页面
 const cachedViews = ['home', 'learn', 'community', 'messages', 'profile']
 
 const tabItems: TabItem[] = [
-  { key: 'home', label: '首页', icon: '🏠' },
-  { key: 'learn', label: '学习', icon: '📖' },
-  { key: 'community', label: '社区', icon: '💬' },
-  { key: 'messages', label: '消息', icon: '🔔' },
-  { key: 'profile', label: '我的', icon: '👤' },
+  { key: 'home', label: '首页', iconComponent: HomeOutlined },
+  { key: 'learn', label: '学习', iconComponent: ReadOutlined },
+  { key: 'community', label: '社区', iconComponent: CommentOutlined },
+  { key: 'messages', label: '消息', iconComponent: BellOutlined },
+  { key: 'profile', label: '我的', iconComponent: UserOutlined },
 ]
 
-// 是否显示 TabBar
 const showTabBar = computed(() => {
   return route.meta?.showTabBar !== false
 })
 
-// 当前激活的 tab，基于路由 meta.tabKey 或路径推断
 const currentTab = computed(() => {
   if (route.meta?.tabKey) return route.meta.tabKey as string
-  // 内部页面默认高亮首页
   return 'home'
 })
 
@@ -62,7 +65,6 @@ function onTabChange(key: string) {
 </script>
 
 <style>
-/* 全局重置 — 适配 DESIGN.md 审美 */
 *,
 *::before,
 *::after {
@@ -86,16 +88,13 @@ body {
   font-weight: 340;
   letter-spacing: -0.01em;
   overflow-x: hidden;
-  /* 底部 TabBar 安全区 */
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
 
-/* 移除默认按钮样式 */
 button {
   font-family: inherit;
 }
 
-/* 滚动条隐藏（可选） */
 ::-webkit-scrollbar {
   width: 0;
   height: 0;

@@ -3,23 +3,24 @@
  */
 
 // ==================== 分类宫格 ====================
+// icon 字段使用 @ant-design/icons-vue 的图标组件名
 export interface CategoryItem {
   id: string
   name: string
-  icon: string        // emoji 或 iconfont class
+  icon: string        // Ant Design icon name (e.g. 'CodeOutlined')
   color: string       // 背景色
-  route?: string      // 点击跳转路由
+  route?: string
 }
 
 export const mockCategories: CategoryItem[] = [
-  { id: '1', name: '编程开发', icon: '💻', color: '#E8F4FD', route: '/learn?cat=dev' },
-  { id: '2', name: '设计创意', icon: '🎨', color: '#FDE8F4', route: '/learn?cat=design' },
-  { id: '3', name: '语言学习', icon: '📖', color: '#E8FDEC', route: '/learn?cat=lang' },
-  { id: '4', name: '考证考级', icon: '📝', color: '#FDF3E8', route: '/learn?cat=exam' },
-  { id: '5', name: '精品商城', icon: '🛍️', color: '#EEE8FD', route: '/learn?tab=mall' },
-  { id: '6', name: '直播课堂', icon: '📺', color: '#FDE8E8', route: '/learn?cat=live' },
-  { id: '7', name: 'AI 技能', icon: '🤖', color: '#E8FDF5', route: '/learn?cat=ai' },
-  { id: '8', name: '全部课程', icon: '📚', color: '#F5F5F5', route: '/learn' },
+  { id: '1', name: '编程开发', icon: 'CodeOutlined', color: '#E8F4FD', route: '/learn?cat=dev' },
+  { id: '2', name: '设计创意', icon: 'BgColorsOutlined', color: '#FDE8F4', route: '/learn?cat=design' },
+  { id: '3', name: '语言学习', icon: 'GlobalOutlined', color: '#E8FDEC', route: '/learn?cat=lang' },
+  { id: '4', name: '考证考级', icon: 'TrophyOutlined', color: '#FDF3E8', route: '/learn?cat=exam' },
+  { id: '5', name: '精品商城', icon: 'ShoppingOutlined', color: '#EEE8FD', route: '/learn?tab=mall' },
+  { id: '6', name: '直播课堂', icon: 'PlayCircleOutlined', color: '#FDE8E8', route: '/learn?cat=live' },
+  { id: '7', name: 'AI 技能', icon: 'RobotOutlined', color: '#E8FDF5', route: '/learn?cat=ai' },
+  { id: '8', name: '全部课程', icon: 'AppstoreOutlined', color: '#F5F5F5', route: '/learn' },
 ]
 
 // ==================== 双 Banner ====================
@@ -38,19 +39,19 @@ export const mockPromoBanners: PromoBanner[] = [
     id: '1',
     title: '暑期训练营',
     subtitle: '零基础到就业',
-    bgColor: '#D8F0E8',    // block-mint 色调
+    bgColor: '#D8F0E8',
     textColor: '#1a1a1a',
     route: '/learn?cat=camp',
-    tag: '🔥 热门',
+    tag: '热门',
   },
   {
     id: '2',
     title: '限时秒杀',
     subtitle: '好课低至1折',
-    bgColor: '#FDE2E2',    // block-pink 色调
+    bgColor: '#FDE2E2',
     textColor: '#1a1a1a',
     route: '/seckill',
-    tag: '⏰ 限时',
+    tag: '限时',
   },
 ]
 
@@ -72,15 +73,15 @@ export interface RecommendationItem {
   id: string
   type: 'course' | 'product' | 'live'
   title: string
-  cover: string         // 占位图 URL 或颜色
+  cover: string
   coverColor: string    // 占位背景色
-  author: string        // 讲师 / 店铺名
+  author: string
   price: number
   originalPrice?: number
   tag?: string
   tagColor?: string
-  rating?: number       // 课程评分 1-5
-  students?: number     // 学习人数
+  rating?: number
+  students?: number
   route?: string
 }
 
@@ -128,8 +129,8 @@ export interface FreeCourseItem {
   id: string
   title: string
   coverColor: string
-  duration: string      // 如 "12课时"
-  level: string         // 如 "入门"
+  duration: string
+  level: string
   students: number
   route?: string
 }

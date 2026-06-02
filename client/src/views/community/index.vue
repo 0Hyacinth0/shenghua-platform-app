@@ -22,11 +22,7 @@
     <!-- 帖子列表 -->
     <section class="community-section">
       <div class="post-list">
-        <div
-          v-for="post in posts"
-          :key="post.id"
-          class="post-card"
-        >
+        <div v-for="post in posts" :key="post.id" class="post-card">
           <div class="post-avatar" :style="{ background: post.avatarColor }">
             {{ post.author[0] }}
           </div>
@@ -39,9 +35,9 @@
             <h3 class="post-title">{{ post.title }}</h3>
             <p class="post-excerpt" v-if="post.excerpt">{{ post.excerpt }}</p>
             <div class="post-stats">
-              <span>👍 {{ post.likes }}</span>
-              <span>💬 {{ post.comments }}</span>
-              <span>👀 {{ post.views }}</span>
+              <span><LikeOutlined /> {{ post.likes }}</span>
+              <span><CommentOutlined /> {{ post.comments }}</span>
+              <span><EyeOutlined /> {{ post.views }}</span>
             </div>
           </div>
         </div>
@@ -50,7 +46,7 @@
 
     <!-- 发帖按钮 -->
     <button class="fab" @click="onCreatePost">
-      <span class="fab-icon">✏️</span>
+      <EditOutlined class="fab-icon" />
     </button>
 
     <div class="bottom-spacer" />
@@ -60,6 +56,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { message } from 'ant-design-vue'
+import { LikeOutlined, CommentOutlined, EyeOutlined, EditOutlined } from '@ant-design/icons-vue'
 import TopSearchHeader from '@/components/TopSearchHeader.vue'
 
 const showSearch = ref(false)
@@ -94,22 +91,16 @@ function onCreatePost() {
   max-width: 480px;
   margin: 0 auto;
 }
-.community-section {
-  margin-bottom: 20px;
-}
+.community-section { margin-bottom: 20px; }
 
-/* ===== 话题滚动条 ===== */
 .topic-scroll {
-  display: flex;
-  gap: 8px;
+  display: flex; gap: 8px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding-bottom: 4px;
 }
-.topic-scroll::-webkit-scrollbar {
-  display: none;
-}
+.topic-scroll::-webkit-scrollbar { display: none; }
 .topic-chip {
   flex-shrink: 0;
   padding: 8px 18px;
@@ -124,96 +115,55 @@ function onCreatePost() {
   transition: all 0.2s;
   white-space: nowrap;
 }
-.topic-chip.active {
-  background: #1a1a1a;
-  color: #fff;
-}
+.topic-chip.active { background: #1a1a1a; color: #fff; }
 
-/* ===== 帖子列表 ===== */
-.post-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
+.post-list { display: flex; flex-direction: column; }
 .post-card {
-  display: flex;
-  gap: 12px;
+  display: flex; gap: 12px;
   padding: 16px 0;
   border-bottom: 0.5px solid #eee;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 .post-avatar {
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px;
   border-radius: 50%;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 16px; font-weight: 600;
   color: #666;
 }
-.post-body {
-  flex: 1;
-  min-width: 0;
-}
+.post-body { flex: 1; min-width: 0; }
 .post-header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  display: flex; align-items: center; gap: 6px;
   margin-bottom: 4px;
 }
-.post-author {
-  font-size: 13px;
-  color: #666;
-  font-weight: 480;
-}
-.post-tag {
-  font-size: 10px;
-  font-weight: 540;
-  letter-spacing: 0.03em;
-}
-.post-time {
-  font-size: 11px;
-  color: #bbb;
-  margin-left: auto;
-}
+.post-author { font-size: 13px; color: #666; font-weight: 480; }
+.post-tag { font-size: 10px; font-weight: 540; letter-spacing: 0.03em; }
+.post-time { font-size: 11px; color: #bbb; margin-left: auto; }
 .post-title {
-  font-size: 16px;
-  font-weight: 540;
-  color: #1a1a1a;
-  margin: 0 0 4px;
-  line-height: 1.4;
-  letter-spacing: -0.01em;
+  font-size: 16px; font-weight: 540; color: #1a1a1a;
+  margin: 0 0 4px; line-height: 1.4; letter-spacing: -0.01em;
 }
 .post-excerpt {
-  font-size: 13px;
-  color: #999;
-  font-weight: 340;
-  margin: 0 0 8px;
-  line-height: 1.45;
+  font-size: 13px; color: #999; font-weight: 340;
+  margin: 0 0 8px; line-height: 1.45;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   overflow: hidden;
 }
 .post-stats {
-  display: flex;
-  gap: 16px;
-  font-size: 12px;
-  color: #bbb;
-  font-weight: 340;
+  display: flex; gap: 16px;
+  font-size: 12px; color: #bbb; font-weight: 340;
 }
 
-/* ===== 发帖 FAB ===== */
 .fab {
   position: fixed;
   right: calc(50% - 220px);
   bottom: 100px;
-  width: 48px;
-  height: 48px;
+  width: 48px; height: 48px;
   border-radius: 50%;
   border: none;
   background: #1a1a1a;
@@ -232,14 +182,6 @@ function onCreatePost() {
 
 .bottom-spacer { height: 100px; }
 
-@media (min-width: 480px) {
-  .fab {
-    right: calc(50% - 220px);
-  }
-}
-@media (max-width: 420px) {
-  .fab {
-    right: 16px;
-  }
-}
+@media (min-width: 480px) { .fab { right: calc(50% - 220px); } }
+@media (max-width: 420px) { .fab { right: 16px; } }
 </style>
