@@ -1,0 +1,68 @@
+<template>
+  <section class="recommendation-section">
+    <div class="section-header">
+      <h2 class="section-title">今日推荐</h2>
+      <span class="section-more" @click="$emit('viewAll')">查看全部 →</span>
+    </div>
+    <div class="rec-grid">
+      <RecommendationCard
+        v-for="item in items"
+        :key="item.id"
+        :title="item.title"
+        :cover-color="item.coverColor"
+        :type="item.type"
+        :author="item.author"
+        :price="item.price"
+        :original-price="item.originalPrice"
+        :tag="item.tag"
+        :tag-color="item.tagColor"
+        :rating="item.rating"
+        :students="item.students"
+        :route="item.route"
+      />
+    </div>
+  </section>
+</template>
+
+<script setup lang="ts">
+import type { RecommendationItem } from '@/mock/home'
+import RecommendationCard from './RecommendationCard.vue'
+
+defineProps<{
+  items: RecommendationItem[]
+}>()
+
+defineEmits<{
+  viewAll: []
+}>()
+</script>
+
+<style scoped>
+.recommendation-section {
+  padding: 0 0 8px;
+}
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+.section-more {
+  font-size: 13px;
+  color: #999;
+  cursor: pointer;
+  font-weight: 340;
+}
+.rec-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+</style>

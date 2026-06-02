@@ -1,63 +1,99 @@
 <template>
   <div class="profile-page">
-    <h2 class="page-title">个人中心</h2>
-
     <!-- 用户信息卡片 -->
-    <div class="user-card">
-      <div class="user-avatar">
-        <a-avatar :size="72" :src="userInfo.avatar">
-          <template #icon><UserOutlined /></template>
-        </a-avatar>
+    <section class="profile-section">
+      <div class="user-card">
+        <template v-if="loggedIn">
+          <div class="user-avatar">
+            <a-avatar :size="56" :src="userInfo.avatar">
+              <template #icon><UserOutlined /></template>
+            </a-avatar>
+          </div>
+          <div class="user-detail">
+            <div class="user-name">{{ userInfo.nickname || userInfo.username || '用户' }}</div>
+            <div class="user-sub">
+              <a-tag v-if="userInfo.memberLevel" color="default" size="small">
+                <CrownOutlined /> {{ userInfo.memberLevel }}
+              </a-tag>
+              <span v-if="userInfo.points !== undefined" class="points-info">
+                积分：{{ userInfo.points }}
+              </span>
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="user-avatar">
+            <a-avatar :size="56"><template #icon><UserOutlined /></template></a-avatar>
+          </div>
+          <div class="user-detail">
+            <div class="user-name" @click="$router.push('/login')">登录 / 注册</div>
+            <div class="user-sub">登录后享受更多权益</div>
+          </div>
+        </template>
       </div>
-      <div class="user-detail">
-        <div class="user-name">{{ userInfo.nickname || userInfo.username || '用户' }}</div>
-        <div class="user-phone" v-if="userInfo.phone">{{ userInfo.phone }}</div>
-        <div class="user-tags">
-          <a-tag v-if="userInfo.memberLevel" color="gold">
-            <CrownOutlined /> {{ userInfo.memberLevel }}
-          </a-tag>
-          <a-tag v-if="userInfo.points !== undefined" color="blue">
-            积分：{{ userInfo.points }}
-          </a-tag>
-        </div>
-      </div>
-    </div>
+    </section>
 
-    <!-- 功能入口 -->
-    <div class="menu-list">
+    <!-- 常用功能入口 -->
+    <section class="profile-section">
       <div class="menu-group">
         <h3 class="menu-group-title">我的交易</h3>
         <div class="menu-item" @click="$router.push('/orders')">
-          <ShoppingOutlined class="menu-icon" />
+          <span class="menu-icon-wrap" style="background:#D8F0E8">📦</span>
           <span class="menu-label">我的订单</span>
-          <span class="menu-arrow">&gt;</span>
+          <span class="menu-arrow">→</span>
         </div>
         <div class="menu-item" @click="$router.push('/cart')">
-          <ShoppingCartOutlined class="menu-icon" />
+          <span class="menu-icon-wrap" style="background:#FDE8D8">🛒</span>
           <span class="menu-label">购物车</span>
-          <span class="menu-arrow">&gt;</span>
+          <span class="menu-badge" v-if="cartBadge > 0">{{ cartBadge }}</span>
+          <span class="menu-arrow">→</span>
+        </div>
+        <div class="menu-item" @click="$router.push('/coupon')">
+          <span class="menu-icon-wrap" style="background:#FDE8F0">🎫</span>
+          <span class="menu-label">优惠券</span>
+          <span class="menu-arrow">→</span>
+        </div>
+        <div class="menu-item" @click="$router.push('/signIn')">
+          <span class="menu-icon-wrap" style="background:#E8E0F8">✅</span>
+          <span class="menu-label">每日签到</span>
+          <span class="menu-arrow">→</span>
         </div>
       </div>
+    </section>
 
+    <!-- 更多功能 -->
+    <section class="profile-section">
       <div class="menu-group">
-        <h3 class="menu-group-title">账户设置</h3>
+        <h3 class="menu-group-title">更多服务</h3>
+        <div class="menu-item" @click="$router.push('/seckill')">
+          <span class="menu-icon-wrap" style="background:#FDE8E8">⚡</span>
+          <span class="menu-label">限时秒杀</span>
+          <span class="menu-arrow">→</span>
+        </div>
+        <div class="menu-item" @click="$router.push('/groupBuy')">
+          <span class="menu-icon-wrap" style="background:#FFF0E0">👥</span>
+          <span class="menu-label">拼团优惠</span>
+          <span class="menu-arrow">→</span>
+        </div>
         <div class="menu-item" @click="$router.push('/address')">
-          <EnvironmentOutlined class="menu-icon" />
+          <span class="menu-icon-wrap" style="background:#D8E8FD">📍</span>
           <span class="menu-label">收货地址</span>
-          <span class="menu-arrow">&gt;</span>
+          <span class="menu-arrow">→</span>
         </div>
         <div class="menu-item" @click="$router.push('/merchant/apply')">
-          <ShopOutlined class="menu-icon" />
+          <span class="menu-icon-wrap" style="background:#E8FDEC">🏪</span>
           <span class="menu-label">商家入驻</span>
-          <span class="menu-arrow">&gt;</span>
+          <span class="menu-arrow">→</span>
         </div>
       </div>
-    </div>
+    </section>
 
     <!-- 退出登录 -->
-    <div class="logout-wrap">
-      <a-button block size="large" @click="handleLogout">退出登录</a-button>
-    </div>
+    <section class="profile-section" v-if="loggedIn">
+      <button class="logout-btn" @click="handleLogout">退出登录</button>
+    </section>
+
+    <div class="bottom-spacer" />
   </div>
 </template>
 
@@ -65,21 +101,18 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { message, Modal } from 'ant-design-vue'
-import { getUser, removeToken } from '@/utils/auth'
-import http from '@/utils/http'
+import { getToken, removeToken, getUser } from '@/utils/auth'
+import { getCartList } from '@/api'
 import { getCurrentUserId } from '@/utils/user'
+import http from '@/utils/http'
 import {
   UserOutlined,
   CrownOutlined,
-  ShoppingOutlined,
-  ShoppingCartOutlined,
-  EnvironmentOutlined,
-  ShopOutlined,
 } from '@ant-design/icons-vue'
 
 const router = useRouter()
 
-// 从登录状态获取用户信息
+const loggedIn = ref(!!getToken())
 const storedUser = getUser()
 const userInfo = ref({
   id: storedUser?.id || storedUser?.userId || 'demo_user_001',
@@ -91,6 +124,17 @@ const userInfo = ref({
   points: 0,
 })
 
+const cartBadge = ref(0)
+
+async function fetchCartCount() {
+  if (!loggedIn.value) return
+  try {
+    const userId = getCurrentUserId()
+    const res = await getCartList(userId)
+    if (Array.isArray(res)) cartBadge.value = res.length
+  } catch { cartBadge.value = 0 }
+}
+
 function handleLogout() {
   Modal.confirm({
     title: '退出登录',
@@ -99,116 +143,149 @@ function handleLogout() {
     cancelText: '取消',
     onOk: () => {
       removeToken()
+      loggedIn.value = false
+      cartBadge.value = 0
       message.success('已退出登录')
-      // TODO: 跳转到登录页（JeecgBoot对接后替换为实际登录路径）
       router.push('/')
     },
   })
 }
 
 onMounted(async () => {
-  try {
-    const userId = getCurrentUserId()
-    const res = await http.get('/mall/user/queryByUserId', { params: { userId } })
-    if (res) {
-      userInfo.value.points = res.availablePoints || res.totalPoints || 0
-      userInfo.value.memberLevel = res.memberLevelId ? '会员' : '普通会员'
-    }
-  } catch {}
+  fetchCartCount()
+  // 加载用户积分等补充信息
+  if (loggedIn.value) {
+    try {
+      const userId = getCurrentUserId()
+      const res = await http.get('/mall/user/queryByUserId', { params: { userId } })
+      if (res) {
+        userInfo.value.points = res.availablePoints || res.totalPoints || 0
+        userInfo.value.memberLevel = res.memberLevelId ? '会员' : '普通会员'
+      }
+    } catch { /* fallback to default */ }
+  }
 })
 </script>
 
 <style scoped>
 .profile-page {
-  background: #fff;
-  border-radius: 8px;
-  padding: 24px;
+  padding: 0 16px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.profile-section {
+  margin-bottom: 24px;
 }
 
-.page-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0 0 24px;
-}
-
+/* ===== 用户卡片 ===== */
 .user-card {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 24px;
-  background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
-  border-radius: 12px;
-  margin-bottom: 24px;
+  gap: 16px;
+  padding: 24px 20px;
+  background: #fff;
+  border-radius: 20px;
+  margin-top: 8px;
 }
-
 .user-detail {
   flex: 1;
 }
-
 .user-name {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 4px;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
 }
-
-.user-phone {
-  font-size: 14px;
-  color: #999;
-  margin-bottom: 8px;
+.user-name:not(:only-child) {
+  cursor: pointer;
 }
-
-.user-tags {
+.user-sub {
   display: flex;
+  align-items: center;
   gap: 8px;
-}
-
-.menu-list {
-  margin-bottom: 24px;
-}
-
-.menu-group {
-  margin-bottom: 20px;
-}
-
-.menu-group-title {
-  font-size: 14px;
+  font-size: 13px;
   color: #999;
-  margin: 0 0 8px;
-  padding: 0 4px;
+  font-weight: 340;
+}
+.points-info {
+  font-size: 12px;
+  color: #666;
 }
 
+/* ===== 功能菜单 ===== */
+.menu-group-title {
+  font-size: 12px;
+  color: #bbb;
+  font-weight: 400;
+  margin: 0 0 4px;
+  padding: 0 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
 .menu-item {
   display: flex;
   align-items: center;
   padding: 14px 12px;
-  border-radius: 8px;
+  background: #fff;
+  border-radius: 14px;
   cursor: pointer;
-  transition: background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
+  margin-bottom: 4px;
 }
-
-.menu-item:hover {
-  background: #f5f5f5;
+.menu-item:active {
+  transform: scale(0.98);
 }
-
-.menu-icon {
-  font-size: 20px;
-  color: #666;
+.menu-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
   margin-right: 12px;
+  flex-shrink: 0;
 }
-
 .menu-label {
   flex: 1;
   font-size: 15px;
-  color: #333;
+  color: #1a1a1a;
+  font-weight: 480;
 }
-
+.menu-badge {
+  background: #FF3B30;
+  color: #fff;
+  font-size: 11px;
+  min-width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 50px;
+  padding: 0 6px;
+  margin-right: 8px;
+}
 .menu-arrow {
   color: #ccc;
   font-size: 14px;
 }
 
-.logout-wrap {
-  padding: 24px 0;
+/* ===== 退出登录 ===== */
+.logout-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: #fff;
+  color: #FF3B30;
+  font-size: 15px;
+  font-weight: 480;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-spacer {
+  height: 100px;
 }
 </style>

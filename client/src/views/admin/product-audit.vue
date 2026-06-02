@@ -97,7 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
 import { getProductList, approveProduct, rejectProduct, imgUrl } from '@/api'
 import http from '@/utils/http'

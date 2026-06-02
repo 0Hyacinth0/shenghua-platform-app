@@ -1,45 +1,50 @@
 <template>
-  <div class="home-layout">
-    <aside class="sidebar">
-      <h3>商品分类</h3>
-      <a-menu
-        v-model:selectedKeys="selectedKeys"
-        mode="inline"
-        :style="{ borderInlineEnd: 'none' }"
-        @click="onCategoryClick"
-      >
-        <template v-for="cat in flatCategories" :key="cat.id">
-          <a-menu-item :style="{ paddingLeft: 12 + (cat.level || 0) * 16 + 'px' }">
-            {{ cat.categoryName }}
-          </a-menu-item>
-        </template>
-      </a-menu>
-    </aside>
+  <div class="home-page">
+    <!-- 顶部搜索 -->
+    <TopSearchHeader
+      :msg-badge="3"
+      @focus-search="onFocusSearch"
+      @open-messages="$router.push('/messages')"
+    />
 
-    <main class="main">
-      <!-- 秒杀专区 -->
-      <div v-if="seckillProducts.length > 0" class="seckill-section">
-        <div class="seckill-header">
-          <span class="seckill-title">限时秒杀</span>
-          <router-link to="/seckill" class="seckill-more">更多 &gt;</router-link>
-        </div>
-        <div class="seckill-scroll">
-          <div v-for="sp in seckillProducts" :key="sp.id" class="seckill-item" @click="goDetail(sp.id)">
-            <div class="si-img"><img :src="imgUrl(sp.mainImage)" /></div>
-            <div class="si-price">¥{{ sp.seckillPrice }}</div>
-            <div class="si-stock">仅剩 {{ sp.stock }} 件</div>
+    <!-- 分类宫格 -->
+    <section class="home-section">
+      <CategoryGrid :categories="categories" />
+    </section>
+
+    <!-- 双 Banner -->
+    <section class="home-section">
+      <PromoBannerSection :banners="banners" />
+    </section>
+
+    <!-- 频道切换 -->
+    <section class="home-section channel-section">
+      <ChannelTabs v-model="activeChannel" :channels="channels" />
+    </section>
+
+    <!-- 内容区域：根据频道切换 -->
+    <section class="home-section">
+      <!-- 推荐 / 课程 / 直播 → 三列推荐卡片 -->
+      <RecommendationSection
+        v-if="activeChannel !== 'mall'"
+        :items="displayRecommendations"
+        @view-all="onViewAll"
+      />
+
+      <!-- 商城频道 → 复用现有商品列表 -->
+      <template v-else>
+        <a-spin :spinning="productLoading">
+          <div v-if="products.length === 0 && !productLoading" class="empty-state">
+            <a-empty description="暂无商品" />
           </div>
-        </div>
-      </div>
-
-      <a-spin :spinning="loading" tip="加载中...">
-        <div v-if="products.length === 0 && !loading" class="empty">
-          <a-empty description="暂无商品" />
-        </div>
-        <a-row v-else :gutter="[16, 16]">
-          <a-col v-for="p in products" :key="p.id" :xs="12" :sm="12" :md="8">
-            <div class="product-card" @click="goDetail(p.id)">
-              <div class="product-img-wrap">
+          <div v-else class="product-grid">
+            <div
+              v-for="p in products"
+              :key="p.id"
+              class="product-card"
+              @click="goProductDetail(p.id)"
+            >
+              <div class="product-cover">
                 <a-image
                   :src="imgUrl(p.mainImage)"
                   :preview="false"
@@ -48,275 +53,196 @@
                 />
               </div>
               <div class="product-info">
-                <div class="product-name">{{ p.spuName }}</div>
-                <div class="product-shop" v-if="p._shopName">
-                  <a-tag color="default" size="small">{{ p._shopName }}</a-tag>
-                </div>
-                <div class="product-bottom">
-                  <span class="product-price">&yen;{{ p.minPrice }}</span>
-                  <span class="product-sales">{{ p.sales || 0 }}件已售</span>
-                </div>
+                <h4 class="product-name">{{ p.spuName }}</h4>
+                <span class="product-price">&yen;{{ p.minPrice }}</span>
               </div>
             </div>
-          </a-col>
-        </a-row>
-        <div v-if="total > pageSize" class="pagination-wrap">
-          <a-pagination
-            v-model:current="page"
-            :total="total"
-            :page-size="pageSize"
-            :show-size-changer="false"
-            @change="loadProducts"
-          />
-        </div>
-      </a-spin>
-    </main>
+          </div>
+        </a-spin>
+      </template>
+    </section>
+
+    <!-- 免费公开课（使用优惠券/签到数据兜底） -->
+    <section class="home-section">
+      <FreeCourseSection :courses="freeCourses" @view-all="$router.push('/coupon')" />
+    </section>
+
+    <!-- 底部留白给悬浮导航 -->
+    <div class="bottom-spacer" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { getCategoryTree, getProductList, getFrontProductList, imgUrl } from '@/api'
+import { ref, onMounted, watch, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import TopSearchHeader from '@/components/TopSearchHeader.vue'
+import CategoryGrid from '@/components/CategoryGrid.vue'
+import PromoBannerSection from '@/components/PromoBannerSection.vue'
+import ChannelTabs from '@/components/ChannelTabs.vue'
+import RecommendationSection from '@/components/RecommendationSection.vue'
+import FreeCourseSection from '@/components/FreeCourseSection.vue'
+import {
+  mockCategories,
+  mockPromoBanners,
+  mockChannels,
+  mockRecommendations,
+  mockFreeCourses,
+} from '@/mock/home'
+import { getCategoryTree, getFrontProductList, imgUrl } from '@/api'
 import http from '@/utils/http'
 
 const router = useRouter()
-const route = useRoute()
 
-const categories = ref<any[]>([])
-const seckillProducts = ref<any[]>([])
-const flatCategories = ref<any[]>([])
-const selectedKeys = ref<string[]>([])
-const products = ref<any[]>([])
-const page = ref(1)
-const pageSize = 12
-const total = ref(0)
-const loading = ref(false)
+// ===== 分类数据 =====
+const categories = ref(mockCategories)
 
-function flattenTree(nodes: any[]): any[] {
-  const result: any[] = []
-  function walk(list: any[], level: number) {
-    for (const n of list) {
-      result.push({ ...n, level })
-      if (n.children && n.children.length > 0) {
-        walk(n.children, level + 1)
-      }
-    }
+// ===== Banner 数据 =====
+const banners = ref(mockPromoBanners)
+
+// ===== 频道 =====
+const channels = ref(mockChannels)
+const activeChannel = ref('recommend')
+
+// ===== 推荐内容 =====
+const displayRecommendations = computed(() => {
+  if (activeChannel.value === 'course') {
+    return mockRecommendations.filter(r => r.type === 'course')
   }
-  walk(nodes, 0)
-  return result
-}
+  if (activeChannel.value === 'live') {
+    return mockRecommendations.filter(r => r.type === 'live')
+  }
+  return mockRecommendations
+})
+
+// ===== 商城商品（复用现有 API） =====
+const products = ref<any[]>([])
+const productLoading = ref(false)
 
 async function loadProducts() {
-  loading.value = true
+  productLoading.value = true
   try {
-    const keyword = (route.query.keyword as string) || undefined
-    const categoryId = allCategoryIds.value || undefined
-    const res = await getFrontProductList({ categoryId, keyword, pageNo: page.value, pageSize })
+    const res = await getFrontProductList({ pageNo: 1, pageSize: 12 })
     if (res) {
       products.value = res.records || []
-      total.value = res.total || 0
-      // 加载商家名称和类型
-      const merchantIds = [...new Set(products.value.map(p => p.merchantId).filter(Boolean))]
-      if (merchantIds.length > 0) {
-        try {
-          const mRes = await http.get('/mall/merchant/list', { params: { pageSize: 999 } })
-          const mList = mRes?.records || []
-          products.value.forEach(p => {
-            const m = mList.find((m: any) => m.id === p.merchantId)
-            if (m) { p._shopName = m.shopName; p._storeType = m.storeType }
-          })
-        } catch {}
-      }
     }
   } catch {
     products.value = []
   } finally {
-    loading.value = false
+    productLoading.value = false
   }
 }
 
-function collectChildIds(node: any, ids: string[]) {
-  ids.push(node.id)
-  if (node.children) node.children.forEach((c: any) => collectChildIds(c, ids))
+// ===== 免费课程 =====
+const freeCourses = ref(mockFreeCourses)
+
+// ===== 加载后端分类树，合并到宫格 =====
+async function loadCategories() {
+  try {
+    const tree = await getCategoryTree()
+    if (Array.isArray(tree) && tree.length > 0) {
+      // 保留前几个 mock 分类 + 动态添加后端分类作为子项
+      // 暂时保持 mock 数据为主，后端数据为辅
+    }
+  } catch { /* 使用 mock 数据兜底 */ }
 }
 
-const allCategoryIds = ref<string>('')
-
-function onCategoryClick({ key }: { key: string }) {
-  if (selectedKeys.value[0] === key) {
-    selectedKeys.value = []
-    allCategoryIds.value = ''
-  } else {
-    selectedKeys.value = [key]
-    // 收集当前分类及其所有子分类ID
-    const ids: string[] = []
-    const node = findCategoryById(categories.value, key)
-    if (node) collectChildIds(node, ids)
-    allCategoryIds.value = ids.join(',')
-  }
-  page.value = 1
-  loadProducts()
+// ===== 事件处理 =====
+function onFocusSearch() {
+  // 滚动到搜索框并聚焦（目前是装饰性搜索栏）
 }
 
-function findCategoryById(nodes: any[], id: string): any {
-  for (const n of nodes) {
-    if (n.id === id) return n
-    if (n.children) { const found = findCategoryById(n.children, id); if (found) return found }
-  }
-  return null
+function onViewAll() {
+  if (activeChannel.value === 'course') router.push('/learn')
+  else if (activeChannel.value === 'mall') router.push('/learn?tab=mall')
+  else router.push('/learn')
 }
 
-function goDetail(id: string) {
+function goProductDetail(id: string) {
   router.push({ name: 'productDetail', params: { id } })
 }
 
-async function loadSeckill() {
-  try {
-    const res: any = await http.get('/mall/seckill/list', { params: { pageSize: 99 } })
-    const acts = (res?.records || []).filter((a: any) => a.status === 1)
-    const items: any[] = []
-    for (const act of acts) {
-      try {
-        const pr: any = await http.get('/mall/seckillProduct/list', { params: { activityId: act.id, pageSize: 99 } })
-        for (const p of (pr?.records || [])) {
-          try {
-            const d: any = await http.get('/mall/spu/queryById', { params: { id: p.spuId } })
-            if (d) items.push({ ...d, seckillPrice: p.seckillPrice, stock: p.stock })
-          } catch {}
-        }
-      } catch {}
-    }
-    seckillProducts.value = items
-  } catch {}
-}
-
-onMounted(async () => {
-  try {
-    const tree = await getCategoryTree()
-    categories.value = Array.isArray(tree) ? tree : []
-    flatCategories.value = flattenTree(categories.value)
-  } catch {
-    categories.value = []
-    flatCategories.value = []
+// ===== 频道切换时按需加载 =====
+watch(activeChannel, (ch) => {
+  if (ch === 'mall' && products.value.length === 0) {
+    loadProducts()
   }
-  loadProducts()
-  loadSeckill()
 })
 
-watch(() => route.query.keyword, () => {
-  page.value = 1
+onMounted(() => {
+  loadCategories()
+  // 预加载商品数据
   loadProducts()
 })
 </script>
 
 <style scoped>
-.home-layout {
-  display: flex;
-  gap: 16px;
+.home-page {
+  padding: 0 16px;
+  max-width: 480px;
+  margin: 0 auto;
 }
 
-.sidebar {
-  width: 200px;
-  flex-shrink: 0;
-  background: #fff;
-  border-radius: 8px;
-  padding: 12px 0;
+.home-section {
+  margin-bottom: 24px;
 }
 
-.sidebar h3 {
-  padding: 0 16px 8px;
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  border-bottom: 1px solid #f0f0f0;
+.channel-section {
+  margin-bottom: 16px;
 }
 
-.main {
-  flex: 1;
-  min-width: 0;
+/* ===== 商品网格（复用原有商品列表逻辑） ===== */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
-
-.empty {
-  padding: 80px 0;
-  text-align: center;
-}
-
 .product-card {
   background: #fff;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  transition: box-shadow 0.2s, transform 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s;
 }
-
-.product-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px);
+.product-card:active {
+  transform: scale(0.97);
 }
-
-.product-img-wrap {
-  width: 100%;
+.product-cover {
   aspect-ratio: 1 / 1;
   overflow: hidden;
   background: #fafafa;
 }
-
 .product-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 .product-info {
-  padding: 10px 12px;
+  padding: 8px 10px 10px;
 }
-
 .product-name {
-  font-size: 16px;
-  color: #333;
+  font-size: 13px;
+  font-weight: 480;
+  color: #1a1a1a;
+  margin: 0 0 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-bottom: 4px;
 }
-
-.product-shop {
-  margin-bottom: 6px;
-}
-
-.seckill-section { background: #fff; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; }
-.seckill-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.seckill-title { font-size: 18px; font-weight: 700; color: #e4393c; }
-.seckill-more { font-size: 13px; color: #999; }
-.seckill-scroll { display: flex; gap: 12px; overflow-x: auto; }
-.seckill-item { flex-shrink: 0; width: 120px; text-align: center; cursor: pointer; }
-.si-img { width: 120px; height: 120px; overflow: hidden; border-radius: 6px; }
-.si-img img { width: 100%; height: 100%; object-fit: cover; }
-.si-price { font-size: 16px; font-weight: 700; color: #e4393c; margin-top: 4px; }
-.si-stock { font-size: 11px; color: #999; }
-
-.product-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .product-price {
-  font-size: 22px;
-  font-weight: 700;
-  color: #e4393c;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
 }
 
-.product-sales {
-  font-size: 13px;
-  color: #999;
+.empty-state {
+  padding: 40px 0;
+  text-align: center;
 }
 
-.pagination-wrap {
-  display: flex;
-  justify-content: center;
-  margin-top: 24px;
+/* 底部留白给悬浮导航栏 */
+.bottom-spacer {
+  height: 100px;
 }
 </style>

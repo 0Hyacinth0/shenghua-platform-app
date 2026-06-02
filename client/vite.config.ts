@@ -19,7 +19,7 @@ export default defineConfig({
     port: 3101,
     proxy: {
       '/jeecg-boot': {
-        target: 'http://localhost:8080',
+        target: 'http://192.168.1.128:8080',
         changeOrigin: true,
       },
     },
