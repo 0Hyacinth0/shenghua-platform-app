@@ -219,9 +219,11 @@ onMounted(fetchAddresses)
 
 <style scoped>
 .address-page {
-  background: #fff;
-  border-radius: 8px;
-  padding: 24px;
+  background: #f8f8f8;
+  padding: 16px;
+  padding-bottom: 100px;
+  max-width: 480px;
+  margin: 0 auto;
 }
 
 .page-header {

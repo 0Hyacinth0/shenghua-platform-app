@@ -305,7 +305,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.merchant-products-page { background: #fff; border-radius: 8px; padding: 24px; }
+.merchant-products-page { background: #f8f8f8; padding: 16px; padding-bottom: 100px; max-width: 480px; margin: 0 auto; }
 .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .page-header h2 { font-size: 20px; margin: 0; }
 .upload-placeholder { width:120px;height:120px;border:1px dashed #d9d9d9;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:#999;font-size:13px;transition:border-color 0.3s }

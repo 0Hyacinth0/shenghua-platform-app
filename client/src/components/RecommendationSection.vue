@@ -18,7 +18,9 @@
         :tag-color="item.tagColor"
         :rating="item.rating"
         :students="item.students"
+        :students-label="item.studentsLabel || '人学'"
         :route="item.route"
+        :image="item.image"
       />
     </div>
   </section>

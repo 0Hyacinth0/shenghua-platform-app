@@ -77,7 +77,7 @@ onMounted(loadCoupons)
 </script>
 
 <style scoped>
-.coupon-page { max-width: 600px; margin: 0 auto; padding: 16px; }
+.coupon-page { max-width: 480px; margin: 0 auto; padding: 16px; padding-bottom: 100px; }
 h2 { margin: 0 0 12px; font-size: 18px; }
 .coupon-card { display: flex; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); min-height: 100px; }
 .coupon-card.disabled { opacity: 0.5; }

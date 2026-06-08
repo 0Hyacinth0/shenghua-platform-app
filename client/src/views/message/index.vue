@@ -31,6 +31,10 @@
       <a-empty description="暂无消息" />
     </div>
 
+    <div class="service-btn-wrap">
+      <a-button type="primary" block size="large" @click="$router.push('/chat')">联系客服</a-button>
+    </div>
+
     <div class="bottom-spacer" />
   </div>
 </template>
@@ -42,49 +46,57 @@ import { SoundOutlined, InboxOutlined, ReadOutlined, GiftOutlined, MessageOutlin
 import http from '@/utils/http'
 import { getCurrentUserId } from '@/utils/user'
 
+const userId = getCurrentUserId()
 const router = useRouter()
 
 interface Message {
-  id: string
-  title: string
-  preview: string
-  time: string
-  icon: Component
-  avatarColor: string
-  unread: boolean
-  route?: string
+  id: string; title: string; preview: string; time: string
+  icon: Component; avatarColor: string; unread: boolean; route?: string
+}
+const iconMap: Record<number, Component> = { 1: InboxOutlined, 2: GiftOutlined, 3: SoundOutlined, 4: ReadOutlined }
+const colorMap: Record<number, string> = { 1: '#FDE8D8', 2: '#E8E0F8', 3: '#D8F0E8', 4: '#D8E8FD' }
+function getMessageRoute(m: any) {
+  if (!m.relatedId) {
+    return m.messageType === 1 ? '/orders' : undefined
+  }
+  // 社区通知 → 跳转帖子详情
+  if (m.messageType === 4) {
+    return '/community/post/' + m.relatedId
+  }
+  return '/order/' + m.relatedId
 }
 
-const messages = ref<Message[]>([
-  { id: 'm1', title: '系统通知', preview: '欢迎来到盛桦教育平台，开始你的学习之旅吧！', time: '刚刚', icon: SoundOutlined, avatarColor: '#D8F0E8', unread: true },
-  { id: 'm2', title: '订单消息', preview: '你的订单 #20240601001 已发货，请留意收货～', time: '2小时前', icon: InboxOutlined, avatarColor: '#FDE8D8', unread: true },
-  { id: 'm3', title: '课程提醒', preview: '《Vue 3 + TypeScript 实战》今晚 20:00 更新新章节', time: '5小时前', icon: ReadOutlined, avatarColor: '#E8E0F8', unread: false },
-  { id: 'm4', title: '优惠通知', preview: '你有一张满199减30的优惠券即将过期，快去使用吧', time: '昨天', icon: GiftOutlined, avatarColor: '#FDE8F0', unread: false },
-  { id: 'm5', title: '互动消息', preview: '你的评论收到了 3 个赞', time: '昨天', icon: MessageOutlined, avatarColor: '#D8E8FD', unread: false },
-])
+const messages = ref<Message[]>([])
 
-onMounted(async () => {
+function timeAgo(time: string) {
+  if (!time) return ''
+  const diff = Date.now() - new Date(time).getTime()
+  if (diff < 60000) return '刚刚'
+  if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前'
+  if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前'
+  return time.substr(0, 10)
+}
+
+async function loadMessages() {
   try {
-    const userId = getCurrentUserId()
-    const res = await http.get('/mall/order/myOrders', { params: { userId, pageSize: 5 } })
-    const orders = res?.records || []
-    if (orders.length > 0) {
-      const latest = orders[0]
-      messages.value.unshift({
-        id: 'order_' + latest.id,
-        title: '订单状态更新',
-        preview: `订单 #${String(latest.id).slice(-8)} ${latest.statusDesc || '已更新'}`,
-        time: '最近',
-        icon: InboxOutlined,
-        avatarColor: '#FDE8D8',
-        unread: false,
-        route: `/order/${latest.id}`,
-      })
-    }
+    const res = await http.get('/mall/userMessage/myMessages', { params: { userId, pageSize: 50 } })
+    const records = res?.records || []
+    messages.value = records.map((m: any) => ({
+      id: m.id, title: m.title, preview: m.content,
+      time: timeAgo(m.createTime),
+      icon: iconMap[m.messageType] || SoundOutlined,
+      avatarColor: colorMap[m.messageType] || '#D8F0E8',
+      unread: m.isRead === 0,
+      route: getMessageRoute(m),
+    }))
   } catch { /* ignore */ }
-})
+}
+onMounted(loadMessages)
 
-function onMessageClick(msg: Message) {
+async function onMessageClick(msg: Message) {
+  if (msg.unread) {
+    try { await http.put('/mall/userMessage/read', null, { params: { id: msg.id, userId } }); msg.unread = false } catch {}
+  }
   if (msg.route) router.push(msg.route)
 }
 </script>

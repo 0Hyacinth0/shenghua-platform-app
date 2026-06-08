@@ -6,46 +6,91 @@
       @open-messages="$router.push('/messages')"
     />
 
-    <!-- 话题标签 -->
-    <section class="community-section">
+    <!-- 搜索栏 -->
+    <div v-if="showSearch" class="search-bar">
+      <input
+        ref="searchInput"
+        v-model="keyword"
+        class="search-input"
+        placeholder="搜索帖子..."
+        @keyup.enter="doSearch"
+      />
+      <button class="search-cancel" @click="cancelSearch">取消</button>
+    </div>
+
+    <!-- 话题标签（收藏模式隐藏） -->
+    <section v-if="sortBy !== 'favorites'" class="community-section">
       <div class="topic-scroll">
         <button
           v-for="topic in topics"
           :key="topic.id"
           class="topic-chip"
           :class="{ active: activeTopic === topic.id }"
-          @click="activeTopic = topic.id"
+          @click="onTopicChange(topic.id)"
         >{{ topic.name }}</button>
       </div>
     </section>
 
+    <!-- 排序切换 -->
+    <div class="sort-bar">
+      <button
+        class="sort-btn"
+        :class="{ active: sortBy === 'latest' }"
+        @click="onSortChange('latest')"
+      >最新</button>
+      <button
+        class="sort-btn"
+        :class="{ active: sortBy === 'hot' }"
+        @click="onSortChange('hot')"
+      >热门</button>
+      <button
+        class="sort-btn"
+        :class="{ active: sortBy === 'favorites' }"
+        @click="onSortChange('favorites')"
+      >收藏</button>
+    </div>
+
     <!-- 帖子列表 -->
     <section class="community-section">
+      <div v-if="posts.length === 0 && !loading" class="empty-state">
+        <a-empty :description="sortBy === 'favorites' ? '还没有收藏过帖子' : '暂无帖子'" />
+      </div>
+
       <div class="post-list">
-        <div v-for="post in posts" :key="post.id" class="post-card">
-          <div class="post-avatar" :style="{ background: post.avatarColor }">
-            {{ post.author[0] }}
+        <div v-for="post in posts" :key="post.id" class="post-card" @click="goDetail(post.id)">
+          <div class="post-avatar" :style="{ background: getAvatarColor(post.userName) }" @click.stop="goUser(post.userId)">
+            {{ (post.userName || '?')[0] }}
           </div>
           <div class="post-body">
             <div class="post-header">
-              <span class="post-author">{{ post.author }}</span>
-              <span class="post-tag" :style="{ color: post.tagColor }">{{ post.tag }}</span>
-              <span class="post-time">{{ post.time }}</span>
+              <span class="post-author" @click.stop="goUser(post.userId)">{{ post.userName || '匿名用户' }}</span>
+              <span class="post-tag" :style="{ color: typeColor(post.postType) }">
+                {{ typeLabel(post.postType) }}
+              </span>
+              <span v-if="post.isTop" class="top-badge">置顶</span>
+              <span class="post-time">{{ timeAgo(post.createTime) }}</span>
             </div>
             <h3 class="post-title">{{ post.title }}</h3>
-            <p class="post-excerpt" v-if="post.excerpt">{{ post.excerpt }}</p>
+            <p class="post-excerpt" v-if="post.contentText">
+              {{ post.contentText.substring(0, 200) }}
+            </p>
             <div class="post-stats">
-              <span><LikeOutlined /> {{ post.likes }}</span>
-              <span><CommentOutlined /> {{ post.comments }}</span>
-              <span><EyeOutlined /> {{ post.views }}</span>
+              <span><LikeOutlined /> {{ post.likeCount || 0 }}</span>
+              <span><CommentOutlined /> {{ post.commentCount || 0 }}</span>
+              <span><EyeOutlined /> {{ post.viewCount || 0 }}</span>
             </div>
           </div>
         </div>
       </div>
+
+      <div v-if="loading" class="loading-hint">
+        <a-spin size="small" />
+      </div>
+      <div v-if="noMore && posts.length > 0" class="no-more">— 没有更多了 —</div>
     </section>
 
     <!-- 发帖按钮 -->
-    <button class="fab" @click="onCreatePost">
+    <button class="fab" @click="goCreate">
       <EditOutlined class="fab-icon" />
     </button>
 
@@ -54,35 +99,177 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { message } from 'ant-design-vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { LikeOutlined, CommentOutlined, EyeOutlined, EditOutlined } from '@ant-design/icons-vue'
 import TopSearchHeader from '@/components/TopSearchHeader.vue'
+import { getTopicFrontList, getPostFrontList, getMyFavorites } from '@/api/index'
+import { getCurrentUserId } from '@/utils/user'
+
+const router = useRouter()
+const currentUserId = getCurrentUserId()
 
 const showSearch = ref(false)
-const activeTopic = ref('all')
+const keyword = ref('')
+const searchInput = ref<any>(null)
 
-const topics = [
-  { id: 'all', name: '全部' },
-  { id: 'frontend', name: '前端开发' },
-  { id: 'python', name: 'Python' },
-  { id: 'design', name: '设计' },
-  { id: 'career', name: '职场交流' },
-  { id: 'ai', name: 'AI 讨论' },
-  { id: 'other', name: '灌水区' },
-]
+const topics = ref<any[]>([])
+const activeTopic = ref('topic_all')
+const sortBy = ref('latest')
 
-const posts = ref([
-  { id: 'p1', author: '前端小学生', avatarColor: '#D8F0E8', tag: '求助', tagColor: '#2196F3', time: '2小时前', title: 'Vue 3 的 watchEffect 和 watch 到底什么时候用哪个？', excerpt: '最近在学习 Composition API，watchEffect 自动收集依赖这个概念有点绕...', likes: 23, comments: 15, views: 342 },
-  { id: 'p2', author: '设计师小王', avatarColor: '#FDE8F0', tag: '分享', tagColor: '#4CAF50', time: '3小时前', title: '分享一套自用的 Figma 设计系统模板', excerpt: '包含完整的 color token、typography、spacing...', likes: 56, comments: 8, views: 1203 },
-  { id: 'p3', author: 'Pythonista', avatarColor: '#E8E0F8', tag: '讨论', tagColor: '#FF9800', time: '5小时前', title: 'FastAPI vs Django REST — 2026年选哪个？', likes: 89, comments: 42, views: 2356 },
-  { id: 'p4', author: '考证达人', avatarColor: '#FDE8D8', tag: '经验', tagColor: '#9C27B0', time: '8小时前', title: '软考中级一次通过经验分享，附备考资料', likes: 134, comments: 67, views: 4567 },
-  { id: 'p5', author: 'AI 探索者', avatarColor: '#D8E8FD', tag: '讨论', tagColor: '#FF9800', time: '12小时前', title: 'Claude Code 实战：用 AI 一周搞定毕设项目', excerpt: '记录一下我用 AI 辅助开发的完整流程...', likes: 210, comments: 89, views: 7801 },
-])
+const posts = ref<any[]>([])
+const loading = ref(false)
+const pageNo = ref(1)
+const noMore = ref(false)
 
-function onCreatePost() {
-  message.info('发帖功能即将上线')
+// 类型映射
+const typeMap: Record<string, string> = { share: '分享', discussion: '讨论', experience: '经验', help: '求助' }
+const typeColorMap: Record<string, string> = { share: '#4CAF50', discussion: '#FF9800', experience: '#9C27B0', help: '#2196F3' }
+
+function typeLabel(t: string) { return typeMap[t] || t }
+function typeColor(t: string) { return typeColorMap[t] || '#999' }
+
+const avatarColors = ['#D8F0E8', '#FDE8F0', '#E8E0F8', '#FDE8D8', '#D8E8FD', '#E8F0D8']
+function getAvatarColor(name: string) {
+  if (!name) return '#D8F0E8'
+  let hash = 0
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  return avatarColors[Math.abs(hash) % avatarColors.length]
 }
+
+function timeAgo(time: string) {
+  if (!time) return ''
+  const diff = Date.now() - new Date(time).getTime()
+  if (diff < 60000) return '刚刚'
+  if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前'
+  if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前'
+  return time ? time.substr(0, 10) : ''
+}
+
+async function loadTopics() {
+  try {
+    const res = await getTopicFrontList()
+    topics.value = res || []
+  } catch {}
+}
+
+async function loadPosts(reset = false) {
+  if (loading.value) return
+  loading.value = true
+  if (reset) {
+    pageNo.value = 1
+    posts.value = []
+    noMore.value = false
+  }
+
+  try {
+    // 收藏模式：调用收藏API
+    if (sortBy.value === 'favorites') {
+      const res = await getMyFavorites({ userId: currentUserId, pageNo: pageNo.value, pageSize: 10 })
+      const records = (res?.records || []).map((fav: any) => ({
+        id: fav.postId,
+        title: fav.postTitle || '帖子已删除',
+        userName: fav.postUserName || '',
+        postType: fav.postType || '',
+        contentText: '',
+        likeCount: 0,
+        commentCount: 0,
+        viewCount: 0,
+        createTime: fav.createTime,
+        userId: '',
+        isTop: 0,
+        status: 1,
+      }))
+      if (reset) {
+        posts.value = records
+      } else {
+        posts.value.push(...records)
+      }
+      noMore.value = records.length < 10
+    } else {
+      const params: any = {
+        pageNo: pageNo.value,
+        pageSize: 10,
+        sortBy: sortBy.value,
+      }
+      if (activeTopic.value !== 'topic_all') {
+        params.topicId = activeTopic.value
+      }
+      if (keyword.value.trim()) {
+        params.keyword = keyword.value.trim()
+      }
+
+      const res = await getPostFrontList(params)
+      const records = res?.records || []
+      if (reset) {
+        posts.value = records
+      } else {
+        posts.value.push(...records)
+      }
+      const total = res?.total || 0
+      noMore.value = posts.value.length >= total
+    }
+  } catch {}
+
+  loading.value = false
+}
+
+function onTopicChange(topicId: string) {
+  if (activeTopic.value === topicId) return
+  activeTopic.value = topicId
+  loadPosts(true)
+}
+
+function onSortChange(s: string) {
+  if (sortBy.value === s) return
+  sortBy.value = s
+  loadPosts(true)
+}
+
+function doSearch() {
+  showSearch.value = false
+  loadPosts(true)
+}
+
+function cancelSearch() {
+  showSearch.value = false
+  keyword.value = ''
+  loadPosts(true)
+}
+
+function goDetail(id: string) {
+  router.push('/community/post/' + id)
+}
+
+function goUser(uid: string) {
+  if (uid) router.push('/community/user/' + uid)
+}
+
+function goCreate() {
+  router.push('/community/create')
+}
+
+// 下拉加载更多
+function onScroll() {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop
+  const windowHeight = window.innerHeight
+  const docHeight = document.documentElement.scrollHeight
+
+  if (scrollTop + windowHeight >= docHeight - 200 && !loading.value && !noMore.value) {
+    pageNo.value++
+    loadPosts(false)
+  }
+}
+
+onMounted(() => {
+  loadTopics()
+  loadPosts(true)
+  window.addEventListener('scroll', onScroll, { passive: true })
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+})
 </script>
 
 <style scoped>
@@ -93,6 +280,35 @@ function onCreatePost() {
 }
 .community-section { margin-bottom: 20px; }
 
+/* 搜索栏 */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0 12px;
+}
+.search-input {
+  flex: 1;
+  border: none;
+  background: #f0f0f0;
+  border-radius: 22px;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  font-family: inherit;
+}
+.search-input::placeholder { color: #bbb; }
+.search-cancel {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+}
+
+/* 话题 */
 .topic-scroll {
   display: flex; gap: 8px;
   overflow-x: auto;
@@ -117,6 +333,28 @@ function onCreatePost() {
 }
 .topic-chip.active { background: #1a1a1a; color: #fff; }
 
+/* 排序 */
+.sort-bar {
+  display: flex;
+  gap: 12px;
+  padding: 4px 0 8px;
+}
+.sort-btn {
+  border: none;
+  background: none;
+  font-size: 13px;
+  color: #999;
+  font-weight: 480;
+  cursor: pointer;
+  padding: 4px 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.sort-btn.active {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* 帖子列表 */
 .post-list { display: flex; flex-direction: column; }
 .post-card {
   display: flex; gap: 12px;
@@ -134,14 +372,22 @@ function onCreatePost() {
   justify-content: center;
   font-size: 16px; font-weight: 600;
   color: #666;
+  cursor: pointer;
 }
 .post-body { flex: 1; min-width: 0; }
 .post-header {
   display: flex; align-items: center; gap: 6px;
   margin-bottom: 4px;
 }
-.post-author { font-size: 13px; color: #666; font-weight: 480; }
+.post-author { font-size: 13px; color: #666; font-weight: 480; cursor: pointer; }
+.post-author:active { opacity: 0.6; }
 .post-tag { font-size: 10px; font-weight: 540; letter-spacing: 0.03em; }
+.top-badge {
+  font-size: 10px; font-weight: 540;
+  background: #FF6B6B; color: #fff;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
 .post-time { font-size: 11px; color: #bbb; margin-left: auto; }
 .post-title {
   font-size: 16px; font-weight: 540; color: #1a1a1a;
@@ -157,6 +403,13 @@ function onCreatePost() {
 .post-stats {
   display: flex; gap: 16px;
   font-size: 12px; color: #bbb; font-weight: 340;
+}
+
+.empty-state { padding: 60px 0; text-align: center; }
+.loading-hint { text-align: center; padding: 20px 0; }
+.no-more {
+  text-align: center; padding: 20px 0;
+  font-size: 12px; color: #ccc; font-weight: 340;
 }
 
 .fab {

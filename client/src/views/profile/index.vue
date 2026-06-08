@@ -65,6 +65,16 @@
     <section class="profile-section">
       <div class="menu-group">
         <h3 class="menu-group-title">更多服务</h3>
+        <div class="menu-item" @click="$router.push('/course/my')">
+          <span class="menu-icon-wrap" style="background:#D8ECFD"><PlaySquareOutlined /></span>
+          <span class="menu-label">我的课程</span>
+          <RightOutlined class="menu-arrow" />
+        </div>
+        <div class="menu-item" @click="$router.push('/course/lecturer/apply')">
+          <span class="menu-icon-wrap" style="background:#FDE8EC"><IdcardOutlined /></span>
+          <span class="menu-label">讲师入驻</span>
+          <RightOutlined class="menu-arrow" />
+        </div>
         <div class="menu-item" @click="$router.push('/seckill')">
           <span class="menu-icon-wrap" style="background:#FDE8E8"><ThunderboltOutlined /></span>
           <span class="menu-label">限时秒杀</span>
@@ -78,6 +88,11 @@
         <div class="menu-item" @click="$router.push('/address')">
           <span class="menu-icon-wrap" style="background:#D8E8FD"><EnvironmentOutlined /></span>
           <span class="menu-label">收货地址</span>
+          <RightOutlined class="menu-arrow" />
+        </div>
+        <div class="menu-item" @click="$router.push('/distributor')">
+          <span class="menu-icon-wrap" style="background:#E8E0F8"><TeamOutlined /></span>
+          <span class="menu-label">分销中心</span>
           <RightOutlined class="menu-arrow" />
         </div>
         <div class="menu-item" @click="$router.push('/merchant/apply')">
@@ -104,7 +119,7 @@ import { message, Modal } from 'ant-design-vue'
 import {
   UserOutlined, CrownOutlined, SnippetsOutlined, ShoppingCartOutlined,
   GiftOutlined, CheckCircleOutlined, ThunderboltOutlined, TeamOutlined,
-  EnvironmentOutlined, ShopOutlined, RightOutlined,
+  EnvironmentOutlined, ShopOutlined, RightOutlined, PlaySquareOutlined, IdcardOutlined,
 } from '@ant-design/icons-vue'
 import { getToken, removeToken, getUser } from '@/utils/auth'
 import { getCartList } from '@/api'

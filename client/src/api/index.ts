@@ -78,3 +78,34 @@ export const claimBonus = (userId: string) => http.post('/mall/signIn/claimBonus
 export const claimCumulative = (userId: string) => http.post('/mall/signIn/claimCumulative', null, { params: { userId } })
 export const getSignStatus = (userId: string) => http.get('/mall/signIn/status', { params: { userId } })
 export const getSignRecords = (params: any) => http.get('/mall/signIn/myRecords', { params })
+
+// ==================== 社区 - 话题 ====================
+export const getTopicFrontList = () => http.get('/community/topic/frontList')
+
+// ==================== 社区 - 帖子 ====================
+export const getPostFrontList = (params: any) => http.get('/community/post/frontList', { params })
+export const getPostDetail = (id: string, userId?: string) => http.get('/community/post/detail/' + id, { params: { userId } })
+export const createPost = (data: any) => http.post('/community/post/create', data)
+export const getMyPosts = (params: any) => http.get('/community/post/myPosts', { params })
+export const deletePost = (id: string) => http.delete('/community/post/delete', { params: { id } })
+
+// ==================== 社区 - 评论 ====================
+export const getCommentList = (postId: string, pageNo?: number, pageSize?: number) =>
+  http.get('/community/comment/listByPost', { params: { postId, pageNo, pageSize } })
+export const createComment = (data: any) => http.post('/community/comment/create', data)
+export const getCommentReplies = (parentId: string) =>
+  http.get('/community/comment/replies', { params: { parentId } })
+
+// ==================== 社区 - 点赞 ====================
+export const toggleLike = (targetType: string, targetId: string, userId: string) =>
+  http.post('/community/like/toggle', null, { params: { targetType, targetId, userId } })
+export const checkLikeStatus = (targetType: string, targetId: string, userId: string) =>
+  http.get('/community/like/checkStatus', { params: { targetType, targetId, userId } })
+
+// ==================== 社区 - 收藏 ====================
+export const toggleFavorite = (postId: string, userId: string) =>
+  http.post('/community/favorite/toggle', null, { params: { postId, userId } })
+export const checkFavoriteStatus = (postId: string, userId: string) =>
+  http.get('/community/favorite/checkStatus', { params: { postId, userId } })
+export const getMyFavorites = (params: any) =>
+  http.get('/community/favorite/myFavorites', { params })

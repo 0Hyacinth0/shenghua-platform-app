@@ -318,8 +318,9 @@ onMounted(fetchCart)
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
+  max-width: 480px;
   margin: 0 auto;
+  padding-bottom: 100px;
   z-index: 50;
 }
 

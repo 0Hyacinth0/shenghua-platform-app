@@ -113,7 +113,7 @@ onMounted(loadData)
 </script>
 
 <style scoped>
-.seckill-page { max-width: 1000px; margin: 0 auto; padding: 16px; }
+.seckill-page { max-width: 480px; margin: 0 auto; padding: 16px; padding-bottom: 100px; }
 h2 { margin: 0 0 16px; }
 .activity-block { margin-bottom: 24px; background: #fff; border-radius: 8px; padding: 16px; }
 .act-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f0f0f0; }

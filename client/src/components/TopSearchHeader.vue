@@ -5,6 +5,10 @@
       <span class="search-placeholder">{{ placeholder }}</span>
     </div>
     <div class="header-actions">
+      <button class="action-btn signin-btn" @click="$emit('openSignIn')" aria-label="签到">
+        <CheckCircleOutlined class="action-icon signin-icon" />
+        <span class="signin-text">签到</span>
+      </button>
       <button class="action-btn" @click="$emit('openMessages')" aria-label="消息">
         <BellOutlined class="action-icon" />
         <span v-if="msgBadge" class="badge">{{ msgBadge > 99 ? '99+' : msgBadge }}</span>
@@ -14,9 +18,9 @@
 </template>
 
 <script setup lang="ts">
-import { SearchOutlined, BellOutlined } from '@ant-design/icons-vue'
+import { SearchOutlined, BellOutlined, CheckCircleOutlined } from '@ant-design/icons-vue'
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   placeholder?: string
   msgBadge?: number
 }>(), {
@@ -27,6 +31,7 @@ withDefaults(defineProps<{
 defineEmits<{
   focusSearch: []
   openMessages: []
+  openSignIn: []
 }>()
 </script>
 
@@ -81,6 +86,20 @@ defineEmits<{
 .action-icon {
   font-size: 18px;
   color: #666;
+}
+.signin-icon {
+  color: #fa8c16;
+}
+.signin-btn {
+  width: auto;
+  padding: 0 10px;
+  border-radius: 50px;
+  gap: 3px;
+}
+.signin-text {
+  font-size: 11px;
+  color: #fa8c16;
+  font-weight: 480;
 }
 .badge {
   position: absolute;

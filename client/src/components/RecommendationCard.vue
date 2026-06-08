@@ -1,10 +1,13 @@
 <template>
   <div class="recommendation-card" @click="$router.push(route || '/')">
     <div class="card-cover" :style="{ background: coverColor }">
+      <img v-if="image" :src="image" class="cover-img" />
+      <template v-else>
+        <ReadOutlined v-if="type === 'course'" class="cover-icon" />
+        <ShoppingOutlined v-else-if="type === 'product'" class="cover-icon" />
+        <PlayCircleOutlined v-else class="cover-icon" />
+      </template>
       <span v-if="tag" class="card-badge" :style="{ background: tagColor }">{{ tag }}</span>
-      <ReadOutlined v-if="type === 'course'" class="cover-icon" />
-      <ShoppingOutlined v-else-if="type === 'product'" class="cover-icon" />
-      <PlayCircleOutlined v-else class="cover-icon" />
     </div>
     <div class="card-body">
       <h4 class="card-title">{{ title }}</h4>
@@ -21,7 +24,7 @@
         <span v-if="originalPrice && originalPrice > price" class="card-original">
           ¥{{ originalPrice }}
         </span>
-        <span v-if="students" class="card-students">{{ fmtStudents(students) }}人学</span>
+        <span v-if="students" class="card-students">{{ fmtStudents(students) }}{{ studentsLabel }}</span>
       </div>
     </div>
   </div>
@@ -30,7 +33,7 @@
 <script setup lang="ts">
 import { ReadOutlined, ShoppingOutlined, PlayCircleOutlined, StarFilled } from '@ant-design/icons-vue'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   title: string
   coverColor: string
   type: 'course' | 'product' | 'live'
@@ -41,8 +44,10 @@ const props = defineProps<{
   tagColor?: string
   rating?: number
   students?: number
+  studentsLabel?: string
   route?: string
-}>()
+  image?: string
+}>(), { studentsLabel: '人学' })
 
 function fmtStudents(n: number): string {
   if (n >= 10000) return (n / 10000).toFixed(1) + '万'
@@ -73,6 +78,11 @@ function fmtStudents(n: number): string {
 .cover-icon {
   font-size: 36px;
   color: rgba(0,0,0,0.12);
+}
+.cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .card-badge {
   position: absolute;

@@ -39,6 +39,8 @@ const pageTitle = computed(() => {
     'signIn': '每日签到',
     'groupBuy': '拼团',
     'groupBuyCheckout': '拼团下单',
+    'mall': '精品商城',
+    'distributor': '分销中心',
     'page': '',
   }
   return titleMap[(route.name as string)] || ''

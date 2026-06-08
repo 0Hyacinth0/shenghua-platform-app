@@ -160,7 +160,7 @@ onMounted(() => { loadSkus(); loadAddresses() })
 </script>
 
 <style scoped>
-.checkout-page { max-width: 600px; margin: 0 auto; padding: 16px; }
+.checkout-page { max-width: 480px; margin: 0 auto; padding: 16px; padding-bottom: 100px; }
 h2 { margin: 0 0 16px; }
 .section { background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
 .section h3 { margin: 0 0 10px; font-size: 15px; }

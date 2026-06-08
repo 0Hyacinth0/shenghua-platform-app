@@ -64,7 +64,13 @@
             <a-input v-model:value="form.businessLicenseNo" placeholder="请输入营业执照号" />
           </a-form-item>
           <a-form-item label="营业执照图片" name="businessLicenseUrl">
-            <a-input v-model:value="form.businessLicenseUrl" placeholder="请输入营业执照图片URL" />
+            <a-upload :custom-request="(opt: any) => doUpload(opt, 'businessLicenseUrl')" :show-upload-list="false" accept="image/*">
+              <div v-if="form.businessLicenseUrl" class="img-preview-wrap">
+                <img :src="imgUrl(form.businessLicenseUrl)" class="preview-img" />
+                <a-button size="small" style="display:block;margin-top:4px">更换</a-button>
+              </div>
+              <div v-else class="upload-placeholder"><plus-outlined /><div>上传营业执照</div></div>
+            </a-upload>
           </a-form-item>
           <a-form-item label="法人姓名" name="legalPersonName" :rules="[{ required: true, message: '请输入法人姓名' }]">
             <a-input v-model:value="form.legalPersonName" placeholder="请输入法人姓名" />
@@ -73,10 +79,22 @@
 
         <template v-if="form.storeNature === 0">
           <a-form-item label="身份证正面" name="idCardFrontUrl">
-            <a-input v-model:value="form.idCardFrontUrl" placeholder="请输入身份证正面图片URL" />
+            <a-upload :custom-request="(opt: any) => doUpload(opt, 'idCardFrontUrl')" :show-upload-list="false" accept="image/*">
+              <div v-if="form.idCardFrontUrl" class="img-preview-wrap">
+                <img :src="imgUrl(form.idCardFrontUrl)" class="preview-img" />
+                <a-button size="small" style="display:block;margin-top:4px">更换</a-button>
+              </div>
+              <div v-else class="upload-placeholder"><plus-outlined /><div>上传身份证正面</div></div>
+            </a-upload>
           </a-form-item>
           <a-form-item label="身份证反面" name="idCardBackUrl">
-            <a-input v-model:value="form.idCardBackUrl" placeholder="请输入身份证反面图片URL" />
+            <a-upload :custom-request="(opt: any) => doUpload(opt, 'idCardBackUrl')" :show-upload-list="false" accept="image/*">
+              <div v-if="form.idCardBackUrl" class="img-preview-wrap">
+                <img :src="imgUrl(form.idCardBackUrl)" class="preview-img" />
+                <a-button size="small" style="display:block;margin-top:4px">更换</a-button>
+              </div>
+              <div v-else class="upload-placeholder"><plus-outlined /><div>上传身份证反面</div></div>
+            </a-upload>
           </a-form-item>
         </template>
 
@@ -96,7 +114,8 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { message, Modal } from 'ant-design-vue'
-import { merchantApply, getMyMerchant } from '@/api'
+import { PlusOutlined } from '@ant-design/icons-vue'
+import { merchantApply, getMyMerchant, imgUrl } from '@/api'
 import http from '@/utils/http'
 import { getCurrentUserId } from '@/utils/user'
 
@@ -149,6 +168,16 @@ async function loadWithdrawList() {
   } catch {}
 }
 
+async function doUpload({ file, onSuccess, onError }: any, field: string) {
+  const fd = new FormData()
+  fd.append('file', file)
+  try {
+    const res = await http.post('/mall/file/upload', fd, { headers: { 'Content-Type': 'multipart/form-data' } })
+    ;(form as any)[field] = res || ''
+    onSuccess(res)
+  } catch { onError(new Error('上传失败')) }
+}
+
 function reApply() { myMerchant.value = null }
 
 async function showWithdraw() {
@@ -193,11 +222,11 @@ async function handleSubmit() {
     }
     if (form.storeNature === 1) {
       data.businessLicenseNo = form.businessLicenseNo
-      data.businessLicenseUrl = form.businessLicenseUrl
-      data.legalPersonName = form.legalPersonName
+      data.businessLicense = form.businessLicenseUrl
+      data.legalPerson = form.legalPersonName
     } else {
-      data.idCardFrontUrl = form.idCardFrontUrl
-      data.idCardBackUrl = form.idCardBackUrl
+      data.idCardFront = form.idCardFrontUrl
+      data.idCardBack = form.idCardBackUrl
     }
     await merchantApply(data)
     message.success('申请已提交，请等待审核')
@@ -209,7 +238,11 @@ async function handleSubmit() {
 </script>
 
 <style scoped>
-.merchant-apply-page { background: #fff; border-radius: 8px; padding: 24px; }
+.merchant-apply-page { background: #f8f8f8; padding: 16px; padding-bottom: 100px; max-width: 480px; margin: 0 auto; }
 .page-title { font-size: 20px; font-weight: 600; margin: 0 0 24px; }
 .status-card { padding: 40px 0; }
+.img-preview-wrap { display:flex; flex-direction:column; align-items:flex-start; }
+.preview-img { max-width:200px; max-height:120px; border-radius:8px; object-fit:cover; }
+.upload-placeholder { border:1px dashed #d9d9d9; border-radius:8px; padding:16px; text-align:center; color:#999; cursor:pointer; transition:border-color 0.3s; }
+.upload-placeholder:hover { border-color:#1890ff; }
 </style>

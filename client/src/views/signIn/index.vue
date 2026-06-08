@@ -316,6 +316,9 @@ onMounted(() => {
   padding: 16px;
   background: #f5f5f5;
   min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: 100px;
 }
 
 .sign-stats {

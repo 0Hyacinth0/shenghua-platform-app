@@ -20,7 +20,7 @@
           <div class="fc-meta">
             <span class="fc-tag">{{ item.level }}</span>
             <span class="fc-duration">{{ item.duration }}</span>
-            <span class="fc-students">{{ fmtStudents(item.students) }}人在学</span>
+            <span class="fc-students">{{ fmtStudents(item.students) }}次播放</span>
           </div>
         </div>
         <RightOutlined class="fc-arrow" />

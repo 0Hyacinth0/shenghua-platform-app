@@ -326,8 +326,11 @@ async function handleConfirm() {
 <style scoped>
 .order-detail-page {
   background: #fff;
-  border-radius: 8px;
-  padding: 24px;
+  border-radius: 0;
+  padding: 16px;
+  padding-bottom: 100px;
+  max-width: 480px;
+  margin: 0 auto;
 }
 
 .order-no {

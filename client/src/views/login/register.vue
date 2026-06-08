@@ -2,7 +2,7 @@
   <div class="register-page">
     <div class="register-card">
       <h1 class="title">注册账号</h1>
-      <a-form :model="form" :rules="rules" ref="formRef" @finish="handleRegister" layout="vertical" size="large">
+      <a-form :model="form" :rules="rules" ref="formRef" @finish="handleRegister" @finishFailed="onFinishFailed" layout="vertical" size="large">
         <a-form-item name="username">
           <a-input v-model:value="form.username" placeholder="用户名" autocomplete="username">
             <template #prefix><user-outlined /></template>
@@ -23,6 +23,11 @@
             <template #prefix><phone-outlined /></template>
           </a-input>
         </a-form-item>
+        <a-form-item name="inviteCode">
+          <a-input v-model:value="form.inviteCode" placeholder="邀请码（选填）">
+            <template #prefix><team-outlined /></template>
+          </a-input>
+        </a-form-item>
         <a-form-item>
           <a-button type="primary" html-type="submit" :loading="loading" block>注册</a-button>
         </a-form-item>
@@ -37,13 +42,14 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { UserOutlined, LockOutlined, PhoneOutlined } from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
+import { UserOutlined, LockOutlined, PhoneOutlined, TeamOutlined } from '@ant-design/icons-vue'
 import { register } from '@/api'
 
 const router = useRouter()
 const loading = ref(false)
 const formRef = ref()
-const form = reactive({ username: '', password: '', confirmPassword: '', phone: '' })
+const form = reactive({ username: '', password: '', confirmPassword: '', phone: '', inviteCode: '' })
 
 const validateConfirmPassword = (_rule: any, value: string) => {
   if (value && value !== form.password) {
@@ -64,13 +70,17 @@ const rules = {
   confirmPassword: [{ validator: validateConfirmPassword }],
 }
 
+function onFinishFailed({ errorFields }: any) {
+  if (errorFields?.length) message.warning(errorFields[0].errors?.[0] || '请检查表单')
+}
 async function handleRegister() {
   loading.value = true
   try {
-    await register({ username: form.username, password: form.password, phone: form.phone })
+    await register({ username: form.username, password: form.password, phone: form.phone, inviteCode: form.inviteCode })
+    message.success('注册成功，请登录')
     router.push('/login')
-  } catch {
-    // 错误由拦截器处理
+  } catch (e: any) {
+    message.error(e?.message || '注册失败')
   } finally {
     loading.value = false
   }
@@ -83,24 +93,28 @@ async function handleRegister() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f8f8f8;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px;
 }
 .register-card {
-  width: 400px;
-  padding: 40px;
+  width: 100%;
+  padding: 36px 28px;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  border-radius: 16px;
 }
 .title {
   text-align: center;
-  font-size: 28px;
-  color: #333;
-  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 28px;
+  letter-spacing: -0.02em;
 }
 .footer {
   text-align: center;
   color: #999;
-  font-size: 14px;
+  font-size: 13px;
 }
 </style>

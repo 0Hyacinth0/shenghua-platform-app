@@ -37,6 +37,30 @@ const router = createRouter({
       meta: { showTabBar: true, tabKey: 'community' },
     },
     {
+      path: '/community/post/:id',
+      name: 'communityPostDetail',
+      component: () => import('@/views/community/detail.vue'),
+      meta: { showTabBar: true },
+    },
+    {
+      path: '/community/create',
+      name: 'communityCreate',
+      component: () => import('@/views/community/create.vue'),
+      meta: { showTabBar: false },
+    },
+    {
+      path: '/community/my',
+      name: 'communityMy',
+      component: () => import('@/views/community/my.vue'),
+      meta: { showTabBar: true },
+    },
+    {
+      path: '/community/user/:userId',
+      name: 'communityUser',
+      component: () => import('@/views/community/user.vue'),
+      meta: { showTabBar: true },
+    },
+    {
       path: '/messages',
       name: 'messages',
       component: () => import('@/views/message/index.vue'),
@@ -77,6 +101,19 @@ const router = createRouter({
         // 拼团
         { path: 'groupBuy', name: 'groupBuy', component: () => import('@/views/groupBuy/index.vue'), meta: { showTabBar: true } },
         { path: 'groupBuy/checkout', name: 'groupBuyCheckout', component: () => import('@/views/groupBuy/checkout.vue'), meta: { showTabBar: false } },
+        // 商城
+        { path: 'mall', name: 'mall', component: () => import('@/views/mall/index.vue'), meta: { showTabBar: true } },
+        { path: 'chat', name: 'chat', component: () => import('@/views/message/chat.vue'), meta: { showTabBar: false } },
+        { path: 'distributor', name: 'distributor', component: () => import('@/views/distributor/index.vue'), meta: { showTabBar: true } },
+        // 课程
+        { path: 'course', name: 'course', component: () => import('@/views/course/index.vue'), meta: { showTabBar: true } },
+        { path: 'course/:id', name: 'courseDetail', component: () => import('@/views/course/detail.vue'), meta: { showTabBar: false } },
+        { path: 'course/watch/:lessonId', name: 'courseWatch', component: () => import('@/views/course/watch.vue'), meta: { showTabBar: false } },
+        { path: 'course/checkout', name: 'courseCheckout', component: () => import('@/views/course/checkout.vue'), meta: { showTabBar: false } },
+        { path: 'course/my', name: 'courseMy', component: () => import('@/views/course/my.vue'), meta: { showTabBar: true } },
+        { path: 'course/lecturer/apply', name: 'lecturerApply', component: () => import('@/views/course/lecturer/apply.vue'), meta: { showTabBar: true } },
+        { path: 'course/lecturer/courses', name: 'lecturerCourses', component: () => import('@/views/course/lecturer/courses.vue'), meta: { showTabBar: true } },
+        { path: 'course/lecturer/income', name: 'lecturerIncome', component: () => import('@/views/course/lecturer/income.vue'), meta: { showTabBar: true } },
         // 通用页面
         { path: 'page', name: 'page', component: () => import('@/views/page/index.vue'), meta: { showTabBar: true } },
       ],
