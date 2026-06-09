@@ -3,27 +3,31 @@
    ============================================ */
 
 /* ---- 品牌色 ---- */
-$color-primary: #1A1A2E;
-$color-primary-dark: #0D0D1A;
-$color-primary-light: #F5F3FF;
-$color-primary-bg: #F7F8FA;
+$color-primary: #111111;
+$color-primary-dark: #000000;
+$color-primary-light: #f2f2f2;
+$color-primary-bg: #f6f6f6;
+
+$color-commerce: #e4393c;
+$color-learning: #6d5dfc;
+$color-community: #12a37f;
 
 /* ---- 中性色 ---- */
-$color-bg: #F1F5F9;
-$color-bg-page: #F7F8FA;
-$color-card: #FFFFFF;
-$color-text: #1A1A2E;
-$color-text-secondary: #64748B;
-$color-text-hint: #94A3B8;
-$color-text-disabled: #CCCCCC;
-$color-border: #EEEEEE;
-$color-divider: #F0F0F0;
+$color-bg: #f1f1f1;
+$color-bg-page: #f6f6f6;
+$color-card: #ffffff;
+$color-text: #1f1f1f;
+$color-text-secondary: #666666;
+$color-text-hint: #999999;
+$color-text-disabled: #cccccc;
+$color-border: #eeeeee;
+$color-divider: #f0f0f0;
 
 /* ---- 功能色 ---- */
-$color-success: #22C55E;
-$color-warning: #F59E0B;
-$color-error: #EF4444;
-$color-info: #0EA5E9;
+$color-success: #22c55e;
+$color-warning: #f59e0b;
+$color-error: #ef4444;
+$color-info: #0ea5e9;
 
 /* ---- 间距 ---- */
 $space-xs: 4rpx;
