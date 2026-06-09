@@ -16,21 +16,19 @@
       </view>
     </view>
 
-    <!-- Banner 轮播 -->
+    <!-- Banner 横滑 -->
     <view class="banner">
-      <swiper class="banner-swiper" :autoplay="true" :interval="4000" :circular="true" indicator-dots indicator-color="rgba(255,255,255,0.2)" indicator-active-color="#8B5CF6">
-        <swiper-item v-for="b in banners" :key="b.id">
-          <view class="banner-card" @tap="navigateTo(b.route)">
-            <view class="banner-deco" />
-            <text class="banner-eyebrow">{{ b.eyebrow }}</text>
-            <text class="banner-title">{{ b.title }}</text>
-            <text class="banner-sub">{{ b.subtitle }}</text>
-            <view class="banner-btn">
-              <text class="banner-btn-text">{{ b.btnText }}</text>
-            </view>
+      <scroll-view scroll-x class="banner-scroll">
+        <view class="banner-card" v-for="b in banners" :key="b.id" @tap="navigateTo(b.route)">
+          <view class="banner-deco" />
+          <text class="banner-eyebrow">{{ b.eyebrow }}</text>
+          <text class="banner-title">{{ b.title }}</text>
+          <text class="banner-sub">{{ b.subtitle }}</text>
+          <view class="banner-btn">
+            <text class="banner-btn-text">{{ b.btnText }}</text>
           </view>
-        </swiper-item>
-      </swiper>
+        </view>
+      </scroll-view>
     </view>
 
     <!-- 课程分类 -->
@@ -295,17 +293,25 @@ function goCourse(id: string) { uni.navigateTo({ url: '/pages/course/detail?id='
   padding: 16px;
 }
 
-.banner-swiper {
-  height: 160px;
+.banner-scroll {
+  white-space: nowrap;
 }
 
 .banner-card {
-  height: 150px;
+  display: inline-block;
+  width: calc(100vw - 32px);
   border-radius: var(--radius-xl);
-  padding: 20px;
+  padding: 22px;
   position: relative;
   overflow: hidden;
   background: var(--color-primary);
+  vertical-align: top;
+  white-space: normal;
+  box-sizing: border-box;
+}
+
+.banner-card + .banner-card {
+  margin-left: 12px;
 }
 
 .banner-deco {
