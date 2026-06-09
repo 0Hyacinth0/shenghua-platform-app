@@ -1,0 +1,72 @@
+/* ============================================
+   盛桦商城 · UniApp 全局样式变量
+   ============================================ */
+
+/* ---- 品牌色 ---- */
+$color-primary: #FF4D4F;
+$color-primary-dark: #E8383A;
+$color-primary-light: #FFF1F0;
+$color-primary-bg: #FFF5F5;
+
+/* ---- 中性色 ---- */
+$color-bg: #F5F5F5;
+$color-bg-page: #F7F7F8;
+$color-card: #FFFFFF;
+$color-text: #1A1A1A;
+$color-text-secondary: #666666;
+$color-text-hint: #999999;
+$color-text-disabled: #CCCCCC;
+$color-border: #EEEEEE;
+$color-divider: #F0F0F0;
+
+/* ---- 功能色 ---- */
+$color-success: #52C41A;
+$color-warning: #FAAD14;
+$color-error: #FF4D4F;
+$color-info: #1890FF;
+
+/* ---- 间距 ---- */
+$space-xs: 4rpx;
+$space-sm: 8rpx;
+$space-md: 12rpx;
+$space-base: 16rpx;
+$space-lg: 20rpx;
+$space-xl: 24rpx;
+$space-2xl: 32rpx;
+$space-3xl: 48rpx;
+
+/* ---- 圆角 ---- */
+$radius-xs: 4rpx;
+$radius-sm: 8rpx;
+$radius-md: 12rpx;
+$radius-lg: 16rpx;
+$radius-xl: 20rpx;
+$radius-full: 999rpx;
+
+/* ---- 字号 ---- */
+$font-xs: 10px;
+$font-sm: 12px;
+$font-base: 14px;
+$font-md: 15px;
+$font-lg: 16px;
+$font-xl: 18px;
+$font-2xl: 20px;
+$font-3xl: 24px;
+$font-4xl: 28px;
+$font-5xl: 32px;
+
+/* ---- 字重 ---- */
+$weight-regular: 400;
+$weight-medium: 500;
+$weight-semibold: 600;
+$weight-bold: 700;
+
+/* ---- 阴影 ---- */
+$shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+$shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.10);
+
+/* ---- 布局 ---- */
+$page-padding: 16px;
+$tab-bar-height: 56px;

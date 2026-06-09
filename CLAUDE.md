@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 | Directory | Role | Description |
 |-----------|------|-------------|
-| `client/` | 🛒 **Mall Frontend** | End-user e-commerce store |
+| `client/` | 🛒 **Mall Frontend** | UniApp 多端电商平台（小程序/H5/App） |
 | `jeecgclient/` | ⚙️ **Admin Panel** | Backend management dashboard |
 | `DESIGN.md` | 🎨 **Design System** | Figma-inspired design token specification |
 
@@ -18,11 +18,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                     client/ (port 3101)                  │
-│              Vue 3 + Vite 6 + Ant Design Vue 4          │
-│                  E-commerce mall storefront              │
+│                     client/ (UniApp)                     │
+│           Vue 3 + uni-ui + uni-app (多端)               │
+│         微信小程序 / H5 / App (iOS & Android)            │
 └──────────────────────┬──────────────────────────────────┘
-                       │  /jeecg-boot/* (proxy)
+                       │  /jeecg-boot/* (proxy or direct)
                        ▼
 ┌─────────────────────────────────────────────────────────┐
 │             JeecgBoot Backend (port 8080)               │
@@ -46,9 +46,12 @@ The backend itself is NOT in this repo — only the two frontend SPAs that consu
 
 ```bash
 cd client
-pnpm dev                 # Start dev server on port 3101
-pnpm build               # Type-check + production build
-pnpm preview             # Build + preview
+pnpm dev:h5              # Start H5 dev server on port 3101
+pnpm dev:mp-weixin        # Start WeChat mini program dev server
+pnpm dev:app              # Start App dev server
+pnpm build:h5             # Build H5 production
+pnpm build:mp-weixin      # Build WeChat mini program
+pnpm build:app            # Build App
 ```
 
 ### jeecgclient/ (admin panel — reference only)
@@ -68,16 +71,17 @@ pnpm reinstall           # Clean reinstall dependencies
 
 | Layer | Technology |
 |-------|-----------|
-| Framework | Vue 3.5 (Composition API, `<script setup>`) |
-| Build | Vite 6 |
-| UI Library | Ant Design Vue 4 (auto-imported) |
+| Framework | UniApp (Vue 3 + Composition API, `<script setup>`) |
+| Build | @dcloudio/vite-plugin-uni |
+| UI Library | uni-ui + 原生组件 |
 | Language | TypeScript |
-| HTTP | Axios (custom wrapper) |
-| Routing | Vue Router 4 (history mode) |
+| HTTP | uni.request (custom wrapper) |
+| Routing | pages.json + uni 路由 API |
+| Storage | uni.setStorageSync / uni.getStorageSync |
 | Package Manager | pnpm |
-| Icon Library | @ant-design/icons-vue |
+| Target Platforms | 微信小程序、H5、App (iOS & Android) |
 
-**No Pinia / state management library** — auth state is stored in localStorage. No i18n, no theme system, no tests yet.
+**No Pinia / state management library** — auth state is stored in uni storage. No i18n, no theme system, no tests yet.
 
 ## Path Aliases (client/)
 
@@ -87,15 +91,17 @@ Only one alias is configured in `vite.config.ts`:
 '@' → 'src/'
 ```
 
+Note: UniApp 的 `@dcloudio/vite-plugin-uni` 会自动处理路径别名，无需额外配置。
+
 ## API Layer
 
 ### HTTP Client (`src/utils/http.ts`)
 
-A pre-configured Axios instance with:
+A uni.request wrapper with:
 
-- **Base URL**: `/jeecg-boot` (proxied to `localhost:8080` in dev)
+- **Base URL**: `/jeecg-boot` (H5 proxied, 小程序/App 用完整 URL)
 - **Timeout**: 15 seconds
-- **Auth header**: Sends `X-Access-Token` header from `localStorage.getItem('token')`
+- **Auth header**: Sends `X-Access-Token` header from `uni.getStorageSync('token')`
 - **Response unwrapping**: Expects `{ success, result, message }` — if `success === true`, it returns `data.result` (or `data` if `result` is undefined); if `false`, it rejects with the error message
 
 ### API Response Format
@@ -178,8 +184,8 @@ Always use `imgUrl()` when rendering product/category images.
 ### Token Management (`src/utils/auth.ts`)
 
 ```ts
-getToken()          // reads 'token' from localStorage
-setToken(token)     // writes 'token' to localStorage
+getToken()          // reads 'token' from uni storage
+setToken(token)     // writes 'token' to uni storage
 removeToken()       // clears 'token' and 'mall_user'
 setUser(user)       // JSON-serializes user to 'mall_user'
 getUser()           // parses user from 'mall_user' (returns null if not found)
@@ -199,49 +205,57 @@ getCurrentUser()    // alias for getUser()
 
 1. User submits credentials to `/sys/login`
 2. Response contains `{ token, userInfo }`
-3. Token stored in localStorage as `X-Access-Token` header for subsequent requests
-4. User info stored in localStorage as `mall_user`
+3. Token stored in uni storage as `X-Access-Token` header for subsequent requests
+4. User info stored in uni storage as `mall_user`
+5. 登录成功后跳转到首页: `uni.switchTab({ url: '/pages/home/index' })`
 
-## Routing (`src/router/index.ts`)
+## Routing (`src/pages.json`)
 
-Vue Router with HTML5 history mode. Two top-level route groups:
+UniApp 使用 pages.json 配置路由。使用 `uni.navigateTo()` / `uni.switchTab()` / `uni.navigateBack()` 进行页面跳转。
 
-**Auth routes** (no layout):
-- `/login` — Login page
-- `/register` — Register page
+**TabBar 页面** (5个):
+- `pages/home/index` — 首页
+- `pages/mall/index` — 分类
+- `pages/community/index` — 逛逛
+- `pages/cart/index` — 购物车
+- `pages/profile/index` — 我的
 
-**App routes** (wrapped in `default.vue` layout):
-- `/` — Home page with category sidebar + product grid
-- `/product/:id` — Product detail (SPU + SKU specs + seckill info)
-- `/cart` — Shopping cart
-- `/checkout` — Order confirmation (supports `?items=`, `?itemId=`, `?seckillId=` query params)
-- `/orders` — Order list
-- `/order/:id` — Order detail
-- `/address` — Shipping address management
-- `/merchant/apply` — Merchant registration
-- `/merchant/products` — Merchant product management
-- `/coupon` — Coupon center
-- `/seckill` — Flash sale
-- `/signIn` — Daily check-in
-- `/groupBuy` — Group buying
-- `/groupBuy/checkout` — Group buy checkout
-- `/profile` — User profile / account center
+**非 TabBar 页面**:
+- `pages/login/index` — 登录
+- `pages/login/register` — 注册
+- `pages/product/detail` — 商品详情 (query: `?id=xxx`)
+- `pages/checkout/index` — 确认订单 (query: `?items=` / `?itemId=` / `?seckillId=`)
+- `pages/order/list` — 订单列表
+- `pages/order/detail` — 订单详情
+- `pages/address/index` — 收货地址
+- `pages/merchant/apply` — 商家入驻
+- `pages/merchant/products` — 商品管理
+- `pages/coupon/index` — 优惠券
+- `pages/seckill/index` — 限时抢购
+- `pages/signIn/index` — 签到
+- `pages/groupBuy/index` — 拼团
+- `pages/groupBuy/checkout` — 拼团结算
+- `pages/message/index` — 消息
+- `pages/message/chat` — 聊天
+- `pages/learn/index` — 学习中心
+- `pages/distributor/index` — 分销中心
+- `pages/course/*` — 课程模块 (6个页面)
+- `pages/community/*` — 社区模块 (5个页面)
+- `pages/admin/product-audit` — 商品审核
 
-**Cross-page data flow via query params**: The checkout page receives selected items via query string:
-- From cart: `?items=cartItemId1,cartItemId2`
-- From product "buy now": `?itemId=skuId`
-- From seckill: `?seckillId=xxx&seckillPrice=99.99&spuId=xxx`
+**页面跳转方式**:
+- TabBar 页面: `uni.switchTab({ url: '/pages/home/index' })`
+- 普通页面: `uni.navigateTo({ url: '/pages/product/detail?id=123' })`
+- 返回: `uni.navigateBack()`
+- 重定向: `uni.redirectTo({ url: '/pages/order/detail?id=xxx' })`
+
+**页面生命周期**: 使用 `onLoad(options)` 获取页面参数（替代 route.params / route.query）
 
 ## Component Patterns
 
-### Layout (`src/layouts/default.vue`)
+### Layout
 
-A standard Ant Design Layout shell:
-- **Sticky header** (56px): Logo (盛桦商城), search input, nav links (cart badge, personalized links when logged in)
-- **Content area**: `<router-view />` inside `<a-layout-content>`, max-width 1200px centered
-- **Footer**: Simple copyright line
-
-The layout is a wrapper route — auth pages (login/register) render outside it via the `App.vue` root `<router-view />`.
+UniApp 不需要布局组件。TabBar 通过 pages.json 的 tabBar 配置自动处理。非 TabBar 页面使用自定义导航栏（navigationBarTitleText）。
 
 ### Page Template
 
@@ -249,13 +263,12 @@ Every view file follows this structure:
 
 ```vue
 <template>
-  <!-- Page content using Ant Design Vue components (auto-imported, no manual imports needed) -->
+  <!-- Page content using UniApp components (view, text, image, button, etc.) -->
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { message } from 'ant-design-vue'
+import { ref, computed } from 'vue'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { someApi, imgUrl } from '@/api'
 import http from '@/utils/http'        // for ad-hoc API calls
 import { getCurrentUserId } from '@/utils/user'
@@ -277,26 +290,49 @@ async function fetchData() {
   }
 }
 
-onMounted(() => fetchData())
+// 页面加载时获取参数和数据
+onLoad((options) => {
+  const id = options?.id
+  fetchData()
+})
+
+// 页面显示时刷新数据
+onShow(() => {
+  // 可选：刷新数据
+})
 </script>
 
 <style scoped>
 /* Scoped component styles */
-/* No CSS variables — static values only */
+/* 使用 CSS 变量: var(--color-primary, #FF4D4F) */
 </style>
 ```
 
 ### Error Handling Convention
 
-Every async operation uses try/catch with user-facing `message.error()`:
+Every async operation uses try/catch with user-facing `uni.showToast()`:
 
 ```ts
 try {
   await someApi(params)
-  message.success('操作成功')
+  uni.showToast({ title: '操作成功', icon: 'success' })
 } catch (e: any) {
-  message.error(e.message || '操作失败')
+  uni.showToast({ title: e.message || '操作失败', icon: 'none' })
 }
+```
+
+对于确认操作，使用 `uni.showModal()`:
+
+```ts
+uni.showModal({
+  title: '确认',
+  content: '确定要删除吗？',
+  success: (res) => {
+    if (res.confirm) {
+      // 执行删除
+    }
+  }
+})
 ```
 
 Failed API calls silently degrade — catch blocks set data to empty arrays/objects rather than crashing.
@@ -305,8 +341,8 @@ Failed API calls silently degrade — catch blocks set data to empty arrays/obje
 
 - **No Pinia stores** — all component-local state
 - Cross-component data sharing via route query params (e.g., checkout items)
-- Auth state in localStorage (not reactive — components read it on mount)
-- Cart count fetched from API on route change via `watch(() => route.path, ...)`
+- Auth state in uni storage (not reactive — components read it on load)
+- Cart count fetched from API on page show via `onShow()`
 
 ## Design Conventions
 
@@ -336,12 +372,12 @@ When implementing new pages or redesigning existing ones, reference DESIGN.md fo
 
 | Aspect | Current (client/) | DESIGN.md target |
 |--------|------------------|------------------|
-| Theme color | `#e4393c` (red) | `{colors.primary}` (black) |
-| Button shape | Default rounded | Pill (`{rounded.pill}`) |
-| Type scale | Ad-hoc font-sizes | Structured token system |
-| CSS approach | Scoped inline values | CSS variable / token system |
+| Theme color | `#FF4D4F` (red) | `{colors.primary}` (black) |
+| Button shape | Pill shaped (已实现) | Pill (`{rounded.pill}`) |
+| Type scale | CSS variables | Structured token system |
+| CSS approach | CSS variables + scoped | CSS variable / token system |
 | Color blocks | None | Signature pattern |
-| Responsive | Basic | Documented breakpoint system |
+| Responsive | Mobile-first (已实现) | Documented breakpoint system |
 
 ## Mall Domain Knowledge
 
@@ -397,10 +433,10 @@ The admin panel runs on port 3100 with mock data enabled in dev mode — it can 
 
 ### Adding a New Page
 
-1. Create the view file in `client/src/views/<feature>/index.vue`
-2. Add the route in `client/src/router/index.ts`
+1. Create the page file in `client/src/pages/<feature>/index.vue`
+2. Add the page path in `client/src/pages.json` (pages 数组中)
 3. Add API functions to `client/src/api/index.ts`
-4. If it needs navigation access, add a link in `client/src/layouts/default.vue` or other relevant page
+4. 使用 `uni.navigateTo()` 或 `uni.switchTab()` 进行跳转
 
 ### Adding a New API
 
@@ -411,12 +447,45 @@ export const createResource = (data: any) => http.post('/mall/resource/add', dat
 export const updateResource = (data: any) => http.put('/mall/resource/edit', data)
 ```
 
+Note: http 对象是 uni.request 的封装，与原 Axios 接口兼容。
+
 Naming convention matches the backend controller:
 - `/mall/<entity>/list` — paginated query
 - `/mall/<entity>/queryById` — single record
 - `/mall/<entity>/add` — create
 - `/mall/<entity>/edit` — update
 - `/mall/<entity>/delete` — delete (by id param)
+
+### Cross-Platform Development
+
+```bash
+# H5 开发（浏览器调试）
+pnpm dev:h5
+
+# 微信小程序开发（需要微信开发者工具）
+pnpm dev:mp-weixin
+
+# App 开发（需要 HBuilderX 或 Android Studio / Xcode）
+pnpm dev:app
+```
+
+### Platform-Specific Code
+
+使用条件编译处理平台差异：
+
+```ts
+// #ifdef H5
+// H5 专用代码
+// #endif
+
+// #ifdef MP-WEIXIN
+// 微信小程序专用代码
+// #endif
+
+// #ifdef APP-PLUS
+// App 专用代码
+// #endif
+```
 
 ### Mock / Demo Mode
 
@@ -434,48 +503,59 @@ client/
 ├── index.html                  # Vite entry HTML
 ├── package.json                # Dependencies & scripts
 ├── tsconfig.json               # TypeScript config
-├── vite.config.ts              # Vite config (alias, proxy, auto-import)
-├── components.d.ts             # Auto-generated component type declarations
+├── vite.config.ts              # Vite config (uni plugin)
 └── src/
-    ├── App.vue                  # Root component (<router-view />)
+    ├── App.vue                  # Root component
     ├── main.ts                  # App bootstrap
+    ├── pages.json               # 路由 + tabBar 配置
+    ├── manifest.json            # 应用配置
+    ├── uni.scss                 # 全局样式变量
     ├── api/
     │   └── index.ts             # All API function definitions + imgUrl helper
-    ├── router/
-    │   └── index.ts             # Route definitions
-    ├── layouts/
-    │   └── default.vue          # Main app layout (header + content + footer)
+    ├── components/
+    │   ├── Icon.vue             # 通用图标组件
+    │   ├── EmptyState.vue       # 空状态组件
+    │   └── LoadingSpinner.vue   # 加载组件
     ├── utils/
-    │   ├── auth.ts              # Token & user localStorage management
-    │   ├── http.ts              # Axios instance with interceptors
+    │   ├── auth.ts              # Token & user storage management
+    │   ├── http.ts              # uni.request wrapper
     │   └── user.ts              # Current user helpers (with demo fallback)
-    └── views/
-        ├── home/index.vue       # Homepage (category sidebar + product grid + seckill strip)
-        ├── login/index.vue      # Login form
-        ├── login/register.vue   # Registration form
-        ├── product/detail.vue   # Product detail (gallery, specs, SKU selector, seckill banner)
-        ├── cart/index.vue       # Shopping cart (select, qty, total, checkout)
-        ├── checkout/index.vue   # Order confirmation (address, coupon, items, submit)
-        ├── order/list.vue       # Order list
-        ├── order/detail.vue     # Order detail (items, status, payment, receipt)
-        ├── address/index.vue    # Shipping address CRUD
-        ├── coupon/index.vue     # Coupon center
-        ├── seckill/index.vue    # Flash sale listing
-        ├── signIn/index.vue     # Daily check-in
-        ├── groupBuy/index.vue   # Group buying
-        ├── groupBuy/checkout.vue # Group buy checkout
-        ├── merchant/apply.vue   # Merchant registration form
-        ├── merchant/products.vue # Merchant product management
-        ├── profile/index.vue    # User profile / account center
-        ├── admin/product-audit.vue # Admin: product approval
-        └── page/index.vue       # Generic page placeholder
+    ├── styles/
+    │   └── design-system.css    # CSS variables & utility classes
+    ├── static/images/           # TabBar icons
+    └── pages/
+        ├── home/index.vue       # 首页 (轮播、快捷入口、分类、推荐)
+        ├── mall/index.vue       # 分类页 (分类列表 + 商品网格)
+        ├── community/           # 社区模块 (5个页面)
+        ├── cart/index.vue       # 购物车
+        ├── profile/index.vue    # 个人中心
+        ├── login/               # 登录/注册
+        ├── product/detail.vue   # 商品详情
+        ├── checkout/index.vue   # 确认订单
+        ├── order/               # 订单列表/详情
+        ├── address/index.vue    # 收货地址
+        ├── coupon/index.vue     # 优惠券
+        ├── seckill/index.vue    # 限时抢购
+        ├── signIn/index.vue     # 签到
+        ├── groupBuy/            # 拼团
+        ├── message/             # 消息
+        ├── learn/index.vue      # 学习中心
+        ├── distributor/index.vue # 分销中心
+        ├── course/              # 课程模块 (6个页面)
+        ├── merchant/            # 商家管理
+        ├── admin/               # 管理后台
+        └── page/index.vue       # 通用页面
 ```
 
 ## Important Notes
 
-1. **The backend MUST be running** at `localhost:8080` for the `client/` dev server to work — the Vite proxy forwards all `/jeecg-boot/*` requests.
-2. **Component auto-import is configured** — Ant Design Vue components are resolved automatically by `unplugin-vue-components`. Do NOT manually import them in `<script>`. However, icon components from `@ant-design/icons-vue` MUST be imported explicitly.
+1. **The backend MUST be running** at `localhost:8080` for H5 dev mode to work — the Vite proxy forwards all `/jeecg-boot/*` requests. For 小程序/App，需要在 manifest.json 和 api/index.ts 中配置完整后端 URL。
+2. **UniApp 组件不需要手动导入** — `<view>`, `<text>`, `<image>`, `<button>`, `<scroll-view>`, `<swiper>` 等是 UniApp 内置组件，直接使用。uni-ui 组件需要导入。
 3. **TypeScript is loose** — `any` is used extensively. When adding types, focus on new code rather than retrofitting.
-4. **No test infrastructure** — The `client/` project has no test runner configured. Manual testing via `pnpm dev` is the verification path.
+4. **No test infrastructure** — The `client/` project has no test runner configured. Manual testing via `pnpm dev:h5` or微信开发者工具 is the verification path.
 5. **The admin panel (jeecgclient/) has its own CLAUDE.md** at `jeecgclient/CLAUDE.md` with detailed architecture documentation — reference it when working on the admin side.
 6. **DESIGN.md is the target design** — when the user asks for UI improvements or redesigns, use DESIGN.md as the specification. It represents where the design *should* go, even though the current code doesn't match it yet.
+7. **TabBar 图标** — 当前使用占位 PNG，需要替换为实际设计的图标（81x81px PNG）。
+8. **跨端兼容** — CSS 中 `backdrop-filter`、`aspect-ratio` 等属性在部分小程序平台不支持，需要条件编译或降级处理。
+9. **图片上传** — 使用 `uni.chooseImage()` + `uni.uploadFile()` 替代 `<a-upload>` 组件。
+10. **视频播放** — 使用 `<video>` UniApp 组件，支持小程序和 App 原生播放。

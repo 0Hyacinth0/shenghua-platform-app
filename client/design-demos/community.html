@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>盛桦学堂 · 社区</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: #1a1a2e;
+    display: flex; justify-content: center; align-items: flex-start;
+    min-height: 100vh; padding: 40px 20px;
+  }
+  .phone-frame {
+    width: 375px; min-height: 812px;
+    background: #F5F6FA; border-radius: 40px; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 2px #333;
+    position: relative;
+  }
+  .status-bar {
+    height: 44px; background: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; padding-top: 12px;
+  }
+  .status-bar .time { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .status-bar .icons { display: flex; gap: 4px; font-size: 12px; }
+
+  .header {
+    background: #fff; padding: 10px 16px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header-title { font-size: 20px; font-weight: 700; color: #1a1a1a; }
+  .header-actions { display: flex; gap: 16px; }
+  .header-actions span { font-size: 20px; color: #666; cursor: pointer; }
+
+  /* Topic tags */
+  .topic-scroll {
+    background: #fff;
+    padding: 0 16px 12px;
+    display: flex; gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .topic-scroll::-webkit-scrollbar { display: none; }
+  .topic-tag {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-radius: 16px;
+    background: #F5F6FA;
+    font-size: 13px; color: #666; font-weight: 500;
+    cursor: pointer;
+  }
+  .topic-tag:active { opacity: 0.7; }
+  .topic-tag.active {
+    background: #FFF4EE; color: #FF7A45; font-weight: 600;
+  }
+
+  /* Post card */
+  .post-card {
+    background: #fff; margin: 10px 16px 0; border-radius: 12px;
+    padding: 14px 16px; cursor: pointer;
+  }
+  .post-card:active { background: #fafafa; }
+
+  .post-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .post-user { display: flex; align-items: center; gap: 10px; }
+  .user-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #FFE0D0, #FFB088);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .user-info { display: flex; flex-direction: column; }
+  .user-name { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+  .post-time { font-size: 11px; color: #999; margin-top: 2px; }
+  .post-topic-badge {
+    background: #FFF4EE; padding: 3px 10px; border-radius: 10px;
+  }
+  .topic-badge-text { font-size: 11px; color: #FF7A45; font-weight: 500; }
+
+  .post-content {
+    font-size: 14px; color: #1a1a1a; line-height: 1.6;
+    display: -webkit-box; -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical; overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  /* Post images */
+  .post-images { display: flex; gap: 6px; margin-bottom: 10px; }
+  .post-images.grid-1 .post-img { width: 200px; height: 150px; border-radius: 8px; }
+  .post-images.grid-2 .post-img { width: calc(50% - 3px); height: 120px; border-radius: 8px; }
+  .post-images.grid-3 .post-img { width: calc(33.3% - 4px); height: 100px; border-radius: 8px; }
+  .post-img { object-fit: cover; background: #eee; }
+
+  /* Post actions */
+  .post-actions {
+    display: flex; align-items: center; gap: 24px;
+    padding-top: 10px; border-top: 1px solid #f5f5f5;
+  }
+  .post-action {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; color: #999; cursor: pointer;
+  }
+  .post-action:active { color: #FF7A45; }
+  .post-action .icon { font-size: 16px; }
+
+  /* Featured post */
+  .featured-post {
+    background: #fff; margin: 10px 16px 0; border-radius: 12px;
+    overflow: hidden; cursor: pointer;
+  }
+  .featured-post:active { opacity: 0.9; }
+  .featured-img {
+    width: 100%; height: 180px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex; align-items: flex-end; padding: 16px;
+    position: relative;
+  }
+  .featured-img .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(transparent 40%, rgba(0,0,0,0.6));
+  }
+  .featured-img .featured-content {
+    position: relative; z-index: 1;
+  }
+  .featured-tag {
+    display: inline-block;
+    background: #FF7A45; color: #fff;
+    font-size: 10px; font-weight: 600;
+    padding: 2px 8px; border-radius: 4px;
+    margin-bottom: 6px;
+  }
+  .featured-title {
+    font-size: 16px; font-weight: 600; color: #fff;
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .featured-meta {
+    padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .featured-author {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .featured-author-avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #FFE0D0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .featured-author-name { font-size: 12px; color: #666; }
+  .featured-stats { font-size: 12px; color: #999; }
+
+  /* Hot topics */
+  .hot-topics {
+    background: #fff; margin: 10px 16px 0; border-radius: 12px; padding: 14px 16px;
+  }
+  .hot-topic-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+    cursor: pointer;
+  }
+  .hot-topic-item:last-child { border-bottom: none; }
+  .hot-topic-item:active { opacity: 0.7; }
+  .hot-rank {
+    width: 20px; font-size: 14px; font-weight: 700; text-align: center;
+  }
+  .hot-rank.top { color: #FF7A45; }
+  .hot-rank.normal { color: #999; }
+  .hot-topic-info { flex: 1; }
+  .hot-topic-title { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+  .hot-topic-count { font-size: 11px; color: #999; margin-top: 2px; }
+  .hot-topic-trend { font-size: 12px; }
+  .hot-topic-trend.up { color: #52C41A; }
+  .hot-topic-trend.down { color: #999; }
+
+  /* Tab bar */
+  .tab-bar {
+    position: sticky; bottom: 0; background: #fff;
+    display: flex; border-top: 1px solid #f0f0f0;
+    padding: 6px 0; padding-bottom: 20px;
+  }
+  .tab-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 2px; cursor: pointer;
+  }
+  .tab-icon { font-size: 22px; color: #999; }
+  .tab-icon.active { color: #FF7A45; }
+  .tab-label { font-size: 10px; color: #999; }
+  .tab-label.active { color: #FF7A45; font-weight: 600; }
+  .bottom-spacer { height: 16px; }
+
+  /* Floating action button */
+  .fab {
+    position: absolute; bottom: 90px; right: 20px;
+    width: 50px; height: 50px; border-radius: 50%;
+    background: linear-gradient(135deg, #FF7A45, #FF9A6C);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: #fff;
+    box-shadow: 0 4px 12px rgba(255,122,69,0.4);
+    cursor: pointer; z-index: 10;
+  }
+  .fab:active { transform: scale(0.95); }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons"><span>📶</span><span>🔋</span></div>
+  </div>
+
+  <div class="header">
+    <span class="header-title">学习圈</span>
+    <div class="header-actions">
+      <span>🔍</span>
+    </div>
+  </div>
+
+  <!-- Topic tags -->
+  <div class="topic-scroll">
+    <div class="topic-tag active">推荐</div>
+    <div class="topic-tag">前端开发</div>
+    <div class="topic-tag">Python</div>
+    <div class="topic-tag">AI学习</div>
+    <div class="topic-tag">设计</div>
+    <div class="topic-tag">考研</div>
+    <div class="topic-tag">英语</div>
+    <div class="topic-tag">职场</div>
+  </div>
+
+  <!-- Featured post -->
+  <div class="featured-post">
+    <div class="featured-img" style="background:linear-gradient(135deg,#667eea,#764ba2);">
+      <div class="overlay"></div>
+      <div class="featured-content">
+        <span class="featured-tag">🔥 精华</span>
+        <div class="featured-title">2026 前端开发学习路线图：从零到高级工程师</div>
+      </div>
+    </div>
+    <div class="featured-meta">
+      <div class="featured-author">
+        <div class="featured-author-avatar">👨‍🏫</div>
+        <span class="featured-author-name">张明远</span>
+      </div>
+      <span class="featured-stats">1.2k 赞 · 386 评论</span>
+    </div>
+  </div>
+
+  <!-- Hot topics -->
+  <div class="hot-topics">
+    <div class="section-header" style="margin-bottom:10px;">
+      <span style="font-size:17px;font-weight:600;color:#1a1a1a;">🔥 热门话题</span>
+      <span style="font-size:12px;color:#999;cursor:pointer;">更多 →</span>
+    </div>
+    <div class="hot-topic-item">
+      <span class="hot-rank top">1</span>
+      <div class="hot-topic-info">
+        <div class="hot-topic-title">#Vue3 组合式 API 最佳实践</div>
+        <div class="hot-topic-count">2.3k 讨论</div>
+      </div>
+      <span class="hot-topic-trend up">↑</span>
+    </div>
+    <div class="hot-topic-item">
+      <span class="hot-rank top">2</span>
+      <div class="hot-topic-info">
+        <div class="hot-topic-title">#AI 工具提效实战分享</div>
+        <div class="hot-topic-count">1.8k 讨论</div>
+      </div>
+      <span class="hot-topic-trend up">↑</span>
+    </div>
+    <div class="hot-topic-item">
+      <span class="hot-rank top">3</span>
+      <div class="hot-topic-info">
+        <div class="hot-topic-title">#考研英语备考经验</div>
+        <div class="hot-topic-count">1.2k 讨论</div>
+      </div>
+      <span class="hot-topic-trend down">→</span>
+    </div>
+  </div>
+
+  <!-- Post 1 -->
+  <div class="post-card">
+    <div class="post-header">
+      <div class="post-user">
+        <div class="user-avatar">👩‍💻</div>
+        <div class="user-info">
+          <span class="user-name">林小雨</span>
+          <span class="post-time">2 小时前</span>
+        </div>
+      </div>
+      <div class="post-topic-badge">
+        <span class="topic-badge-text">#前端开发</span>
+      </div>
+    </div>
+    <div class="post-content">
+      刚学完 Vue 3 的组合式 API，感觉写代码的思路完全不一样了！特别是 ref 和 reactive 的区别，以前一直搞不清楚，现在终于理解了。分享一下我的学习笔记，希望能帮到同样在学的同学 📝
+    </div>
+    <div class="post-images grid-3">
+      <div class="post-img" style="background:linear-gradient(135deg,#E8F4FD,#D0E8F9);"></div>
+      <div class="post-img" style="background:linear-gradient(135deg,#FDE8D8,#FFD0B0);"></div>
+      <div class="post-img" style="background:linear-gradient(135deg,#E8FDEC,#C8F0D8);"></div>
+    </div>
+    <div class="post-actions">
+      <div class="post-action">
+        <span class="icon">❤️</span>
+        <span>128</span>
+      </div>
+      <div class="post-action">
+        <span class="icon">💬</span>
+        <span>32</span>
+      </div>
+      <div class="post-action">
+        <span class="icon">⭐</span>
+        <span>收藏</span>
+      </div>
+      <div class="post-action">
+        <span class="icon">↗️</span>
+        <span>分享</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post 2 -->
+  <div class="post-card">
+    <div class="post-header">
+      <div class="post-user">
+        <div class="user-avatar">👨‍🎓</div>
+        <div class="user-info">
+          <span class="user-name">学无止境</span>
+          <span class="post-time">5 小时前</span>
+        </div>
+      </div>
+      <div class="post-topic-badge">
+        <span class="topic-badge-text">#AI学习</span>
+      </div>
+    </div>
+    <div class="post-content">
+      用 ChatGPT 辅助学习 Python 的第 30 天打卡！从完全不懂到现在能写爬虫和数据分析脚本，真的很有成就感。推荐大家也试试用 AI 工具来辅助学习，效率翻倍 🚀
+    </div>
+    <div class="post-actions">
+      <div class="post-action">
+        <span class="icon">❤️</span>
+        <span>256</span>
+      </div>
+      <div class="post-action">
+        <span class="icon">💬</span>
+        <span>48</span>
+      </div>
+      <div class="post-action">
+        <span class="icon">⭐</span>
+        <span>收藏</span>
+      </div>
+      <div class="post-action">
+        <span class="icon">↗️</span>
+        <span>分享</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post 3 -->
+  <div class="post-card">
+    <div class="post-header">
+      <div class="post-user">
+        <div class="user-avatar">👩‍🎨</div>
+        <div class="user-info">
+          <span class="user-name">设计师小美</span>
+          <span class="post-time">昨天</span>
+        </div>
+      </div>
+      <div class="post-topic-badge">
+        <span class="topic-badge-text">#设计</span>
+      </div>
+    </div>
+    <div class="post-content">
+      分享一下我最近做的 UI 设计作品，灵感来自高途 App 的课程卡片设计。用了橙色为主色调，搭配白色卡片，感觉很舒服。大家觉得怎么样？欢迎提建议 😊
+    </div>
+    <div class="post-images grid-2">
+      <div class="post-img" style="background:linear-gradient(135deg,#f093fb,#f5576c);"></div>
+      <div class="post-img" style="background:linear-gradient(135deg,#4facfe,#00f2fe);"></div>
+    </div>
+    <div class="post-actions">
+      <div class="post-action">
+        <span class="icon">❤️</span>
+        <span>89</span>
+      </div>
+      <div class="post-action">
+        <span class="icon">💬</span>
+        <span>15</span>
+      </div>
+      <div class="post-action">
+        <span class="icon">⭐</span>
+        <span>收藏</span>
+      </div>
+      <div class="post-action">
+        <span class="icon">↗️</span>
+        <span>分享</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-spacer"></div>
+
+  <!-- FAB -->
+  <div class="fab">✏️</div>
+
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <div class="tab-item">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">首页</span>
+    </div>
+    <div class="tab-item">
+      <span class="tab-icon">📖</span>
+      <span class="tab-label">学习</span>
+    </div>
+    <div class="tab-item">
+      <span class="tab-icon active">💬</span>
+      <span class="tab-label active">社区</span>
+    </div>
+    <div class="tab-item">
+      <span class="tab-icon">👤</span>
+      <span class="tab-label">我的</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

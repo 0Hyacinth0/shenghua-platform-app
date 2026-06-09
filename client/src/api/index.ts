@@ -6,7 +6,12 @@ import http from '@/utils/http'
 export function imgUrl(path: string | null | undefined): string {
   if (!path) return ''
   if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path
+  // #ifdef H5
   return '/jeecg-boot/sys/common/static/' + path.replace(/^\/+/, '')
+  // #endif
+  // #ifndef H5
+  return 'http://192.168.1.128:8080/jeecg-boot/sys/common/static/' + path.replace(/^\/+/, '')
+  // #endif
 }
 
 // ==================== 认证 ====================
@@ -39,6 +44,14 @@ export const addToCart = (params: any) => http.post('/mall/cart/addToCart', null
 export const updateCartQty = (id: string, quantity: number) => http.put('/mall/cart/updateQuantity', null, { params: { id, quantity } })
 export const toggleCartSelect = (id: string) => http.put('/mall/cart/toggleSelect', null, { params: { id } })
 export const removeCartItem = (id: string) => http.delete('/mall/cart/remove', { params: { id } })
+export const getCartCount = async (): Promise<number> => {
+  try {
+    const { getCurrentUserId } = await import('@/utils/user')
+    const res = await getCartList(getCurrentUserId())
+    const list: any[] = Array.isArray(res) ? res : (res?.records || res || [])
+    return list.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0)
+  } catch { return 0 }
+}
 
 // ==================== 订单 ====================
 export const createOrder = (data: any) => http.post('/mall/order/create', data)

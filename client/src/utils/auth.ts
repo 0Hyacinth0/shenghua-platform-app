@@ -2,25 +2,30 @@ const TOKEN_KEY = 'token'
 const USER_KEY = 'mall_user'
 
 export function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY)
+  return uni.getStorageSync(TOKEN_KEY) || null
 }
 
 export function setToken(token: string) {
-  localStorage.setItem(TOKEN_KEY, token)
+  uni.setStorageSync(TOKEN_KEY, token)
 }
 
 export function removeToken() {
-  localStorage.removeItem(TOKEN_KEY)
-  localStorage.removeItem(USER_KEY)
+  uni.removeStorageSync(TOKEN_KEY)
+  uni.removeStorageSync(USER_KEY)
 }
 
 export function setUser(user: any) {
-  localStorage.setItem(USER_KEY, JSON.stringify(user))
+  uni.setStorageSync(USER_KEY, JSON.stringify(user))
 }
 
 export function getUser(): any {
-  const u = localStorage.getItem(USER_KEY)
-  return u ? JSON.parse(u) : null
+  const u = uni.getStorageSync(USER_KEY)
+  if (!u) return null
+  try {
+    return typeof u === 'string' ? JSON.parse(u) : u
+  } catch {
+    return null
+  }
 }
 
 export function isLoggedIn(): boolean {

@@ -1,0 +1,82 @@
+{
+  "pages": [
+    { "path": "pages/home/index", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/learn/index", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/community/index", "style": { "navigationStyle": "custom" } },
+    { "path": "pages/profile/index", "style": { "navigationStyle": "custom" } },
+
+    { "path": "pages/login/index", "style": { "navigationBarTitleText": "登录" } },
+    { "path": "pages/login/register", "style": { "navigationBarTitleText": "注册" } },
+    { "path": "pages/course/index", "style": { "navigationBarTitleText": "全部课程" } },
+    { "path": "pages/course/detail", "style": { "navigationBarTitleText": "课程详情" } },
+    { "path": "pages/course/watch", "style": { "navigationBarTitleText": "课程播放" } },
+    { "path": "pages/course/checkout", "style": { "navigationBarTitleText": "课程结算" } },
+    { "path": "pages/course/my", "style": { "navigationBarTitleText": "我的课程" } },
+    { "path": "pages/course/lecturer/apply", "style": { "navigationBarTitleText": "讲师申请" } },
+    { "path": "pages/course/lecturer/courses", "style": { "navigationBarTitleText": "讲师课程" } },
+    { "path": "pages/course/lecturer/income", "style": { "navigationBarTitleText": "讲师收益" } },
+    { "path": "pages/product/detail", "style": { "navigationBarTitleText": "商品详情" } },
+    { "path": "pages/checkout/index", "style": { "navigationBarTitleText": "确认订单" } },
+    { "path": "pages/order/list", "style": { "navigationBarTitleText": "我的订单" } },
+    { "path": "pages/order/detail", "style": { "navigationBarTitleText": "订单详情" } },
+    { "path": "pages/address/index", "style": { "navigationBarTitleText": "收货地址" } },
+    { "path": "pages/merchant/apply", "style": { "navigationBarTitleText": "商家入驻" } },
+    { "path": "pages/merchant/products", "style": { "navigationBarTitleText": "商品管理" } },
+    { "path": "pages/coupon/index", "style": { "navigationBarTitleText": "优惠券" } },
+    { "path": "pages/seckill/index", "style": { "navigationBarTitleText": "限时抢购" } },
+    { "path": "pages/signIn/index", "style": { "navigationBarTitleText": "签到" } },
+    { "path": "pages/groupBuy/index", "style": { "navigationBarTitleText": "拼团" } },
+    { "path": "pages/groupBuy/checkout", "style": { "navigationBarTitleText": "拼团结算" } },
+    { "path": "pages/message/index", "style": { "navigationBarTitleText": "消息" } },
+    { "path": "pages/message/chat", "style": { "navigationBarTitleText": "聊天" } },
+    { "path": "pages/distributor/index", "style": { "navigationBarTitleText": "分销中心" } },
+    { "path": "pages/community/detail", "style": { "navigationBarTitleText": "帖子详情" } },
+    { "path": "pages/community/create", "style": { "navigationBarTitleText": "发帖" } },
+    { "path": "pages/community/my", "style": { "navigationBarTitleText": "我的帖子" } },
+    { "path": "pages/community/user", "style": { "navigationBarTitleText": "用户主页" } },
+    { "path": "pages/community/favorites", "style": { "navigationBarTitleText": "我的收藏" } },
+    { "path": "pages/admin/product-audit", "style": { "navigationBarTitleText": "商品审核" } },
+    { "path": "pages/page/index", "style": { "navigationBarTitleText": "页面" } }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "盛桦学堂",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F5F6FA",
+    "app-plus": {
+      "background": "#F5F6FA"
+    }
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FF7A45",
+    "borderStyle": "black",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页",
+        "iconPath": "static/images/tab-home.png",
+        "selectedIconPath": "static/images/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/learn/index",
+        "text": "学习",
+        "iconPath": "static/images/tab-learn.png",
+        "selectedIconPath": "static/images/tab-learn-active.png"
+      },
+      {
+        "pagePath": "pages/community/index",
+        "text": "社区",
+        "iconPath": "static/images/tab-community.png",
+        "selectedIconPath": "static/images/tab-community-active.png"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的",
+        "iconPath": "static/images/tab-user.png",
+        "selectedIconPath": "static/images/tab-user-active.png"
+      }
+    ]
+  }
+}

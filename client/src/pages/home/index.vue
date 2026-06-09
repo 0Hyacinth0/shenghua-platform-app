@@ -1,0 +1,932 @@
+<template>
+  <view class="page">
+    <!-- 顶部导航栏 -->
+    <view class="header">
+      <view class="header-bg" />
+      <view class="header-content">
+        <view class="search-bar" @tap="goSearch">
+          <Icon icon="solar:magnifer-bold" :size="18" color="rgba(255,255,255,0.6)" />
+          <text class="search-placeholder">搜索课程、讲师</text>
+        </view>
+        <view class="header-btn" @tap="goMessages">
+          <Icon icon="solar:bell-bold" :size="22" color="#fff" />
+          <view v-if="msgBadge > 0" class="header-badge">
+            <text class="badge-text">{{ msgBadge > 99 ? '99+' : msgBadge }}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- Banner 轮播 -->
+    <view class="banner">
+      <swiper class="banner-swiper" :autoplay="true" :interval="4000" :circular="true" indicator-dots indicator-color="rgba(0,0,0,0.1)" indicator-active-color="#FF6B35">
+        <swiper-item v-for="b in banners" :key="b.id">
+          <view class="banner-card" :style="{ background: b.bg }" @tap="navigateTo(b.route)">
+            <view class="banner-deco" />
+            <view class="banner-deco2" />
+            <view class="banner-tag-row">
+              <Icon :icon="b.tagIcon" :size="14" color="#fff" />
+              <text class="banner-tag">{{ b.tag }}</text>
+            </view>
+            <text class="banner-title">{{ b.title }}</text>
+            <text class="banner-sub">{{ b.subtitle }}</text>
+          </view>
+        </swiper-item>
+      </swiper>
+    </view>
+
+    <!-- 快捷入口 -->
+    <view class="quick-actions">
+      <view class="action-item" v-for="a in quickActions" :key="a.label" @tap="navigateTo(a.route)">
+        <view class="action-icon" :style="{ background: a.bg }">
+          <Icon :icon="a.icon" :size="22" :color="a.color" />
+        </view>
+        <text class="action-label">{{ a.label }}</text>
+      </view>
+    </view>
+
+    <!-- 课程分类 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">课程分类</text>
+        <view class="section-more" @tap="goCategory">
+          <text class="more-text">全部</text>
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="#94A3B8" />
+        </view>
+      </view>
+      <view class="category-grid">
+        <view class="cat-item" v-for="cat in categories" :key="cat.name" @tap="navigateTo(cat.route)">
+          <view class="cat-icon" :style="{ background: cat.bg }">
+            <Icon :icon="cat.icon" :size="24" :color="cat.color" />
+          </view>
+          <text class="cat-name">{{ cat.name }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 明星讲师 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">明星讲师</text>
+        <view class="section-more">
+          <text class="more-text">全部</text>
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="#94A3B8" />
+        </view>
+      </view>
+      <scroll-view scroll-x class="lecturer-scroll">
+        <view class="lecturer-card" v-for="l in lecturers" :key="l.name">
+          <view class="lecturer-avatar" :style="{ background: l.avatarBg }">
+            <text class="lecturer-avatar-text">{{ l.icon }}</text>
+          </view>
+          <text class="lecturer-name">{{ l.name }}</text>
+          <view class="lecturer-tag">
+            <text class="lecturer-tag-text">{{ l.tag }}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 推荐课程 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">推荐课程</text>
+        <view class="section-more" @tap="goCourseList">
+          <text class="more-text">更多</text>
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="#94A3B8" />
+        </view>
+      </view>
+      <view class="channel-tabs">
+        <view v-for="ch in channels" :key="ch.key" class="channel-tab" :class="{ active: activeChannel === ch.key }" @tap="activeChannel = ch.key">
+          <text class="channel-tab-text" :class="{ active: activeChannel === ch.key }">{{ ch.label }}</text>
+        </view>
+      </view>
+      <scroll-view scroll-x class="course-scroll">
+        <view class="course-h-card" v-for="c in recommendCourses" :key="c.id" @tap="goCourse(c.id)">
+          <view class="course-h-img" :style="{ background: c.coverColor }">
+            <view class="play-icon-wrap">
+              <Icon icon="solar:play-bold" :size="16" color="#FF6B35" />
+            </view>
+            <view v-if="c.free" class="free-tag">
+              <text class="free-tag-text">免费</text>
+            </view>
+            <view class="lesson-count">
+              <Icon icon="solar:play-circle-bold" :size="10" color="#fff" />
+              <text class="lesson-count-text">{{ c.lessons }}课时</text>
+            </view>
+          </view>
+          <view class="course-h-info">
+            <text class="course-h-title">{{ c.title }}</text>
+            <view class="course-h-meta">
+              <text class="course-h-price" :class="{ free: c.free }">
+                <text v-if="!c.free" class="price-sym">¥</text>{{ c.free ? '免费' : c.price }}
+              </text>
+              <view class="students-row">
+                <Icon icon="solar:users-group-rounded-bold" :size="12" color="#94A3B8" />
+                <text class="course-h-students">{{ c.students }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 免费公开课 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">免费公开课</text>
+        <view class="section-more" @tap="goCourseList">
+          <text class="more-text">全部</text>
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="#94A3B8" />
+        </view>
+      </view>
+      <scroll-view scroll-x class="free-course-scroll">
+        <view class="free-card" v-for="c in freeCourses" :key="c.id" @tap="goCourse(c.id)">
+          <view class="free-card-img" :style="{ background: c.coverColor }">
+            <view class="free-tag">
+              <text class="free-tag-text">免费</text>
+            </view>
+          </view>
+          <text class="free-card-title">{{ c.title }}</text>
+          <view class="free-card-meta">
+            <text class="meta-lecturer">{{ c.lecturer }}</text>
+            <text class="meta-dot">·</text>
+            <text class="meta-plays">{{ c.students }}次播放</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 精选好课 -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">精选好课</text>
+        <view class="section-more" @tap="goCourseList">
+          <text class="more-text">更多</text>
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="#94A3B8" />
+        </view>
+      </view>
+      <view class="course-v-grid">
+        <view class="course-v-card" v-for="c in featuredCourses" :key="c.id" @tap="goCourse(c.id)">
+          <view class="course-v-img" :style="{ background: c.coverColor }">
+            <view class="play-icon-sm-wrap">
+              <Icon icon="solar:play-bold" :size="14" color="#FF6B35" />
+            </view>
+          </view>
+          <view class="course-v-info">
+            <text class="course-v-title">{{ c.title }}</text>
+            <view class="course-v-lecturer">
+              <Icon icon="solar:user-bold" :size="12" color="#94A3B8" />
+              <text class="lecturer-text">{{ c.lecturer }}</text>
+            </view>
+            <view class="course-v-bottom">
+              <text class="course-v-price" :class="{ free: c.free }">
+                <text v-if="!c.free" class="price-sym">¥</text>{{ c.free ? '免费' : c.price }}
+                <text v-if="c.originalPrice" class="original-price">¥{{ c.originalPrice }}</text>
+              </text>
+              <view class="students-row">
+                <Icon icon="solar:users-group-rounded-bold" :size="12" color="#94A3B8" />
+                <text class="course-v-students">{{ c.students }}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-spacer" />
+  </view>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
+import { Icon } from '@iconify/vue'
+
+const msgBadge = ref(3)
+const activeChannel = ref('recommend')
+
+// Banner
+const banners = [
+  { id: '1', tag: '限时特惠', tagIcon: 'solar:fire-bold', title: '新学期 · 新起点', subtitle: '精选好课低至 3 折，限时抢购中', bg: 'linear-gradient(135deg, #FF6B35 0%, #FF8F5E 100%)', route: '/pages/seckill/index' },
+  { id: '2', tag: '领券中心', tagIcon: 'solar:ticket-bold', title: '开学季大促', subtitle: '满减优惠券等你来领', bg: 'linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%)', route: '/pages/coupon/index' },
+  { id: '3', tag: '拼团特惠', tagIcon: 'solar:users-group-rounded-bold', title: '拼团学习更划算', subtitle: '邀请好友一起学习，享团购价', bg: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)', route: '/pages/groupBuy/index' },
+]
+
+// 快捷入口
+const quickActions = [
+  { label: '限时特惠', icon: 'solar:fire-bold', bg: '#FEF2F2', color: '#EF4444', route: '/pages/seckill/index' },
+  { label: '优惠券', icon: 'solar:ticket-bold', bg: '#FFFBEB', color: '#F59E0B', route: '/pages/coupon/index' },
+  { label: '签到', icon: 'solar:check-circle-bold', bg: '#F0FDF4', color: '#22C55E', route: '/pages/signIn/index' },
+  { label: '拼团', icon: 'solar:users-group-rounded-bold', bg: '#EFF6FF', color: '#3B82F6', route: '/pages/groupBuy/index' },
+  { label: '免费课', icon: 'solar:play-circle-bold', bg: '#FFF4EE', color: '#FF6B35', route: '/pages/course/index' },
+]
+
+// 分类
+const categories = [
+  { name: '编程开发', icon: 'solar:code-bold', bg: '#EFF6FF', color: '#3B82F6', route: '/pages/course/index' },
+  { name: '设计创作', icon: 'solar:palette-bold', bg: '#FDF2F8', color: '#EC4899', route: '/pages/course/index' },
+  { name: '语言学习', icon: 'solar:global-bold', bg: '#F0FDF4', color: '#22C55E', route: '/pages/course/index' },
+  { name: '职业考证', icon: 'solar:diploma-bold', bg: '#FFFBEB', color: '#F59E0B', route: '/pages/course/index' },
+  { name: 'AI 技能', icon: 'solar:cpu-bold', bg: '#F5F3FF', color: '#8B5CF6', route: '/pages/course/index' },
+  { name: '摄影剪辑', icon: 'solar:camera-bold', bg: '#FEF2F2', color: '#EF4444', route: '/pages/course/index' },
+  { name: '职场提升', icon: 'solar:chart-bold', bg: '#FFF4EE', color: '#FF6B35', route: '/pages/course/index' },
+  { name: '全部', icon: 'solar:widget-bold', bg: '#F1F5F9', color: '#64748B', route: '/pages/course/index' },
+]
+
+// 讲师
+const lecturers = [
+  { name: '张明远', icon: '张', tag: '编程名师', avatarBg: 'linear-gradient(135deg, #FFE0D0, #FFB088)' },
+  { name: '李思琪', icon: '李', tag: '设计导师', avatarBg: 'linear-gradient(135deg, #E0D0FF, #B088FF)' },
+  { name: '王建国', icon: '王', tag: 'AI专家', avatarBg: 'linear-gradient(135deg, #D0E8FF, #88C0FF)' },
+  { name: '陈雨薇', icon: '陈', tag: '语言名师', avatarBg: 'linear-gradient(135deg, #D0FFE0, #88FFB0)' },
+  { name: '刘志强', icon: '刘', tag: '考研辅导', avatarBg: 'linear-gradient(135deg, #FFE8D0, #FFC088)' },
+]
+
+// 频道
+const channels = [
+  { key: 'recommend', label: '推荐' },
+  { key: 'hot', label: '热门' },
+  { key: 'new', label: '新课' },
+  { key: 'live', label: '直播' },
+]
+
+// 推荐课程
+const recommendCourses = [
+  { id: '1', title: 'Vue 3 + TypeScript 实战教程', coverColor: 'linear-gradient(135deg,#667eea,#764ba2)', free: true, price: 0, lessons: 24, students: 2341 },
+  { id: '2', title: 'UI/UX 设计思维与方法论', coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)', free: false, price: 199, lessons: 18, students: 892 },
+  { id: '3', title: 'Python 数据分析从入门到精通', coverColor: 'linear-gradient(135deg,#4facfe,#00f2fe)', free: false, price: 299, lessons: 32, students: 5621 },
+]
+
+// 免费课程
+const freeCourses = [
+  { id: 'f1', title: '算法与数据结构精讲', coverColor: 'linear-gradient(135deg,#a8edea,#fed6e3)', lecturer: '刘老师', students: 4503 },
+  { id: 'f2', title: 'React Native 跨平台开发', coverColor: 'linear-gradient(135deg,#ffecd2,#fcb69f)', lecturer: '王老师', students: 1892 },
+  { id: 'f3', title: '英语口语速成班', coverColor: 'linear-gradient(135deg,#a1c4fd,#c2e9fb)', lecturer: '陈老师', students: 3201 },
+]
+
+// 精选好课
+const featuredCourses = [
+  { id: 'v1', title: 'React Native 跨平台移动开发实战', coverColor: 'linear-gradient(135deg,#667eea,#764ba2)', lecturer: '王老师', price: 299, originalPrice: 799, students: 1892, free: false },
+  { id: 'v2', title: 'AI 人工智能入门到实战', coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)', lecturer: '王建国', price: 399, students: 3456, free: false },
+  { id: 'v3', title: '商务英语口语提升课', coverColor: 'linear-gradient(135deg,#43e97b,#38f9d7)', lecturer: '陈雨薇', price: 0, students: 7821, free: true },
+]
+
+function navigateTo(url: string) {
+  const tabPages = ['/pages/home/index', '/pages/learn/index', '/pages/community/index', '/pages/profile/index']
+  if (tabPages.includes(url)) {
+    uni.switchTab({ url })
+  } else {
+    uni.navigateTo({ url })
+  }
+}
+
+function goSearch() { /* TODO */ }
+function goMessages() { uni.navigateTo({ url: '/pages/message/index' }) }
+function goCategory() { uni.switchTab({ url: '/pages/learn/index' }) }
+function goCourseList() { uni.navigateTo({ url: '/pages/course/index' }) }
+function goCourse(id: string) { uni.navigateTo({ url: '/pages/course/detail?id=' + id }) }
+
+onLoad(() => {})
+</script>
+
+<style scoped>
+@import url('@/styles/tokens.css');
+
+.page {
+  min-height: 100vh;
+  background: var(--bg-page);
+  padding-bottom: 16px;
+}
+
+/* ---- 顶部导航 ---- */
+.header {
+  position: relative;
+  padding: 44px 16px 16px;
+}
+
+.header-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary-gradient);
+  border-radius: 0 0 24px 24px;
+}
+
+.header-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  padding: 10px 14px;
+  backdrop-filter: blur(10px);
+}
+
+.search-placeholder {
+  font-size: var(--font-base);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.header-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+}
+
+.header-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  background: var(--color-danger);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid #FF6B35;
+}
+
+.badge-text {
+  font-size: 10px;
+  color: #fff;
+  font-weight: var(--weight-bold);
+}
+
+/* ---- Banner ---- */
+.banner {
+  padding: 12px 16px 0;
+  margin-top: -8px;
+}
+
+.banner-swiper {
+  height: 140px;
+}
+
+.banner-card {
+  height: 130px;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.banner-deco {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.banner-deco2 {
+  position: absolute;
+  right: 30px;
+  top: -20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.banner-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.banner-tag {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+.banner-title {
+  font-size: 22px;
+  font-weight: var(--weight-bold);
+  color: #fff;
+}
+
+.banner-sub {
+  font-size: var(--font-base);
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 4px;
+}
+
+/* ---- 快捷入口 ---- */
+.quick-actions {
+  background: var(--bg-card);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  padding: 16px 8px;
+  display: flex;
+  justify-content: space-around;
+  box-shadow: var(--shadow-md);
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-item:active {
+  opacity: 0.7;
+}
+
+.action-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-label {
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+}
+
+/* ---- Section ---- */
+.section {
+  background: var(--bg-card);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-size: var(--font-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.section-more {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.more-text {
+  font-size: var(--font-sm);
+  color: var(--text-hint);
+}
+
+/* ---- 分类 ---- */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px 0;
+}
+
+.cat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.cat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cat-name {
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+}
+
+/* ---- 讲师 ---- */
+.lecturer-scroll {
+  white-space: nowrap;
+  padding-bottom: 4px;
+}
+
+.lecturer-card {
+  display: inline-block;
+  width: 80px;
+  margin-right: 14px;
+  vertical-align: top;
+  text-align: center;
+}
+
+.lecturer-card:last-child {
+  margin-right: 0;
+}
+
+.lecturer-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  box-shadow: var(--shadow-md);
+}
+
+.lecturer-avatar-text {
+  font-size: 18px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary);
+}
+
+.lecturer-name {
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+  text-align: center;
+}
+
+.lecturer-tag {
+  background: var(--color-primary-light);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.lecturer-tag-text {
+  font-size: 10px;
+  color: var(--color-primary);
+  font-weight: var(--weight-medium);
+}
+
+/* ---- 频道 Tab ---- */
+.channel-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 14px;
+}
+
+.channel-tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  position: relative;
+}
+
+.channel-tab-text {
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.channel-tab-text.active {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.channel-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-primary);
+}
+
+/* ---- 课程横卡 ---- */
+.course-scroll {
+  white-space: nowrap;
+  padding-bottom: 4px;
+}
+
+.course-h-card {
+  display: inline-block;
+  width: 200px;
+  margin-right: 12px;
+  vertical-align: top;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-md);
+}
+
+.course-h-card:last-child {
+  margin-right: 0;
+}
+
+.course-h-card:active {
+  transform: scale(0.98);
+}
+
+.course-h-img {
+  width: 100%;
+  height: 120px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.play-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+}
+
+.free-tag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--color-success);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.free-tag-text {
+  font-size: 10px;
+  color: #fff;
+  font-weight: var(--weight-semibold);
+}
+
+.lesson-count {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  backdrop-filter: blur(4px);
+}
+
+.lesson-count-text {
+  font-size: 10px;
+  color: #fff;
+}
+
+.course-h-info {
+  padding: 10px 12px;
+}
+
+.course-h-title {
+  font-size: var(--font-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.course-h-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.course-h-price {
+  font-size: var(--font-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-primary);
+}
+
+.course-h-price.free {
+  color: var(--color-success);
+}
+
+.price-sym {
+  font-size: var(--font-sm);
+}
+
+.students-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.course-h-students {
+  font-size: var(--font-xs);
+  color: var(--text-hint);
+}
+
+/* ---- 免费课横卡 ---- */
+.free-course-scroll {
+  white-space: nowrap;
+  padding-bottom: 4px;
+}
+
+.free-card {
+  display: inline-block;
+  width: 160px;
+  margin-right: 12px;
+  vertical-align: top;
+}
+
+.free-card:last-child {
+  margin-right: 0;
+}
+
+.free-card:active {
+  opacity: 0.8;
+}
+
+.free-card-img {
+  width: 100%;
+  height: 90px;
+  border-radius: var(--radius-md);
+  position: relative;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.free-card-title {
+  font-size: var(--font-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.free-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-lecturer {
+  font-size: var(--font-xs);
+  color: var(--text-hint);
+}
+
+.meta-dot {
+  font-size: var(--font-xs);
+  color: var(--text-hint);
+}
+
+.meta-plays {
+  font-size: var(--font-xs);
+  color: var(--text-hint);
+}
+
+/* ---- 精选好课竖卡 ---- */
+.course-v-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.course-v-card {
+  display: flex;
+  gap: 12px;
+  border-radius: var(--radius-md);
+  padding: 12px;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.course-v-card:active {
+  background: #fafafa;
+}
+
+.course-v-img {
+  width: 120px;
+  height: 80px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.play-icon-sm-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.course-v-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.course-v-title {
+  font-size: var(--font-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.course-v-lecturer {
+  font-size: var(--font-sm);
+  color: var(--text-hint);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.lecturer-text {
+  font-size: var(--font-sm);
+  color: var(--text-hint);
+}
+
+.course-v-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.course-v-price {
+  font-size: var(--font-lg);
+  font-weight: var(--weight-bold);
+  color: var(--color-primary);
+}
+
+.course-v-price.free {
+  color: var(--color-success);
+}
+
+.original-price {
+  font-size: var(--font-xs);
+  color: var(--text-hint);
+  text-decoration: line-through;
+  font-weight: var(--weight-normal);
+  margin-left: 4px;
+}
+
+.course-v-students {
+  font-size: var(--font-xs);
+  color: var(--text-hint);
+}
+
+.bottom-spacer {
+  height: 16px;
+}
+
+/* 隐藏滚动条 */
+.lecturer-scroll::-webkit-scrollbar,
+.course-scroll::-webkit-scrollbar,
+.free-course-scroll::-webkit-scrollbar {
+  display: none;
+}
+</style>

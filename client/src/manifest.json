@@ -1,0 +1,60 @@
+{
+  "name": "盛桦商城",
+  "appid": "",
+  "description": "盛桦商城 - 多端电商平台",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "app-plus": {
+    "usingComponents": true,
+    "nvueStyleCompiler": "uni-app",
+    "compilerVersion": 3,
+    "splashscreen": {
+      "alwaysShowBeforeRender": true,
+      "waiting": true,
+      "autoclose": true,
+      "delay": 0
+    },
+    "modules": {},
+    "distribute": {
+      "android": {
+        "permissions": [
+          "<uses-permission android:name=\"android.permission.INTERNET\"/>"
+        ]
+      },
+      "ios": {},
+      "sdkConfigs": {}
+    }
+  },
+  "mp-weixin": {
+    "appid": "",
+    "setting": {
+      "urlCheck": false,
+      "es6": true,
+      "enhance": true,
+      "postcss": true,
+      "minified": true
+    },
+    "usingComponents": true,
+    "permission": {
+      "scope.userLocation": {
+        "desc": "用于获取您的收货地址定位"
+      }
+    }
+  },
+  "h5": {
+    "devServer": {
+      "port": 3101,
+      "proxy": {
+        "/jeecg-boot": {
+          "target": "http://192.168.1.128:8080",
+          "changeOrigin": true
+        }
+      }
+    },
+    "router": {
+      "mode": "history"
+    },
+    "title": "盛桦商城"
+  }
+}

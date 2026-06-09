@@ -1,6 +1,5 @@
 import { getUser } from './auth'
 
-// 默认演示用户ID（正式环境应从登录状态获取）
 const DEFAULT_USER_ID = 'demo_user_001'
 
 /**

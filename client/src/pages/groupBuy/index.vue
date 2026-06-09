@@ -1,0 +1,406 @@
+<template>
+  <view class="page">
+    <!-- 顶部导航 -->
+    <view class="nav-bar">
+      <view class="nav-back" @tap="goBack">
+        <text class="back-icon">‹</text>
+      </view>
+      <text class="nav-title">拼团</text>
+      <view style="width: 36px;" />
+    </view>
+
+    <!-- 拼团横幅 -->
+    <view class="banner-card">
+      <view class="banner-bg">
+        <view class="banner-deco" />
+        <view class="banner-deco2" />
+      </view>
+      <view class="banner-content">
+        <text class="banner-title">拼团特惠</text>
+        <text class="banner-sub">邀请好友一起学习，享团购价</text>
+      </view>
+    </view>
+
+    <!-- 拼团列表 -->
+    <scroll-view scroll-y class="group-list" @scrolltolower="loadMore">
+      <view v-if="loading" class="loading-wrap">
+        <view class="loading-spinner" />
+      </view>
+
+      <view v-else-if="groups.length > 0" class="group-items">
+        <view v-for="item in groups" :key="item.id" class="group-card" @tap="goDetail(item)">
+          <view class="card-cover" :style="{ background: item.coverColor || defaultGradient }">
+            <view class="card-badge">
+              <text class="badge-text">{{ item.groupSize || 2 }}人团</text>
+            </view>
+          </view>
+          <view class="card-info">
+            <text class="card-title">{{ item.spuName || item.productName }}</text>
+            <view class="card-price">
+              <text class="price-current">
+                <text class="price-symbol">¥</text>{{ item.groupPrice }}
+              </text>
+              <text class="price-original">¥{{ item.originalPrice || item.price }}</text>
+            </view>
+            <view class="card-meta">
+              <text class="meta-text">已拼{{ item.groupCount || 0 }}件</text>
+              <text class="meta-dot">·</text>
+              <text class="meta-text">还差{{ item.remaining || item.groupSize || 2 }}人</text>
+            </view>
+            <view class="card-btn">
+              <text class="btn-text">去拼团</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view v-else-if="!loading" class="empty-wrap">
+        <text class="empty-icon">👥</text>
+        <text class="empty-text">暂无拼团活动</text>
+        <text class="empty-sub">敬请期待</text>
+      </view>
+
+      <view v-if="noMore && groups.length > 0" class="no-more">
+        <text class="no-more-text">— 没有更多了 —</text>
+      </view>
+
+      <view class="bottom-spacer" />
+    </scroll-view>
+  </view>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
+import { getGroupBuyList, imgUrl } from '@/api'
+
+const loading = ref(false)
+const groups = ref<any[]>([])
+const pageNo = ref(1)
+const noMore = ref(false)
+
+const defaultGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+
+// 模拟数据
+const mockGroups = [
+  { id: '1', spuName: 'Vue 3 + TypeScript 实战教程', groupPrice: 99, originalPrice: 299, groupSize: 3, groupCount: 128, remaining: 2, coverColor: 'linear-gradient(135deg,#667eea,#764ba2)' },
+  { id: '2', spuName: 'React 18 新特性深度解析', groupPrice: 129, originalPrice: 399, groupSize: 2, groupCount: 89, remaining: 1, coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)' },
+  { id: '3', spuName: 'Python 数据分析从入门到精通', groupPrice: 159, originalPrice: 599, groupSize: 5, groupCount: 256, remaining: 3, coverColor: 'linear-gradient(135deg,#4facfe,#00f2fe)' },
+]
+
+function goBack() {
+  uni.navigateBack()
+}
+
+function goDetail(item: any) {
+  uni.navigateTo({ url: '/pages/groupBuy/checkout?groupBuyId=' + item.id + '&spuId=' + (item.spuId || '') })
+}
+
+function loadMore() {
+  if (noMore.value || loading.value) return
+  pageNo.value++
+  loadGroups(true)
+}
+
+async function loadGroups(append = false) {
+  if (!append) loading.value = true
+  try {
+    const res = await getGroupBuyList({ pageNo: pageNo.value, pageSize: 10 })
+    const records: any[] = res?.records || []
+    if (append) {
+      groups.value = [...groups.value, ...records]
+    } else {
+      groups.value = records.length > 0 ? records : mockGroups
+    }
+    noMore.value = records.length < 10
+  } catch {
+    if (!append) groups.value = mockGroups
+    noMore.value = true
+  } finally {
+    loading.value = false
+  }
+}
+
+onLoad(() => {
+  loadGroups()
+})
+</script>
+
+<style scoped>
+.page {
+  min-height: 100vh;
+  background: #F5F6FA;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 顶部导航 */
+.nav-bar {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 44px 16px 12px;
+}
+
+.nav-back {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-icon {
+  font-size: 28px;
+  color: #1a1a1a;
+  font-weight: 300;
+}
+
+.nav-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* 拼团横幅 */
+.banner-card {
+  position: relative;
+  margin: 12px 16px 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.banner-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #FA8C16 0%, #FFA940 100%);
+}
+
+.banner-deco {
+  position: absolute;
+  right: -20px;
+  top: -20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+}
+
+.banner-deco2 {
+  position: absolute;
+  left: 30px;
+  bottom: -15px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+
+.banner-content {
+  position: relative;
+  z-index: 1;
+  padding: 20px;
+}
+
+.banner-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  display: block;
+}
+
+.banner-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  margin-top: 4px;
+  display: block;
+}
+
+/* 拼团列表 */
+.group-list {
+  flex: 1;
+  padding: 12px 16px;
+}
+
+.group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.group-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.group-card:active {
+  transform: scale(0.99);
+}
+
+.card-cover {
+  width: 100%;
+  height: 140px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: linear-gradient(135deg, #FA8C16, #FFA940);
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.badge-text {
+  font-size: 12px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.card-info {
+  padding: 14px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.price-current {
+  display: flex;
+  align-items: baseline;
+}
+
+.price-symbol {
+  font-size: 14px;
+  color: #FA8C16;
+  font-weight: 600;
+}
+
+.price-current {
+  font-size: 24px;
+  font-weight: 700;
+  color: #FA8C16;
+}
+
+.price-original {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.meta-text {
+  font-size: 13px;
+  color: #666;
+}
+
+.meta-dot {
+  font-size: 13px;
+  color: #ddd;
+}
+
+.card-btn {
+  display: inline-flex;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, #FA8C16, #FFA940);
+  border-radius: 20px;
+}
+
+.card-btn:active {
+  opacity: 0.9;
+}
+
+.btn-text {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* 加载状态 */
+.loading-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+}
+
+.loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #eee;
+  border-top-color: #FA8C16;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 空状态 */
+.empty-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 40px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.empty-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.empty-sub {
+  font-size: 14px;
+  color: #999;
+}
+
+.no-more {
+  padding: 16px 0;
+  text-align: center;
+}
+
+.no-more-text {
+  font-size: 12px;
+  color: #ccc;
+}
+
+.bottom-spacer {
+  height: 16px;
+}
+</style>
