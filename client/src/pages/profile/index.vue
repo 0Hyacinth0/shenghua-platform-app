@@ -155,7 +155,7 @@
     <!-- 退出登录 -->
     <view v-if="loggedIn" class="profile-logout">
       <button class="logout-btn" @tap="handleLogout">
-        <Icon icon="solar:logout-3-bold" :size="18" color="var(--color-primary)" />
+        <Icon icon="solar:logout-3-bold" :size="18" color="var(--color-accent)" />
         <text class="logout-text">退出登录</text>
       </button>
     </view>
@@ -233,10 +233,7 @@ onLoad(async () => {
 /* ---- Hero 区域 ---- */
 .profile-hero {
   position: relative;
-  margin: 0 16px;
-  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
   overflow: hidden;
-  background: var(--bg-card);
 }
 
 .hero-bg {
@@ -244,8 +241,8 @@ onLoad(async () => {
   top: 0;
   left: 0;
   right: 0;
-  height: 140px;
-  background: var(--color-primary-gradient);
+  height: 180px;
+  background: var(--color-primary);
 }
 
 .hero-content {
@@ -253,15 +250,15 @@ onLoad(async () => {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 44px 20px 20px;
+  padding: 48px 20px 20px;
 }
 
 .hero-avatar {
   width: 64px;
   height: 64px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  border: 3px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius-circle);
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -280,10 +277,10 @@ onLoad(async () => {
 }
 
 .hero-name {
-  font-size: var(--font-2xl);
+  font-size: var(--font-xl);
   font-weight: var(--weight-bold);
   color: #fff;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .hero-login {
@@ -291,8 +288,8 @@ onLoad(async () => {
 }
 
 .hero-sub {
-  font-size: var(--font-base);
-  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--font-md);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .hero-tag {
@@ -302,13 +299,12 @@ onLoad(async () => {
 }
 
 .member-badge {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   padding: 2px 10px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   gap: 4px;
-  backdrop-filter: blur(4px);
 }
 
 .member-text {
@@ -325,38 +321,38 @@ onLoad(async () => {
 
 .hero-points {
   font-size: var(--font-sm);
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .hero-setting {
   position: absolute;
-  top: 44px;
+  top: 48px;
   right: 16px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-circle);
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);
 }
 
 /* ---- 订单快捷入口 ---- */
 .order-shortcuts {
-  margin: 0 20px;
-  padding: 16px 0 20px;
+  margin: -12px 16px 0;
+  position: relative;
+  z-index: 1;
 }
 
 .order-title {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .order-title-text {
-  font-size: var(--font-lg);
+  font-size: var(--font-xl);
   font-weight: var(--weight-semibold);
   color: var(--text-primary);
 }
@@ -373,8 +369,12 @@ onLoad(async () => {
 }
 
 .order-grid {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 16px;
   display: flex;
   justify-content: space-around;
+  box-shadow: var(--shadow-md);
 }
 
 .order-item {
@@ -419,10 +419,10 @@ onLoad(async () => {
 
 /* ---- 工具栏 ---- */
 .profile-tools {
-  margin: 0 16px 12px;
+  margin: 12px 16px;
   background: var(--bg-card);
   border-radius: var(--radius-lg);
-  padding: 20px 16px;
+  padding: 16px;
   box-shadow: var(--shadow-sm);
 }
 
@@ -435,7 +435,7 @@ onLoad(async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .tool-item:active {
@@ -443,8 +443,8 @@ onLoad(async () => {
 }
 
 .tool-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -524,12 +524,12 @@ onLoad(async () => {
 }
 
 .logout-btn:active {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
 }
 
 .logout-text {
   font-size: var(--font-md);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 </style>
