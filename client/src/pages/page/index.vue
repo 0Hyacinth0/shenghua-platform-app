@@ -16,7 +16,7 @@
       </view>
 
       <view v-else class="empty-wrap">
-        <text class="empty-icon">📄</text>
+        <Icon icon="solar:document-bold" width="48" color="var(--text-hint)" />
         <text class="empty-text">暂无内容</text>
       </view>
     </view>
@@ -24,6 +24,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import http from '@/utils/http'
@@ -61,6 +62,7 @@ onLoad((options: any) => {
 </script>
 
 <style scoped>
+@import url('@/styles/tokens.css');
 .page-container {
   min-height: 100vh;
   background: #F5F6FA;
@@ -119,8 +121,8 @@ onLoad((options: any) => {
   width: 32px;
   height: 32px;
   border: 3px solid #eee;
-  border-top-color: #FF7A45;
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

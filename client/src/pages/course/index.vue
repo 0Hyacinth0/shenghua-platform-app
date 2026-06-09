@@ -63,7 +63,7 @@
         >
           <view class="card-cover" :style="{ background: course.coverColor || defaultGradient }">
             <view class="card-play">
-              <Icon icon="solar:play-bold" width="20" height="20" color="var(--color-primary)" />
+              <Icon icon="solar:play-bold" width="20" height="20" color="var(--color-accent)" />
             </view>
             <view v-if="course.price === 0" class="card-badge free">
               <text class="badge-text">免费</text>
@@ -294,13 +294,13 @@ onLoad(() => {
 
 .nav-my {
   padding: 6px var(--space-md);
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
   border-radius: var(--radius-full);
 }
 
 .my-text {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -333,7 +333,7 @@ onLoad(() => {
 }
 
 .category-tag.active {
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 .tag-text {
@@ -385,7 +385,7 @@ onLoad(() => {
   width: 24px;
   height: 3px;
   border-radius: 2px;
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 /* 课程列表 */
@@ -423,7 +423,7 @@ onLoad(() => {
 .card-play {
   width: 44px;
   height: 44px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.9);
   display: flex;
   align-items: center;
@@ -496,8 +496,8 @@ onLoad(() => {
 .lecturer-avatar {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
+  border-radius: var(--radius-circle);
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -506,7 +506,7 @@ onLoad(() => {
 .avatar-text {
   font-size: var(--space-md);
   font-weight: var(--weight-semibold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .lecturer-name {
@@ -529,7 +529,7 @@ onLoad(() => {
 .price-current {
   font-size: var(--font-xl);
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .price-current.free {
@@ -559,8 +559,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -575,8 +575,8 @@ onLoad(() => {
   width: 24px;
   height: 24px;
   border: 2px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

@@ -18,7 +18,7 @@
       <view class="course-card">
         <view class="card-cover" :style="{ background: course.coverColor || defaultGradient }">
           <view class="card-play">
-            <Icon icon="solar:play-bold" width="14" height="14" color="var(--color-primary)" />
+            <Icon icon="solar:play-bold" width="14" height="14" color="var(--color-accent)" />
           </view>
         </view>
         <view class="card-info">
@@ -257,7 +257,7 @@ onLoad((options: any) => {
 .card-play {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.9);
   display: flex;
   align-items: center;
@@ -303,7 +303,7 @@ onLoad((options: any) => {
 .card-price {
   font-size: var(--font-2xl);
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-accent);
   margin-top: var(--space-xs);
 }
 
@@ -335,7 +335,7 @@ onLoad((options: any) => {
 
 .coupon-selected {
   font-size: var(--font-base);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-semibold);
 }
 
@@ -381,7 +381,7 @@ onLoad((options: any) => {
 
 .price-discount {
   font-size: var(--font-base);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -398,14 +398,14 @@ onLoad((options: any) => {
 
 .price-symbol {
   font-size: var(--font-base);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-semibold);
 }
 
 .price-amount {
   font-size: var(--font-3xl);
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 /* 支付方式 */
@@ -453,7 +453,7 @@ onLoad((options: any) => {
 .pay-radio {
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   border: 2px solid var(--text-hint);
   display: flex;
   align-items: center;
@@ -461,8 +461,8 @@ onLoad((options: any) => {
 }
 
 .pay-radio.checked {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 /* 订单备注 */
@@ -527,14 +527,14 @@ onLoad((options: any) => {
 
 .submit-symbol {
   font-size: var(--font-lg);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-semibold);
 }
 
 .submit-amount {
   font-size: var(--font-3xl);
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .submit-btn {
@@ -542,7 +542,7 @@ onLoad((options: any) => {
   height: 48px;
   border-radius: var(--radius-full);
   border: none;
-  background: var(--color-primary);
+  background: var(--color-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -570,8 +570,8 @@ onLoad((options: any) => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -596,7 +596,7 @@ onLoad((options: any) => {
 
 .empty-btn {
   padding: 10px var(--space-3xl);
-  background: var(--color-primary);
+  background: var(--color-accent);
   border-radius: var(--radius-xl);
 }
 

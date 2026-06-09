@@ -357,8 +357,8 @@ onLoad((options: any) => {
 .user-avatar {
   width: 44px;
   height: 44px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
+  border-radius: var(--radius-circle);
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -367,7 +367,7 @@ onLoad((options: any) => {
 .avatar-text {
   font-size: var(--font-xl);
   font-weight: var(--weight-semibold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .user-info {
@@ -388,14 +388,14 @@ onLoad((options: any) => {
 }
 
 .topic-badge {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
   padding: var(--space-xs) 12px;
   border-radius: 14px;
 }
 
 .topic-text {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -489,8 +489,8 @@ onLoad((options: any) => {
 .comment-avatar {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
+  border-radius: var(--radius-circle);
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -499,7 +499,7 @@ onLoad((options: any) => {
 .avatar-text-sm {
   font-size: var(--font-base);
   font-weight: var(--weight-semibold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .comment-username {
@@ -537,7 +537,7 @@ onLoad((options: any) => {
 }
 
 .reply-user {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -598,8 +598,8 @@ onLoad((options: any) => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -664,7 +664,7 @@ onLoad((options: any) => {
 }
 
 .send-btn.active {
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 .send-text {

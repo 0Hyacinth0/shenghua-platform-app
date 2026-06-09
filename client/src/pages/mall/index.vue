@@ -57,7 +57,7 @@
             <view class="product-img-wrap">
               <image v-if="item.mainImage" :src="imgUrl(item.mainImage)" class="product-img" mode="aspectFill" />
               <view v-else class="img-placeholder">
-                <text class="placeholder-icon">⌂</text>
+                <Icon icon="solar:bag-bold" width="32" color="var(--text-hint)" />
               </view>
             </view>
             <view class="product-info">
@@ -75,7 +75,7 @@
 
         <!-- 空状态 -->
         <view v-else-if="!loading" class="empty-wrap">
-          <text class="empty-icon">⊘</text>
+          <Icon icon="solar:bag-bold" width="48" color="var(--text-hint)" />
           <text class="empty-text">暂无商品</text>
         </view>
 
@@ -89,6 +89,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { getCategoryTree, getFrontProductList, imgUrl } from '@/api'
@@ -181,6 +182,7 @@ onLoad(() => {
 </script>
 
 <style scoped>
+@import url('@/styles/tokens.css');
 .page-container {
   min-height: 100vh;
   background: var(--color-bg-page, #F7F7F8);
@@ -250,7 +252,7 @@ onLoad(() => {
   width: 3px;
   height: 20px;
   border-radius: 0 3px 3px 0;
-  background: var(--color-primary, #FF4D4F);
+  background: var(--color-primary, var(--color-accent));
 }
 
 .sidebar-text {
@@ -390,7 +392,7 @@ onLoad(() => {
 .product-price {
   font-size: var(--font-lg, 16px);
   font-weight: var(--weight-bold, 700);
-  color: var(--color-primary, #FF4D4F);
+  color: var(--color-primary, var(--color-accent));
 }
 
 .price-symbol {
@@ -431,8 +433,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--color-border, #eee);
-  border-top-color: var(--color-primary, #FF4D4F);
-  border-radius: 50%;
+  border-top-color: var(--color-primary, var(--color-accent));
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

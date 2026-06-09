@@ -63,7 +63,7 @@
         >
           <view class="card-cover" :style="{ background: course.coverColor || defaultGradient }">
             <view class="card-play">
-              <Icon icon="solar:play-bold" width="20" height="20" color="var(--color-primary)" />
+              <Icon icon="solar:play-bold" width="20" height="20" color="var(--color-accent)" />
             </view>
             <view v-if="course.progress >= 100" class="card-badge completed">
               <text class="badge-text">已完成</text>
@@ -275,7 +275,7 @@ onLoad(() => {
 }
 
 .filter-tag.active {
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 .tag-text {
@@ -307,7 +307,7 @@ onLoad(() => {
   top: -20px;
   width: 100px;
   height: 100px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.1);
 }
 
@@ -373,7 +373,7 @@ onLoad(() => {
 .card-play {
   width: 44px;
   height: 44px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.9);
   display: flex;
   align-items: center;
@@ -431,8 +431,8 @@ onLoad(() => {
 .lecturer-avatar {
   width: 24px;
   height: 24px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
+  border-radius: var(--radius-circle);
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -441,7 +441,7 @@ onLoad(() => {
 .avatar-text {
   font-size: var(--font-xs);
   font-weight: var(--weight-semibold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .lecturer-name {
@@ -467,7 +467,7 @@ onLoad(() => {
 
 .progress-fill {
   height: 100%;
-  background: var(--color-primary);
+  background: var(--color-accent);
   border-radius: var(--radius-full);
 }
 
@@ -486,19 +486,19 @@ onLoad(() => {
 
 .card-lesson {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
 .card-btn {
   padding: 6px 14px;
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
   border-radius: var(--radius-full);
 }
 
 .btn-text {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -514,8 +514,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -530,8 +530,8 @@ onLoad(() => {
   width: 24px;
   height: 24px;
   border: 2px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -556,7 +556,7 @@ onLoad(() => {
 
 .empty-btn {
   padding: 10px var(--space-3xl);
-  background: var(--color-primary);
+  background: var(--color-accent);
   border-radius: var(--radius-xl);
 }
 

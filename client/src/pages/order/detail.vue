@@ -433,7 +433,7 @@ onLoad((options: any) => {
 
 .price-discount {
   font-size: var(--font-base);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -450,14 +450,14 @@ onLoad((options: any) => {
 
 .price-symbol {
   font-size: var(--font-base);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-semibold);
 }
 
 .price-amount {
   font-size: var(--font-3xl);
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 /* 订单信息 */
@@ -486,17 +486,17 @@ onLoad((options: any) => {
 
 .copy-btn {
   padding: 3px 10px;
-  border: 1px solid var(--color-primary);
+  border: 1px solid var(--color-accent);
   border-radius: 12px;
 }
 
 .copy-btn:active {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
 }
 
 .copy-text {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -531,7 +531,7 @@ onLoad((options: any) => {
 }
 
 .action-btn.primary {
-  border-color: var(--color-primary);
+  border-color: var(--color-accent);
 }
 
 .action-btn-text {
@@ -540,7 +540,7 @@ onLoad((options: any) => {
 }
 
 .action-btn-text.primary {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -556,8 +556,8 @@ onLoad((options: any) => {
   width: 32px;
   height: 32px;
   border: 3px solid #eee;
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -582,7 +582,7 @@ onLoad((options: any) => {
 
 .empty-btn {
   padding: 10px var(--space-2xl);
-  background: var(--color-primary);
+  background: var(--color-accent);
   border-radius: var(--radius-full);
 }
 

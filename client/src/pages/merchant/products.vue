@@ -6,7 +6,7 @@
       </view>
       <text class="nav-title">商品管理</text>
       <view class="header-action" @tap="onAdd">
-        <Icon icon="solar:add-circle-bold" width="18" color="var(--color-primary)" />
+        <Icon icon="solar:add-circle-bold" width="18" color="var(--color-accent)" />
         <text class="action-text">新增</text>
       </view>
     </view>
@@ -47,7 +47,7 @@
           </view>
           <view class="product-actions">
             <view class="action-btn" @tap="onEdit(item)">
-              <Icon icon="solar:pen-new-square-bold" width="14" color="var(--color-primary)" />
+              <Icon icon="solar:pen-new-square-bold" width="14" color="var(--color-accent)" />
               <text class="action-btn-text">编辑</text>
             </view>
           </view>
@@ -162,7 +162,7 @@ onLoad(() => {
 
 .action-text {
   font-size: var(--font-base);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -198,7 +198,7 @@ onLoad(() => {
   width: 24px;
   height: 3px;
   border-radius: 2px;
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 .product-list {
@@ -264,7 +264,7 @@ onLoad(() => {
 .product-price {
   font-size: var(--font-base);
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .product-status {
@@ -312,9 +312,9 @@ onLoad(() => {
   align-items: center;
   gap: var(--space-xs);
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   padding: var(--space-xs) 12px;
-  border: 1px solid var(--color-primary);
+  border: 1px solid var(--color-accent);
   border-radius: var(--radius-full);
 }
 
@@ -329,8 +329,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

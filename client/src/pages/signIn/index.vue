@@ -51,7 +51,7 @@
           :class="{ signed: day.signed, today: day.isToday, empty: !day.day }"
         >
           <text v-if="day.day" class="day-text">{{ day.day }}</text>
-          <Icon v-if="day.signed" icon="solar:check-circle-bold" width="8" color="var(--color-primary)" />
+          <Icon v-if="day.signed" icon="solar:check-circle-bold" width="8" color="var(--color-accent)" />
         </view>
       </view>
     </view>
@@ -67,7 +67,7 @@
           <view v-for="reward in rewards" :key="reward.day" class="reward-item" :class="{ claimed: reward.claimed, current: reward.isCurrent }">
             <text class="reward-day">第{{ reward.day }}天</text>
             <view class="reward-icon-wrap">
-              <Icon :icon="reward.day <= 2 ? 'solar:star-bold' : reward.day <= 4 ? 'solar:star-bold' : reward.day <= 6 ? 'solar:star-bold' : 'solar:cup-bold'" width="20" :color="reward.claimed ? '#94A3B8' : 'var(--color-primary)'" />
+              <Icon :icon="reward.day <= 2 ? 'solar:star-bold' : reward.day <= 4 ? 'solar:star-bold' : reward.day <= 6 ? 'solar:star-bold' : 'solar:cup-bold'" width="20" :color="reward.claimed ? '#94A3B8' : 'var(--color-accent)'" />
             </view>
             <text class="reward-points">+{{ reward.points }}</text>
             <view v-if="reward.claimed" class="reward-badge">
@@ -301,7 +301,7 @@ onLoad(() => {
   top: -20px;
   width: 100px;
   height: 100px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.1);
 }
 
@@ -311,7 +311,7 @@ onLoad(() => {
   bottom: -15px;
   width: 60px;
   height: 60px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.05);
 }
 
@@ -378,7 +378,7 @@ onLoad(() => {
 .sign-btn-text {
   font-size: var(--font-lg);
   font-weight: var(--weight-semibold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .sign-btn.signed .sign-btn-text {
@@ -433,13 +433,13 @@ onLoad(() => {
 }
 
 .calendar-day.signed {
-  background: var(--color-primary-light);
-  border-radius: 50%;
+  background: var(--color-accent-light);
+  border-radius: var(--radius-circle);
 }
 
 .calendar-day.today {
-  border: 1.5px solid var(--color-primary);
-  border-radius: 50%;
+  border: 1.5px solid var(--color-accent);
+  border-radius: var(--radius-circle);
 }
 
 .calendar-day.empty {
@@ -452,7 +452,7 @@ onLoad(() => {
 }
 
 .calendar-day.signed .day-text {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -514,8 +514,8 @@ onLoad(() => {
 }
 
 .reward-item.current {
-  background: var(--color-primary-light);
-  border: 1.5px solid var(--color-primary);
+  background: var(--color-accent-light);
+  border: 1.5px solid var(--color-accent);
 }
 
 .reward-item.claimed {
@@ -537,7 +537,7 @@ onLoad(() => {
 
 .reward-points {
   font-size: var(--font-xs);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -576,8 +576,8 @@ onLoad(() => {
 .rule-icon {
   width: 24px;
   height: 24px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
+  border-radius: var(--radius-circle);
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -586,7 +586,7 @@ onLoad(() => {
 
 .icon-text {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-semibold);
 }
 
@@ -625,7 +625,7 @@ onLoad(() => {
 .record-icon {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: var(--color-success-light);
   display: flex;
   align-items: center;
@@ -647,7 +647,7 @@ onLoad(() => {
 .record-points {
   font-size: var(--font-base);
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .record-time {

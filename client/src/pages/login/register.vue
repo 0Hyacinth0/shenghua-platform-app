@@ -200,7 +200,7 @@ async function handleRegister() {
   top: -30px;
   width: 120px;
   height: 120px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.1);
 }
 
@@ -210,7 +210,7 @@ async function handleRegister() {
   bottom: -20px;
   width: 80px;
   height: 80px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.05);
 }
 
@@ -352,8 +352,8 @@ async function handleRegister() {
 }
 
 .checkbox.checked {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .agreement-text {
@@ -363,7 +363,7 @@ async function handleRegister() {
 
 .agreement-link {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 /* 注册按钮 */
@@ -415,7 +415,7 @@ async function handleRegister() {
 
 .footer-link {
   font-size: var(--font-base);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 </style>

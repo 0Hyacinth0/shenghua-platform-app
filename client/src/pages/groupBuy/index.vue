@@ -55,7 +55,7 @@
       </view>
 
       <view v-else-if="!loading" class="empty-wrap">
-        <text class="empty-icon">👥</text>
+        <Icon icon="solar:users-group-rounded-bold" width="48" color="var(--text-hint)" />
         <text class="empty-text">暂无拼团活动</text>
         <text class="empty-sub">敬请期待</text>
       </view>
@@ -72,6 +72,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import { Icon } from '@iconify/vue'
 import { getGroupBuyList, imgUrl } from '@/api'
 
 const loading = ref(false)
@@ -127,16 +128,18 @@ onLoad(() => {
 </script>
 
 <style scoped>
+@import url('@/styles/tokens.css');
+
 .page {
   min-height: 100vh;
-  background: #F5F6FA;
+  background: var(--bg-page);
   display: flex;
   flex-direction: column;
 }
 
 /* 顶部导航 */
 .nav-bar {
-  background: #fff;
+  background: var(--bg-card);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -153,21 +156,21 @@ onLoad(() => {
 
 .back-icon {
   font-size: 28px;
-  color: #1a1a1a;
+  color: var(--text-primary);
   font-weight: 300;
 }
 
 .nav-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-size: var(--font-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
 }
 
 /* 拼团横幅 */
 .banner-card {
   position: relative;
   margin: 12px 16px 0;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
@@ -183,7 +186,7 @@ onLoad(() => {
   top: -20px;
   width: 80px;
   height: 80px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.1);
 }
 
@@ -193,7 +196,7 @@ onLoad(() => {
   bottom: -15px;
   width: 60px;
   height: 60px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.05);
 }
 
@@ -204,14 +207,14 @@ onLoad(() => {
 }
 
 .banner-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #fff;
+  font-size: var(--font-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-white);
   display: block;
 }
 
 .banner-sub {
-  font-size: 14px;
+  font-size: var(--font-md);
   color: rgba(255,255,255,0.8);
   margin-top: 4px;
   display: block;
@@ -220,20 +223,20 @@ onLoad(() => {
 /* 拼团列表 */
 .group-list {
   flex: 1;
-  padding: 12px 16px;
+  padding: var(--space-md) var(--space-lg);
 }
 
 .group-items {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-md);
 }
 
 .group-card {
-  background: #fff;
-  border-radius: 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .group-card:active {
@@ -251,17 +254,17 @@ onLoad(() => {
 
 .card-badge {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: var(--space-md);
+  left: var(--space-md);
   background: linear-gradient(135deg, #FA8C16, #FFA940);
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: 4px var(--space-md);
+  border-radius: var(--radius-md);
 }
 
 .badge-text {
-  font-size: 12px;
-  color: #fff;
-  font-weight: 600;
+  font-size: var(--font-sm);
+  color: var(--text-white);
+  font-weight: var(--weight-semibold);
 }
 
 .card-info {
@@ -269,9 +272,9 @@ onLoad(() => {
 }
 
 .card-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-size: var(--font-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -283,8 +286,8 @@ onLoad(() => {
 .card-price {
   display: flex;
   align-items: baseline;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
 }
 
 .price-current {
@@ -293,20 +296,20 @@ onLoad(() => {
 }
 
 .price-symbol {
-  font-size: 14px;
+  font-size: var(--font-md);
   color: #FA8C16;
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 .price-current {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: var(--space-2xl);
+  font-weight: var(--weight-bold);
   color: #FA8C16;
 }
 
 .price-original {
-  font-size: 14px;
-  color: #999;
+  font-size: var(--font-md);
+  color: var(--text-hint);
   text-decoration: line-through;
 }
 
@@ -314,12 +317,12 @@ onLoad(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
 }
 
 .meta-text {
   font-size: 13px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .meta-dot {
@@ -329,9 +332,9 @@ onLoad(() => {
 
 .card-btn {
   display: inline-flex;
-  padding: 8px 20px;
+  padding: var(--space-sm) 20px;
   background: linear-gradient(135deg, #FA8C16, #FFA940);
-  border-radius: 20px;
+  border-radius: var(--radius-xl);
 }
 
 .card-btn:active {
@@ -339,9 +342,9 @@ onLoad(() => {
 }
 
 .btn-text {
-  font-size: 14px;
-  color: #fff;
-  font-weight: 600;
+  font-size: var(--font-md);
+  color: var(--text-white);
+  font-weight: var(--weight-semibold);
 }
 
 /* 加载状态 */
@@ -355,9 +358,9 @@ onLoad(() => {
 .loading-spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid #eee;
-  border-top-color: #FA8C16;
-  border-radius: 50%;
+  border: 3px solid var(--bg-gray);
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -371,36 +374,32 @@ onLoad(() => {
   flex-direction: column;
   align-items: center;
   padding: 60px 40px;
-}
-
-.empty-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
+  gap: var(--space-xs);
 }
 
 .empty-text {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 4px;
+  font-size: var(--font-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  margin-top: var(--space-md);
 }
 
 .empty-sub {
-  font-size: 14px;
-  color: #999;
+  font-size: var(--font-md);
+  color: var(--text-hint);
 }
 
 .no-more {
-  padding: 16px 0;
+  padding: var(--space-lg) 0;
   text-align: center;
 }
 
 .no-more-text {
-  font-size: 12px;
-  color: #ccc;
+  font-size: var(--font-sm);
+  color: var(--text-hint);
 }
 
 .bottom-spacer {
-  height: 16px;
+  height: var(--space-lg);
 }
 </style>

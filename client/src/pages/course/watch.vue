@@ -17,7 +17,7 @@
     <view class="video-area">
       <view class="video-placeholder">
         <view class="play-btn">
-          <Icon icon="solar:play-bold" width="30" height="30" color="var(--color-primary)" />
+          <Icon icon="solar:play-bold" width="30" height="30" color="var(--color-accent)" />
         </view>
         <text class="video-hint">视频播放区域</text>
       </view>
@@ -141,7 +141,7 @@
       </view>
       <view class="bar-right">
         <button class="btn-note" @tap="onNote">
-          <Icon icon="solar:notebook-bold" width="16" height="16" color="var(--color-primary)" style="margin-right: 4px;" />
+          <Icon icon="solar:notebook-bold" width="16" height="16" color="var(--color-accent)" style="margin-right: 4px;" />
           <text class="btn-note-text">记笔记</text>
         </button>
         <button class="btn-done" @tap="onMarkDone">
@@ -326,7 +326,7 @@ onLoad((options: any) => {
 .play-btn {
   width: 60px;
   height: 60px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.9);
   display: flex;
   align-items: center;
@@ -408,7 +408,7 @@ onLoad((options: any) => {
   width: 24px;
   height: 3px;
   border-radius: 2px;
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 /* 课程目录 */
@@ -430,13 +430,13 @@ onLoad((options: any) => {
 }
 
 .lesson-item.active {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
 }
 
 .lesson-index {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: var(--bg-gray);
   display: flex;
   align-items: center;
@@ -445,7 +445,7 @@ onLoad((options: any) => {
 }
 
 .lesson-index.active {
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 .index-text {
@@ -473,7 +473,7 @@ onLoad((options: any) => {
 }
 
 .lesson-title.active {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -491,14 +491,14 @@ onLoad((options: any) => {
 
 .lesson-free {
   font-size: var(--font-xs);
-  color: var(--color-primary);
-  background: var(--color-primary-light);
+  color: var(--color-accent);
+  background: var(--color-accent-light);
   padding: 1px 6px;
   border-radius: var(--radius-sm);
 }
 
 .playing-badge {
-  background: var(--color-primary);
+  background: var(--color-accent);
   padding: 3px 10px;
   border-radius: 10px;
   display: flex;
@@ -547,8 +547,8 @@ onLoad((options: any) => {
 .lecturer-avatar {
   width: 44px;
   height: 44px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
+  border-radius: var(--radius-circle);
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -557,7 +557,7 @@ onLoad((options: any) => {
 .avatar-text {
   font-size: var(--font-xl);
   font-weight: var(--weight-semibold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .lecturer-info {
@@ -655,8 +655,8 @@ onLoad((options: any) => {
 .user-avatar {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
+  border-radius: var(--radius-circle);
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -665,7 +665,7 @@ onLoad((options: any) => {
 .avatar-text {
   font-size: var(--space-md);
   font-weight: var(--weight-semibold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .user-name {
@@ -737,7 +737,7 @@ onLoad((options: any) => {
 .btn-note {
   height: 36px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-primary);
+  border: 1px solid var(--color-accent);
   background: var(--bg-card);
   display: flex;
   align-items: center;
@@ -746,12 +746,12 @@ onLoad((options: any) => {
 }
 
 .btn-note:active {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
 }
 
 .btn-note-text {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -759,7 +759,7 @@ onLoad((options: any) => {
   height: 36px;
   border-radius: var(--radius-full);
   border: none;
-  background: var(--color-primary);
+  background: var(--color-accent);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -14,14 +14,14 @@
       <!-- 拼团信息 -->
       <view class="group-info-card">
         <view class="group-banner">
-          <text class="banner-icon">🎉</text>
+          <Icon icon="solar:confetti-bold" width="18" color="#fff" />
           <text class="banner-text">{{ groupInfo.groupSize || 2 }}人成团，还差{{ groupInfo.remaining || groupInfo.groupSize || 2 }}人</text>
         </view>
         <view class="group-product">
           <view class="product-img-wrap">
             <image v-if="groupInfo.mainImage" :src="imgUrl(groupInfo.mainImage)" class="product-img" mode="aspectFill" />
             <view v-else class="img-placeholder">
-              <text class="placeholder-icon">🛍️</text>
+              <Icon icon="solar:bag-bold" width="28" color="var(--text-hint)" />
             </view>
           </view>
           <view class="product-info">
@@ -39,7 +39,7 @@
 
       <!-- 收货地址 -->
       <view class="address-card" @tap="goAddress">
-        <text class="address-icon">📍</text>
+        <Icon icon="solar:map-point-bold" width="20" color="var(--text-hint)" />
         <view v-if="address" class="address-info">
           <view class="address-top">
             <text class="address-name">{{ address.name }}</text>
@@ -80,6 +80,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { getGroupBuyList, imgUrl } from '@/api'
@@ -167,6 +168,7 @@ onLoad((options: any) => {
 </script>
 
 <style scoped>
+@import url('@/styles/tokens.css');
 .page-container {
   min-height: 100vh;
   background: #F5F6FA;
@@ -209,7 +211,7 @@ onLoad((options: any) => {
 }
 
 .group-banner {
-  background: linear-gradient(135deg, #FF7A45, #FF9A6C);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent));
   padding: 10px 16px;
   display: flex;
   align-items: center;
@@ -285,7 +287,7 @@ onLoad((options: any) => {
 .group-price {
   font-size: 18px;
   font-weight: 700;
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 .price-symbol {
@@ -415,7 +417,7 @@ onLoad((options: any) => {
 .total-price {
   font-size: 18px;
   font-weight: 700;
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 .checkout-btn {
@@ -423,7 +425,7 @@ onLoad((options: any) => {
   height: 44px;
   border-radius: 20px;
   border: none;
-  background: #FF7A45;
+  background: var(--color-accent);
   color: #fff;
   font-size: 15px;
   font-weight: 600;
@@ -447,8 +449,8 @@ onLoad((options: any) => {
   width: 32px;
   height: 32px;
   border: 3px solid #eee;
-  border-top-color: #FF7A45;
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

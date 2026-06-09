@@ -28,7 +28,7 @@
           </view>
           <view class="address-actions">
             <view class="action-item" @tap.stop="onSetDefault(addr)">
-              <Icon :icon="addr.defaultFlag ? 'solar:check-circle-bold' : 'solar:circle-bold'" width="16" :color="addr.defaultFlag ? 'var(--color-primary)' : 'var(--text-hint)'" />
+              <Icon :icon="addr.defaultFlag ? 'solar:check-circle-bold' : 'solar:circle-bold'" width="16" :color="addr.defaultFlag ? 'var(--color-accent)' : 'var(--text-hint)'" />
               <text class="action-label">默认</text>
             </view>
             <view class="action-item" @tap.stop="onEdit(addr)">
@@ -321,14 +321,14 @@ onLoad(() => {
 }
 
 .default-badge {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
   padding: 2px var(--space-sm);
   border-radius: 4px;
 }
 
 .default-text {
   font-size: var(--font-xs);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -374,7 +374,7 @@ onLoad(() => {
   height: 48px;
   border-radius: var(--radius-full);
   border: none;
-  background: var(--color-primary);
+  background: var(--color-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -490,7 +490,7 @@ onLoad(() => {
 .checkbox {
   width: 20px;
   height: 20px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   border: 1.5px solid var(--bg-gray);
   display: flex;
   align-items: center;
@@ -498,8 +498,8 @@ onLoad(() => {
 }
 
 .checkbox.checked {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .checkbox-label {
@@ -512,7 +512,7 @@ onLoad(() => {
   height: 48px;
   border-radius: var(--radius-full);
   border: none;
-  background: var(--color-primary);
+  background: var(--color-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -541,8 +541,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

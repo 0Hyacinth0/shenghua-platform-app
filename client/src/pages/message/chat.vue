@@ -17,7 +17,7 @@
       <view v-else-if="chatMessages.length > 0" class="msg-list">
         <view v-for="msg in chatMessages" :key="msg.id" :id="'msg-' + msg.id" class="msg-item" :class="{ self: msg.isSelf }">
           <view v-if="!msg.isSelf" class="msg-avatar">
-            <Icon icon="solar:user-bold" width="18" color="var(--color-primary)" />
+            <Icon icon="solar:user-bold" width="18" color="var(--color-accent)" />
           </view>
           <view class="msg-bubble" :class="{ self: msg.isSelf }">
             <text class="msg-text">{{ msg.content }}</text>
@@ -198,8 +198,8 @@ onLoad((options: any) => {
 .msg-avatar {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
+  border-radius: var(--radius-circle);
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -208,7 +208,7 @@ onLoad((options: any) => {
 }
 
 .self-avatar {
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 .msg-bubble {
@@ -299,7 +299,7 @@ onLoad((options: any) => {
 .send-btn {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: var(--bg-gray);
   display: flex;
   align-items: center;
@@ -307,7 +307,7 @@ onLoad((options: any) => {
 }
 
 .send-btn.active {
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 /* ---- 加载 ---- */
@@ -322,8 +322,8 @@ onLoad((options: any) => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

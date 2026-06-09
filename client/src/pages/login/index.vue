@@ -189,7 +189,7 @@ async function handleLogin() {
   top: -30px;
   width: 120px;
   height: 120px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.1);
 }
 
@@ -199,7 +199,7 @@ async function handleLogin() {
   bottom: -20px;
   width: 80px;
   height: 80px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.05);
 }
 
@@ -345,8 +345,8 @@ async function handleLogin() {
 }
 
 .checkbox.checked {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .remember-text {
@@ -356,7 +356,7 @@ async function handleLogin() {
 
 .forgot-password {
   font-size: 13px;
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 /* 登录按钮 */
@@ -408,7 +408,7 @@ async function handleLogin() {
 
 .footer-link {
   font-size: var(--font-base);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -444,7 +444,7 @@ async function handleLogin() {
 .social-btn {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -480,6 +480,6 @@ async function handleLogin() {
 }
 
 .agreement-link {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 </style>

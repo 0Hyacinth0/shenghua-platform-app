@@ -11,35 +11,35 @@
     <view class="form-card">
       <view class="form-item">
         <view class="form-label-row">
-          <Icon icon="solar:shop-bold" width="18" color="var(--color-primary)" />
+          <Icon icon="solar:shop-bold" width="18" color="var(--color-accent)" />
           <text class="form-label">店铺名称</text>
         </view>
         <input v-model="form.shopName" class="form-input" placeholder="请输入店铺名称" placeholder-class="input-placeholder" />
       </view>
       <view class="form-item">
         <view class="form-label-row">
-          <Icon icon="solar:user-bold" width="18" color="var(--color-primary)" />
+          <Icon icon="solar:user-bold" width="18" color="var(--color-accent)" />
           <text class="form-label">联系人</text>
         </view>
         <input v-model="form.contactName" class="form-input" placeholder="请输入联系人姓名" placeholder-class="input-placeholder" />
       </view>
       <view class="form-item">
         <view class="form-label-row">
-          <Icon icon="solar:phone-bold" width="18" color="var(--color-primary)" />
+          <Icon icon="solar:phone-bold" width="18" color="var(--color-accent)" />
           <text class="form-label">联系电话</text>
         </view>
         <input v-model="form.phone" class="form-input" placeholder="请输入联系电话" placeholder-class="input-placeholder" type="number" :maxlength="11" />
       </view>
       <view class="form-item">
         <view class="form-label-row">
-          <Icon icon="solar:folder-bold" width="18" color="var(--color-primary)" />
+          <Icon icon="solar:folder-bold" width="18" color="var(--color-accent)" />
           <text class="form-label">经营类目</text>
         </view>
         <input v-model="form.category" class="form-input" placeholder="如：服装、数码、食品" placeholder-class="input-placeholder" />
       </view>
       <view class="form-item">
         <view class="form-label-row">
-          <Icon icon="solar:document-bold" width="18" color="var(--color-primary)" />
+          <Icon icon="solar:document-bold" width="18" color="var(--color-accent)" />
           <text class="form-label">营业执照</text>
         </view>
         <view class="upload-area" @tap="chooseImage">
@@ -52,7 +52,7 @@
       </view>
       <view class="form-item">
         <view class="form-label-row">
-          <Icon icon="solar:pen-new-square-bold" width="18" color="var(--color-primary)" />
+          <Icon icon="solar:pen-new-square-bold" width="18" color="var(--color-accent)" />
           <text class="form-label">店铺简介</text>
         </view>
         <textarea v-model="form.description" class="form-textarea" placeholder="请简要描述您的店铺" placeholder-class="input-placeholder" :maxlength="300" />
@@ -251,7 +251,7 @@ async function onSubmit() {
   height: 48px;
   border-radius: var(--radius-full);
   border: none;
-  background: var(--color-primary);
+  background: var(--color-accent);
   color: var(--text-white);
   font-size: var(--font-md);
   font-weight: var(--weight-semibold);

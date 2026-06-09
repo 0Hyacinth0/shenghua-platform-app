@@ -23,7 +23,7 @@
         @tap="activeCategory = cat.key"
       >
         <view class="category-icon" :class="{ active: activeCategory === cat.key }">
-          <Icon :icon="cat.icon" width="22" :color="activeCategory === cat.key ? 'var(--color-primary)' : 'var(--text-secondary)'" />
+          <Icon :icon="cat.icon" width="22" :color="activeCategory === cat.key ? 'var(--color-accent)' : 'var(--text-secondary)'" />
           <view v-if="cat.badge > 0" class="category-badge">
             <text class="badge-text">{{ cat.badge > 99 ? '99+' : cat.badge }}</text>
           </view>
@@ -137,7 +137,7 @@ function getAvatarColor(type: string) {
   const colorMap: Record<string, string> = {
     system: 'var(--color-info)',
     order: 'var(--color-success)',
-    comment: 'var(--color-primary)',
+    comment: 'var(--color-accent)',
     like: 'var(--color-danger)',
   }
   return colorMap[type] || 'var(--text-secondary)'
@@ -251,7 +251,7 @@ onLoad(() => {
 }
 
 .category-icon.active {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
 }
 
 .category-badge {
@@ -280,7 +280,7 @@ onLoad(() => {
 }
 
 .category-label.active {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -314,7 +314,7 @@ onLoad(() => {
 .msg-avatar {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -329,7 +329,7 @@ onLoad(() => {
 }
 
 .msg-avatar.comment {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
 }
 
 .msg-avatar.like {
@@ -342,7 +342,7 @@ onLoad(() => {
   right: 0;
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: var(--color-danger);
   border: 2px solid var(--bg-card);
 }
@@ -392,8 +392,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

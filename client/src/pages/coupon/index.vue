@@ -182,13 +182,13 @@ onLoad(() => {
 
 .nav-btn {
   padding: 6px 12px;
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
   border-radius: var(--radius-md);
 }
 
 .center-text {
   font-size: 13px;
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -227,7 +227,7 @@ onLoad(() => {
   width: 24px;
   height: 3px;
   border-radius: 2px;
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 /* 优惠券列表 */
@@ -357,7 +357,7 @@ onLoad(() => {
   margin-top: 6px;
   padding: 5px 14px;
   border-radius: var(--radius-md);
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 .action-text {
@@ -388,8 +388,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -415,7 +415,7 @@ onLoad(() => {
 
 .empty-btn {
   padding: 10px var(--space-2xl);
-  background: var(--color-primary);
+  background: var(--color-accent);
   border-radius: var(--radius-xl);
 }
 

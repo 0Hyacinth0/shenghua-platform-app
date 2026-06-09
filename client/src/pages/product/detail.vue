@@ -18,7 +18,7 @@
       </view>
       <view class="nav-actions">
         <view class="nav-btn" @tap="goCart">
-          <text class="cart-icon">🛒</text>
+          <Icon icon="solar:cart-large-2-bold" width="18" color="var(--text-primary)" />
           <view v-if="cartCount > 0" class="cart-badge">
             <text class="badge-text">{{ cartCount > 99 ? '99+' : cartCount }}</text>
           </view>
@@ -48,7 +48,7 @@
         </swiper-item>
       </swiper>
       <view v-else class="gallery-placeholder">
-        <text class="placeholder-icon">📦</text>
+        <Icon icon="solar:box-bold" width="48" color="var(--text-hint)" />
       </view>
       <view v-if="imageList.length > 1" class="gallery-counter">
         <text class="counter-text">{{ currentImageIndex + 1 }}/{{ imageList.length }}</text>
@@ -140,7 +140,7 @@
       <scroll-view scroll-x class="recommend-scroll">
         <view class="recommend-card" v-for="p in recommendProducts" :key="p.id" @tap="goProduct(p.id)">
           <view class="recommend-img" :style="{ background: p.coverColor }">
-            <text class="recommend-placeholder">📦</text>
+            <Icon icon="solar:box-bold" width="24" color="var(--text-hint)" />
           </view>
           <view class="recommend-info">
             <text class="recommend-title">{{ p.title }}</text>
@@ -156,15 +156,15 @@
     <view class="action-bar">
       <view class="action-icons">
         <view class="action-icon-btn" @tap="goHome">
-          <text class="icon-text">🏠</text>
+          <Icon icon="solar:home-bold" width="20" color="var(--text-secondary)" />
           <text class="icon-label">首页</text>
         </view>
         <view class="action-icon-btn" @tap="goCart">
-          <text class="icon-text">🛒</text>
+          <Icon icon="solar:cart-large-2-bold" width="20" color="var(--text-secondary)" />
           <text class="icon-label">购物车</text>
         </view>
         <view class="action-icon-btn" @tap="onFavorite">
-          <text class="icon-text">{{ favorited ? '❤️' : '🤍' }}</text>
+          <Icon :icon="favorited ? 'solar:heart-bold' : 'solar:heart-linear'" width="20" :color="favorited ? 'var(--color-danger)' : 'var(--text-secondary)'" />
           <text class="icon-label">收藏</text>
         </view>
       </view>
@@ -195,7 +195,7 @@
         <view class="spec-sheet-header">
           <view class="spec-sheet-info">
             <view class="spec-sheet-img" :style="{ background: '#f5f5f5' }">
-              <text class="spec-img-placeholder">📦</text>
+              <Icon icon="solar:box-bold" width="24" color="var(--text-hint)" />
             </view>
             <view class="spec-sheet-price-info">
               <view class="spec-sheet-price">
@@ -256,6 +256,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import { Icon } from '@iconify/vue'
 import { getProductDetail, addToCart, imgUrl } from '@/api'
 import http from '@/utils/http'
 import { getCurrentUserId } from '@/utils/user'
@@ -508,6 +509,7 @@ onLoad(async (options) => {
 </script>
 
 <style scoped>
+@import url('@/styles/tokens.css');
 .page {
   min-height: 100vh;
   background: #F5F6FA;
@@ -536,7 +538,7 @@ onLoad(async (options) => {
 .nav-back {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(0,0,0,0.05);
   display: flex;
   align-items: center;
@@ -579,7 +581,7 @@ onLoad(async (options) => {
   width: 20px;
   height: 2px;
   border-radius: 1px;
-  background: #FF7A45;
+  background: var(--color-accent);
 }
 
 .nav-actions {
@@ -590,7 +592,7 @@ onLoad(async (options) => {
 .nav-btn {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(0,0,0,0.05);
   display: flex;
   align-items: center;
@@ -608,7 +610,7 @@ onLoad(async (options) => {
   right: -2px;
   min-width: 16px;
   height: 16px;
-  background: #FF4D4F;
+  background: var(--color-accent);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -677,7 +679,7 @@ onLoad(async (options) => {
 
 /* 秒杀横幅 */
 .seckill-banner {
-  background: linear-gradient(135deg, #FF4D4F, #FF7875);
+  background: linear-gradient(135deg, var(--color-accent), #FF7875);
   padding: 12px 16px;
   display: flex;
   align-items: center;
@@ -698,7 +700,7 @@ onLoad(async (options) => {
 
 .tag-text {
   font-size: 11px;
-  color: #FF4D4F;
+  color: var(--color-accent);
   font-weight: 600;
 }
 
@@ -788,14 +790,14 @@ onLoad(async (options) => {
 
 .price-current .price-symbol {
   font-size: 16px;
-  color: #FF7A45;
+  color: var(--color-accent);
   font-weight: 600;
 }
 
 .price-current .price-value {
   font-size: 28px;
   font-weight: 700;
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 .price-original {
@@ -835,7 +837,7 @@ onLoad(async (options) => {
 
 .delivery-text {
   font-size: 11px;
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 /* 商品标题 */
@@ -876,12 +878,12 @@ onLoad(async (options) => {
 }
 
 .shop-tag.system {
-  background: #FF7A45;
+  background: var(--color-accent);
 }
 
 .shop-tag-text {
   font-size: 10px;
-  color: #FF7A45;
+  color: var(--color-accent);
   font-weight: 600;
 }
 
@@ -1007,7 +1009,7 @@ onLoad(async (options) => {
 .recommend-price {
   font-size: 14px;
   font-weight: 700;
-  color: #FF7A45;
+  color: var(--color-accent);
   margin-top: 4px;
   display: block;
 }
@@ -1063,7 +1065,7 @@ onLoad(async (options) => {
   flex: 1;
   height: 44px;
   border-radius: 22px;
-  border: 1px solid #FF7A45;
+  border: 1px solid var(--color-accent);
   background: #fff;
   display: flex;
   align-items: center;
@@ -1076,7 +1078,7 @@ onLoad(async (options) => {
 
 .btn-add-cart .btn-text {
   font-size: 14px;
-  color: #FF7A45;
+  color: var(--color-accent);
   font-weight: 600;
 }
 
@@ -1085,7 +1087,7 @@ onLoad(async (options) => {
   height: 44px;
   border-radius: 22px;
   border: none;
-  background: #FF7A45;
+  background: var(--color-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1106,7 +1108,7 @@ onLoad(async (options) => {
   height: 44px;
   border-radius: 22px;
   border: none;
-  background: linear-gradient(135deg, #FF4D4F, #FF7875);
+  background: linear-gradient(135deg, var(--color-accent), #FF7875);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1183,14 +1185,14 @@ button[disabled] {
 
 .spec-sheet-price .price-symbol {
   font-size: 14px;
-  color: #FF7A45;
+  color: var(--color-accent);
   font-weight: 600;
 }
 
 .spec-sheet-price .price-value {
   font-size: 22px;
   font-weight: 700;
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 .spec-sheet-stock {
@@ -1245,7 +1247,7 @@ button[disabled] {
 
 .spec-chip.active {
   background: #FFF4EE;
-  border-color: #FF7A45;
+  border-color: var(--color-accent);
 }
 
 .spec-chip.disabled {
@@ -1258,7 +1260,7 @@ button[disabled] {
 }
 
 .spec-chip.active .chip-text {
-  color: #FF7A45;
+  color: var(--color-accent);
   font-weight: 500;
 }
 

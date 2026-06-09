@@ -18,7 +18,7 @@
           <view class="course-img-wrap">
             <image v-if="course.cover" :src="imgUrl(course.cover)" class="course-img" mode="aspectFill" />
             <view v-else class="img-placeholder">
-              <text class="placeholder-icon">📚</text>
+              <Icon icon="solar:notebook-bold" width="24" color="var(--text-hint)" />
             </view>
           </view>
           <view class="course-info">
@@ -39,7 +39,7 @@
       </view>
 
       <view v-else-if="!loading" class="empty-wrap">
-        <text class="empty-icon">📚</text>
+        <Icon icon="solar:notebook-bold" width="48" color="var(--text-hint)" />
         <text class="empty-text">还没有创建课程</text>
       </view>
     </scroll-view>
@@ -47,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import http from '@/utils/http'
@@ -91,6 +92,7 @@ onLoad(() => {
 </script>
 
 <style scoped>
+@import url('@/styles/tokens.css');
 .page-container {
   min-height: 100vh;
   background: #F5F6FA;
@@ -128,7 +130,7 @@ onLoad(() => {
 
 .action-text {
   font-size: 14px;
-  color: #FF7A45;
+  color: var(--color-accent);
   font-weight: 500;
 }
 
@@ -262,9 +264,9 @@ onLoad(() => {
 
 .edit-btn {
   font-size: 12px;
-  color: #FF7A45;
+  color: var(--color-accent);
   padding: 4px 12px;
-  border: 1px solid #FF7A45;
+  border: 1px solid var(--color-accent);
   border-radius: 20px;
 }
 
@@ -279,8 +281,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid #eee;
-  border-top-color: #FF7A45;
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

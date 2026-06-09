@@ -7,7 +7,7 @@
 
     <!-- 空状态 -->
     <view v-if="cartItems.length === 0 && !loading" class="empty-wrap">
-      <text class="empty-icon">⌂</text>
+      <Icon icon="solar:cart-large-2-bold" width="64" color="var(--text-hint)" />
       <text class="empty-text">购物车是空的</text>
       <button class="btn btn-primary" style="margin-top:16px" @tap="goHome">去逛逛</button>
     </view>
@@ -28,7 +28,7 @@
         <view class="cart-card-img" @tap="goDetail(item.spuId)">
           <image v-if="item.mainImage" :src="imgUrl(item.mainImage)" class="cart-img" mode="aspectFill" />
           <view v-else class="img-placeholder">
-            <text class="placeholder-icon">⌂</text>
+            <Icon icon="solar:bag-bold" width="24" color="var(--text-hint)" />
           </view>
           <view v-if="item.shelfStatus === 0" class="shelf-badge">
             <text class="shelf-text">已下架</text>
@@ -95,6 +95,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
+import { Icon } from '@iconify/vue'
 import {
   getCartList, updateCartQty, toggleCartSelect, removeCartItem, imgUrl,
 } from '@/api'
@@ -249,7 +250,7 @@ onShow(() => fetchCart())
 .checkbox {
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   border: 2px solid var(--color-border, #ddd);
   display: flex;
   align-items: center;
@@ -257,8 +258,8 @@ onShow(() => fetchCart())
 }
 
 .checkbox.checked {
-  background: var(--color-primary, #FF4D4F);
-  border-color: var(--color-primary, #FF4D4F);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .checkbox-icon {
@@ -357,14 +358,14 @@ onShow(() => fetchCart())
 
 .cart-card-price .price-symbol {
   font-size: 12px;
-  color: var(--color-primary, #FF4D4F);
+  color: var(--color-accent);
   font-weight: 700;
 }
 
 .price-value {
   font-size: 17px;
   font-weight: 700;
-  color: var(--color-primary, #FF4D4F);
+  color: var(--color-accent);
 }
 
 .cart-card-qty {
@@ -468,7 +469,7 @@ onShow(() => fetchCart())
 .footer-total-price {
   font-size: 20px;
   font-weight: 700;
-  color: var(--color-primary, #FF4D4F);
+  color: var(--color-accent);
 }
 
 .footer-total-price .price-symbol {
@@ -484,9 +485,9 @@ onShow(() => fetchCart())
 .checkout-btn {
   min-width: 120px;
   height: 44px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   border: none;
-  background: var(--color-primary, #FF4D4F);
+  background: var(--color-accent);
   color: white;
   font-size: 16px;
   font-weight: 600;
@@ -530,8 +531,8 @@ onShow(() => fetchCart())
   width: 32px;
   height: 32px;
   border: 3px solid var(--color-border, #eee);
-  border-top-color: var(--color-primary, #FF4D4F);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -546,12 +547,12 @@ onShow(() => fetchCart())
   font-size: 14px;
   font-weight: 500;
   padding: 10px 24px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   border: none;
 }
 
 .btn-primary {
-  background: var(--color-primary, #FF4D4F);
+  background: var(--color-accent);
   color: white;
 }
 

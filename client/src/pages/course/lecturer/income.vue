@@ -31,7 +31,7 @@
     <!-- 收益明细 -->
     <view class="section-card">
       <view class="section-header">
-        <text class="section-title">💰 收益明细</text>
+        <text class="section-title">收益明细</text>
       </view>
       <view v-if="records.length > 0" class="record-list">
         <view v-for="item in records" :key="item.id" class="record-item">
@@ -50,6 +50,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import http from '@/utils/http'
@@ -82,6 +83,7 @@ onLoad(() => {
 </script>
 
 <style scoped>
+@import url('@/styles/tokens.css');
 .page-container {
   min-height: 100vh;
   background: #F5F6FA;
@@ -112,7 +114,7 @@ onLoad(() => {
 }
 
 .income-card {
-  background: linear-gradient(135deg, #FF7A45, #FF9A6C);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent));
   margin: 16px;
   border-radius: 12px;
   padding: 24px 16px 20px;
@@ -216,7 +218,7 @@ onLoad(() => {
 .record-amount {
   font-size: 16px;
   font-weight: 700;
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 .empty-section {

@@ -42,7 +42,7 @@
           </view>
           <view class="post-actions">
             <view class="action-btn" @tap="onDelete(post)">
-              <Icon icon="solar:trash-bin-minimalistic-bold" width="14" color="var(--color-primary)" />
+              <Icon icon="solar:trash-bin-minimalistic-bold" width="14" color="var(--color-accent)" />
               <text class="action-btn-text">删除</text>
             </view>
           </view>
@@ -259,9 +259,9 @@ onLoad(() => {
   align-items: center;
   gap: var(--space-xs);
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   padding: var(--space-xs) 12px;
-  border: 1px solid var(--color-primary);
+  border: 1px solid var(--color-accent);
   border-radius: var(--radius-full);
 }
 
@@ -276,8 +276,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -302,7 +302,7 @@ onLoad(() => {
 .btn-create {
   font-size: var(--font-base);
   color: var(--text-white);
-  background: var(--color-primary);
+  background: var(--color-accent);
   border: none;
   border-radius: var(--radius-full);
   padding: var(--space-sm) 24px;

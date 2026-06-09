@@ -21,7 +21,7 @@
             <view class="product-img-wrap">
               <image v-if="item.mainImage" :src="imgUrl(item.mainImage)" class="product-img" mode="aspectFill" />
               <view v-else class="img-placeholder">
-                <text class="placeholder-icon">🛍️</text>
+                <Icon icon="solar:bag-bold" width="28" color="var(--text-hint)" />
               </view>
             </view>
             <view class="product-info">
@@ -42,7 +42,7 @@
       </view>
 
       <view v-else-if="!loading" class="empty-wrap">
-        <text class="empty-icon">✅</text>
+        <Icon icon="solar:check-circle-bold" width="48" color="var(--color-success)" />
         <text class="empty-text">暂无待审核商品</text>
       </view>
 
@@ -54,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { getProductList, approveProduct, rejectProduct, imgUrl } from '@/api'
@@ -127,6 +128,7 @@ onLoad(() => {
 </script>
 
 <style scoped>
+@import url('@/styles/tokens.css');
 .page-container {
   min-height: 100vh;
   background: #F5F6FA;
@@ -237,7 +239,7 @@ onLoad(() => {
 .product-price {
   font-size: 16px;
   font-weight: 700;
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 .product-category {
@@ -272,7 +274,7 @@ onLoad(() => {
 }
 
 .action-btn.approve .action-btn-text {
-  color: #FF7A45;
+  color: var(--color-accent);
   font-weight: 500;
 }
 
@@ -291,8 +293,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid #eee;
-  border-top-color: #FF7A45;
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

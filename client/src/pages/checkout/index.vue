@@ -18,7 +18,7 @@
         <template v-if="selectedAddress">
           <view class="addr-content">
             <view class="addr-top">
-              <text class="addr-icon">📍</text>
+              <Icon icon="solar:map-point-bold" width="18" color="var(--text-hint)" />
               <text class="addr-name">{{ selectedAddress.consignee }}</text>
               <text class="addr-phone">{{ selectedAddress.phone }}</text>
               <text v-if="selectedAddress.isDefault" class="addr-default">默认</text>
@@ -29,7 +29,7 @@
         </template>
         <template v-else>
           <view class="addr-empty">
-            <text class="addr-empty-icon">📍</text>
+            <Icon icon="solar:map-point-bold" width="20" color="var(--text-hint)" />
             <text class="addr-empty-text">请添加收货地址</text>
           </view>
           <text class="addr-arrow">›</text>
@@ -39,13 +39,13 @@
       <!-- 商品列表 -->
       <view class="card goods-card">
         <view class="card-title-row">
-          <text class="card-emoji">🛍️</text>
+          <Icon icon="solar:bag-bold" width="16" color="var(--color-accent)" />
           <text class="card-title">商品清单</text>
         </view>
         <view v-for="item in selectedItems" :key="item.id" class="goods-item">
           <view class="goods-img">
             <image v-if="item.mainImage" :src="imgUrl(item.mainImage)" class="goods-image" mode="aspectFill" />
-            <view v-else class="img-placeholder"><text class="placeholder-icon">📷</text></view>
+            <view v-else class="img-placeholder"><Icon icon="solar:camera-bold" width="24" color="var(--text-hint)" /></view>
           </view>
           <view class="goods-body">
             <text class="goods-name">{{ item.productName }}</text>
@@ -61,7 +61,7 @@
       <!-- 优惠券 -->
       <view v-if="myCoupons.length > 0 && !isSeckillOrder" class="card coupon-card">
         <view class="coupon-row" @tap="showCouponPicker = true">
-          <text class="coupon-icon">🎫</text>
+          <Icon icon="solar:ticket-bold" width="16" color="var(--color-accent)" />
           <text class="coupon-label">优惠券</text>
           <text class="coupon-value" :class="{ active: selectedCouponId }">
             {{ selectedCouponId ? '已选1张' : myCoupons.length + '张可用' }}
@@ -73,7 +73,7 @@
       <!-- 订单汇总 -->
       <view class="card summary-card">
         <view class="card-title-row">
-          <text class="card-emoji">📋</text>
+          <Icon icon="solar:document-text-bold" width="16" color="var(--color-accent)" />
           <text class="card-title">订单汇总</text>
         </view>
         <view class="summary-row">
@@ -98,7 +98,7 @@
       <!-- 备注 -->
       <view class="card remark-card">
         <view class="remark-row">
-          <text class="remark-icon">✏️</text>
+          <Icon icon="solar:pen-new-square-bold" width="16" color="var(--color-accent)" />
           <text class="remark-label">备注</text>
           <input v-model="remark" class="remark-input" placeholder="选填：给卖家留言" maxlength="200" />
         </view>
@@ -121,6 +121,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
+import { Icon } from '@iconify/vue'
 import { getCartList, getAddressList, createOrder, imgUrl, getUserCoupons } from '@/api'
 import http from '@/utils/http'
 import { getCurrentUserId } from '@/utils/user'
@@ -275,6 +276,7 @@ async function handleSubmit() {
 </script>
 
 <style scoped>
+@import url('@/styles/tokens.css');
 .checkout-page {
   min-height: 100vh;
   background: #f5f5f5;
@@ -379,7 +381,7 @@ async function handleSubmit() {
 
 .addr-default {
   font-size: 10px;
-  color: #FF7A45;
+  color: var(--color-accent);
   background: #fff0eb;
   padding: 1px 6px;
   border-radius: 4px;
@@ -485,7 +487,7 @@ async function handleSubmit() {
 .goods-price {
   font-size: 15px;
   font-weight: 700;
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 .goods-price .price-symbol {
@@ -526,7 +528,7 @@ async function handleSubmit() {
 }
 
 .coupon-value.active {
-  color: #FF7A45;
+  color: var(--color-accent);
   font-weight: 500;
 }
 
@@ -555,7 +557,7 @@ async function handleSubmit() {
 }
 
 .discount-value {
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 .summary-divider {
@@ -577,7 +579,7 @@ async function handleSubmit() {
 .total-price {
   font-size: 20px;
   font-weight: 700;
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 .total-price .price-symbol {
@@ -641,7 +643,7 @@ async function handleSubmit() {
 .submit-total {
   font-size: 20px;
   font-weight: 700;
-  color: #FF7A45;
+  color: var(--color-accent);
 }
 
 .submit-total .price-symbol {
@@ -651,9 +653,9 @@ async function handleSubmit() {
 .submit-btn {
   min-width: 140px;
   height: 44px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   border: none;
-  background: linear-gradient(135deg, #FF7A45, #FF9A6C);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent));
   color: #fff;
   font-size: 16px;
   font-weight: 600;
@@ -682,8 +684,8 @@ async function handleSubmit() {
   width: 32px;
   height: 32px;
   border: 3px solid #eee;
-  border-top-color: #FF7A45;
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 

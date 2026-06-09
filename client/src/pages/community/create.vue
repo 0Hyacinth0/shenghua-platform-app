@@ -12,7 +12,7 @@
 
     <!-- 话题选择 -->
     <view class="card topic-bar" @tap="showTopicPicker = true">
-      <Icon icon="solar:chat-round-dots-bold" width="18" color="var(--color-primary)" />
+      <Icon icon="solar:chat-round-dots-bold" width="18" color="var(--color-accent)" />
       <text class="topic-label">话题</text>
       <view class="topic-value">
         <text v-if="selectedTopic" class="topic-selected">#{{ selectedTopic.name }}</text>
@@ -37,7 +37,7 @@
     <!-- 图片上传 -->
     <view class="image-section">
       <view class="section-title-row">
-        <Icon icon="solar:gallery-bold" width="18" color="var(--color-primary)" />
+        <Icon icon="solar:gallery-bold" width="18" color="var(--color-accent)" />
         <text class="section-title">添加图片</text>
       </view>
       <view class="image-grid">
@@ -73,7 +73,7 @@
             @tap="onSelectTopic(topic)"
           >
             <text class="picker-item-text">{{ topic.name }}</text>
-            <Icon v-if="selectedTopic?.id === topic.id" icon="solar:check-circle-bold" width="18" color="var(--color-primary)" />
+            <Icon v-if="selectedTopic?.id === topic.id" icon="solar:check-circle-bold" width="18" color="var(--color-accent)" />
           </view>
         </scroll-view>
       </view>
@@ -223,7 +223,7 @@ onLoad(() => {
 }
 
 .header-submit.active {
-  background: var(--color-primary-gradient);
+  background: var(--color-accent);
 }
 
 .submit-text {
@@ -265,7 +265,7 @@ onLoad(() => {
 
 .topic-selected {
   font-size: var(--font-base);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -343,7 +343,7 @@ onLoad(() => {
   right: 4px;
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -430,7 +430,7 @@ onLoad(() => {
 }
 
 .picker-item.active {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
 }
 
 .picker-item-text {

@@ -281,7 +281,7 @@ onLoad((options: any) => {
   width: 24px;
   height: 3px;
   border-radius: 2px;
-  background: var(--color-primary);
+  background: var(--color-accent);
 }
 
 /* 订单列表 */
@@ -325,7 +325,7 @@ onLoad((options: any) => {
   font-weight: var(--weight-medium);
 }
 
-.status-0 { color: var(--color-primary); }
+.status-0 { color: var(--color-accent); }
 .status-1 { color: var(--color-warning); }
 .status-2 { color: var(--color-info); }
 .status-3 { color: var(--color-success); }
@@ -404,7 +404,7 @@ onLoad((options: any) => {
 
 .total-price {
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .order-actions {
@@ -423,7 +423,7 @@ onLoad((options: any) => {
 }
 
 .action-btn.primary {
-  border-color: var(--color-primary);
+  border-color: var(--color-accent);
 }
 
 .action-btn-text {
@@ -432,7 +432,7 @@ onLoad((options: any) => {
 }
 
 .action-btn-text.primary {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -448,8 +448,8 @@ onLoad((options: any) => {
   width: 32px;
   height: 32px;
   border: 3px solid #eee;
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -474,7 +474,7 @@ onLoad((options: any) => {
 
 .empty-btn {
   padding: 10px var(--space-2xl);
-  background: var(--color-primary);
+  background: var(--color-accent);
   border-radius: var(--radius-full);
 }
 

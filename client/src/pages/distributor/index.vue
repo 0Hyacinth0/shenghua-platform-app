@@ -34,25 +34,25 @@
     <view class="function-grid">
       <view class="function-item" @tap="goPage('/pages/distributor/order')">
         <view class="func-icon">
-          <Icon icon="solar:clipboard-bold" width="22" color="var(--color-primary)" />
+          <Icon icon="solar:clipboard-bold" width="22" color="var(--color-accent)" />
         </view>
         <text class="func-label">推广订单</text>
       </view>
       <view class="function-item" @tap="goPage('/pages/distributor/team')">
         <view class="func-icon">
-          <Icon icon="solar:users-group-rounded-bold" width="22" color="var(--color-primary)" />
+          <Icon icon="solar:users-group-rounded-bold" width="22" color="var(--color-accent)" />
         </view>
         <text class="func-label">我的团队</text>
       </view>
       <view class="function-item" @tap="goPage('/pages/distributor/income')">
         <view class="func-icon">
-          <Icon icon="solar:wallet-bold" width="22" color="var(--color-primary)" />
+          <Icon icon="solar:wallet-bold" width="22" color="var(--color-accent)" />
         </view>
         <text class="func-label">收益明细</text>
       </view>
       <view class="function-item" @tap="onShare">
         <view class="func-icon">
-          <Icon icon="solar:share-bold" width="22" color="var(--color-primary)" />
+          <Icon icon="solar:share-bold" width="22" color="var(--color-accent)" />
         </view>
         <text class="func-label">推广二维码</text>
       </view>
@@ -225,7 +225,7 @@ onLoad(() => {
   width: 44px;
   height: 44px;
   border-radius: var(--radius-md);
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -291,7 +291,7 @@ onLoad(() => {
 .commission-amount {
   font-size: var(--font-lg);
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .empty-section {

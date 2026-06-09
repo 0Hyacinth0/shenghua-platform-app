@@ -8,27 +8,27 @@
 
     <view class="form-card">
       <view class="form-item">
-        <text class="form-label">👤 真实姓名</text>
+        <text class="form-label">真实姓名</text>
         <input v-model="form.name" class="form-input" placeholder="请输入真实姓名" placeholder-class="input-placeholder" />
       </view>
       <view class="form-item">
-        <text class="form-label">📱 手机号</text>
+        <text class="form-label">手机号</text>
         <input v-model="form.phone" class="form-input" placeholder="请输入手机号" placeholder-class="input-placeholder" type="number" :maxlength="11" />
       </view>
       <view class="form-item">
-        <text class="form-label">🎯 专业领域</text>
+        <text class="form-label">专业领域</text>
         <input v-model="form.field" class="form-input" placeholder="如：前端开发、UI设计" placeholder-class="input-placeholder" />
       </view>
       <view class="form-item">
-        <text class="form-label">📝 个人简介</text>
+        <text class="form-label">个人简介</text>
         <textarea v-model="form.intro" class="form-textarea" placeholder="请简要介绍您的教学经验和专业背景" placeholder-class="input-placeholder" :maxlength="500" />
       </view>
       <view class="form-item">
-        <text class="form-label">📜 资质证书</text>
+        <text class="form-label">资质证书</text>
         <view class="upload-area" @tap="chooseImage">
           <image v-if="form.certificate" :src="form.certificate" class="uploaded-img" mode="aspectFill" />
           <view v-else class="upload-placeholder">
-            <text class="upload-icon">📷</text>
+            <Icon icon="solar:camera-bold" width="24" color="var(--text-hint)" />
             <text class="upload-text">上传证书</text>
           </view>
         </view>
@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { ref, reactive } from 'vue'
 import http from '@/utils/http'
 import { getCurrentUserId } from '@/utils/user'
@@ -101,6 +102,7 @@ async function onSubmit() {
 </script>
 
 <style scoped>
+@import url('@/styles/tokens.css');
 .page-container {
   min-height: 100vh;
   background: #F5F6FA;
@@ -219,7 +221,7 @@ async function onSubmit() {
   height: 48px;
   border-radius: 20px;
   border: none;
-  background: #FF7A45;
+  background: var(--color-accent);
   color: #fff;
   font-size: 15px;
   font-weight: 600;

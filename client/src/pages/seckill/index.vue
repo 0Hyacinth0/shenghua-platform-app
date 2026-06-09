@@ -261,7 +261,7 @@ onUnmounted(() => {
 }
 
 .time-text.active {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .time-label {
@@ -270,7 +270,7 @@ onUnmounted(() => {
 }
 
 .time-label.active {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 /* 倒计时 */
@@ -473,8 +473,8 @@ onUnmounted(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--bg-gray);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
