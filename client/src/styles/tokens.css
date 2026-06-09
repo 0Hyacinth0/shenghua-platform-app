@@ -1,32 +1,36 @@
 :root {
-  /* Brand Colors */
-  --color-primary: #FF6B35;
-  --color-primary-light: #FFF4EE;
-  --color-primary-dark: #E85D2A;
-  --color-primary-gradient: linear-gradient(135deg, #FF6B35 0%, #FF8F5E 100%);
+  /* 主色 */
+  --color-primary: #1A1A2E;
+  --color-primary-light: #F5F3FF;
+  --color-primary-dark: #0D0D1A;
+  --color-primary-gradient: linear-gradient(135deg, #1A1A2E 0%, #2D2D4E 100%);
 
-  /* Semantic Colors */
+  /* 强调色 */
+  --color-accent: #8B5CF6;
+  --color-accent-light: #F5F3FF;
+
+  /* 语义色 */
   --color-success: #22C55E;
   --color-success-light: #F0FDF4;
   --color-warning: #F59E0B;
-  --color-warning-light: #FFFBEB;
+  --color-warning-light: #FEF3C7;
   --color-danger: #EF4444;
-  --color-danger-light: #FEF2F2;
-  --color-info: #3B82F6;
-  --color-info-light: #EFF6FF;
+  --color-danger-light: #FEE2E2;
+  --color-info: #0EA5E9;
+  --color-info-light: #E0F2FE;
 
-  /* Text Colors */
+  /* 文字 */
   --text-primary: #1A1A2E;
   --text-secondary: #64748B;
   --text-hint: #94A3B8;
   --text-white: #FFFFFF;
 
-  /* Background */
+  /* 背景 */
   --bg-page: #F7F8FA;
   --bg-card: #FFFFFF;
   --bg-gray: #F1F5F9;
 
-  /* Spacing */
+  /* 间距 */
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 12px;
@@ -35,30 +39,31 @@
   --space-2xl: 24px;
   --space-3xl: 32px;
 
-  /* Border Radius */
+  /* 圆角 */
   --radius-sm: 8px;
   --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-full: 999px;
+  --radius-lg: 14px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-full: 20px;
+  --radius-circle: 50%;
 
-  /* Shadows */
+  /* 阴影 */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
   --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.04);
 
-  /* Typography */
+  /* 字号 */
   --font-xs: 11px;
   --font-sm: 12px;
-  --font-base: 14px;
-  --font-md: 15px;
-  --font-lg: 16px;
-  --font-xl: 18px;
-  --font-2xl: 20px;
+  --font-base: 13px;
+  --font-md: 14px;
+  --font-lg: 15px;
+  --font-xl: 17px;
+  --font-2xl: 22px;
   --font-3xl: 24px;
   --font-4xl: 28px;
 
-  /* Font Weights */
+  /* 字重 */
   --weight-normal: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
