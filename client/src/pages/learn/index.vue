@@ -4,11 +4,8 @@
     <view class="header">
       <text class="header-title">学习中心</text>
       <view class="header-actions">
-        <view class="header-btn" @tap="goStats">
-          <Icon icon="solar:chart-bold" :size="22" color="var(--text-primary)" />
-        </view>
         <view class="header-btn" @tap="goSettings">
-          <Icon icon="solar:settings-bold" :size="22" color="var(--text-primary)" />
+          <Icon icon="solar:settings-bold" :size="20" color="#fff" />
         </view>
       </view>
     </view>
@@ -32,44 +29,76 @@
       </view>
     </view>
 
+    <!-- 快捷入口（从首页移入） -->
+    <view class="quick-actions">
+      <view class="action-item" v-for="a in quickActions" :key="a.label" @tap="navigateTo(a.route)">
+        <view class="action-icon" :style="{ background: a.bg }">
+          <Icon :icon="a.icon" :size="20" :color="a.color" />
+        </view>
+        <text class="action-label">{{ a.label }}</text>
+      </view>
+    </view>
+
     <!-- 功能入口 -->
     <view class="func-grid">
       <view class="func-item" @tap="goPage('/pages/course/my')">
         <view class="func-icon" style="background:#FEF2F2">
-          <Icon icon="solar:notebook-bold" :size="22" color="#EF4444" />
+          <Icon icon="solar:notebook-bold" :size="20" color="#EF4444" />
         </view>
         <text class="func-label">我的课程</text>
       </view>
       <view class="func-item" @tap="goPage('/pages/course/index')">
         <view class="func-icon" style="background:#EFF6FF">
-          <Icon icon="solar:calendar-bold" :size="22" color="#3B82F6" />
+          <Icon icon="solar:calendar-bold" :size="20" color="#3B82F6" />
         </view>
         <text class="func-label">学习计划</text>
       </view>
       <view class="func-item" @tap="goPage('/pages/community/favorites')">
         <view class="func-icon" style="background:#F0FDF4">
-          <Icon icon="solar:cup-bold" :size="22" color="#22C55E" />
+          <Icon icon="solar:cup-bold" :size="20" color="#22C55E" />
         </view>
         <text class="func-label">我的证书</text>
       </view>
       <view class="func-item" @tap="goPage('/pages/community/favorites')">
         <view class="func-icon" style="background:#FFFBEB">
-          <Icon icon="solar:star-bold" :size="22" color="#F59E0B" />
+          <Icon icon="solar:star-bold" :size="20" color="#F59E0B" />
         </view>
         <text class="func-label">我的收藏</text>
       </view>
     </view>
 
+    <!-- 明星讲师（从首页移入） -->
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">明星讲师</text>
+        <view class="section-more">
+          <text class="more-text">全部</text>
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--text-hint)" />
+        </view>
+      </view>
+      <scroll-view scroll-x class="lecturer-scroll">
+        <view class="lecturer-card" v-for="l in lecturers" :key="l.name">
+          <view class="lecturer-avatar" :style="{ background: l.avatarBg }">
+            <text class="lecturer-avatar-text">{{ l.initial }}</text>
+          </view>
+          <text class="lecturer-name">{{ l.name }}</text>
+          <view class="lecturer-tag">
+            <text class="lecturer-tag-text">{{ l.tag }}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
     <!-- 连续学习 -->
     <view class="section" style="padding-bottom:0;">
       <view class="streak-card">
-        <Icon icon="solar:fire-bold" :size="28" color="#F59E0B" />
+        <Icon icon="solar:fire-bold" :size="24" color="#F59E0B" />
         <view class="streak-info">
           <text class="streak-title">已连续学习 7 天</text>
           <text class="streak-sub">坚持学习，解锁更多成就</text>
         </view>
         <view class="streak-btn" @tap="goSignIn">
-          <Icon icon="solar:check-circle-bold" :size="14" color="var(--color-primary)" />
+          <Icon icon="solar:check-circle-bold" :size="14" color="var(--color-accent)" />
           <text class="streak-btn-text">签到</text>
         </view>
       </view>
@@ -84,11 +113,10 @@
           <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--text-hint)" />
         </view>
       </view>
-
       <view class="continue-card" v-for="c in continueCourses" :key="c.id" @tap="goWatch(c.id)">
         <view class="continue-img" :style="{ background: c.coverColor }">
           <view class="play-btn-wrap">
-            <Icon icon="solar:play-bold" :size="12" color="var(--color-primary)" />
+            <Icon icon="solar:play-bold" :size="12" color="var(--color-accent)" />
           </view>
         </view>
         <view class="continue-info">
@@ -113,13 +141,11 @@
           <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--text-hint)" />
         </view>
       </view>
-
       <view class="course-tabs">
         <view v-for="tab in courseTabs" :key="tab.key" class="course-tab" :class="{ active: activeTab === tab.key }" @tap="activeTab = tab.key">
           <text class="course-tab-text" :class="{ active: activeTab === tab.key }">{{ tab.label }}</text>
         </view>
       </view>
-
       <view class="my-course-card" v-for="c in myCourses" :key="c.id" @tap="goWatch(c.id)">
         <view class="my-course-img" :style="{ background: c.coverColor }">
           <view class="resume-badge">
@@ -149,10 +175,25 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
 import { Icon } from '@iconify/vue'
 
 const activeTab = ref('learning')
+
+const quickActions = [
+  { label: '限时特惠', icon: 'solar:fire-bold', bg: '#FEF2F2', color: '#EF4444', route: '/pages/seckill/index' },
+  { label: '优惠券', icon: 'solar:ticket-bold', bg: '#FFFBEB', color: '#F59E0B', route: '/pages/coupon/index' },
+  { label: '签到', icon: 'solar:check-circle-bold', bg: '#F0FDF4', color: '#22C55E', route: '/pages/signIn/index' },
+  { label: '拼团', icon: 'solar:users-group-rounded-bold', bg: '#EFF6FF', color: '#3B82F6', route: '/pages/groupBuy/index' },
+  { label: '免费课', icon: 'solar:play-circle-bold', bg: '#F5F3FF', color: '#8B5CF6', route: '/pages/course/index' },
+]
+
+const lecturers = [
+  { name: '张明远', initial: '张', tag: '编程名师', avatarBg: 'linear-gradient(135deg, #FFE0D0, #FFB088)' },
+  { name: '李思琪', initial: '李', tag: '设计导师', avatarBg: 'linear-gradient(135deg, #E0D0FF, #B088FF)' },
+  { name: '王建国', initial: '王', tag: 'AI专家', avatarBg: 'linear-gradient(135deg, #D0E8FF, #88C0FF)' },
+  { name: '陈雨薇', initial: '陈', tag: '语言名师', avatarBg: 'linear-gradient(135deg, #D0FFE0, #88FFB0)' },
+  { name: '刘志强', initial: '刘', tag: '考研辅导', avatarBg: 'linear-gradient(135deg, #FFE8D0, #FFC088)' },
+]
 
 const courseTabs = [
   { key: 'learning', label: '在学' },
@@ -171,13 +212,19 @@ const myCourses = [
   { id: 'm3', title: 'AI 人工智能入门到实战', coverColor: 'linear-gradient(135deg,#a1c4fd,#c2e9fb)', lecturer: '王建国', lessons: 30, progress: 8 },
 ]
 
+function navigateTo(url: string) {
+  const tabPages = ['/pages/home/index', '/pages/learn/index', '/pages/community/index', '/pages/profile/index']
+  if (tabPages.includes(url)) {
+    uni.switchTab({ url })
+  } else {
+    uni.navigateTo({ url })
+  }
+}
+
 function goPage(url: string) { uni.navigateTo({ url }) }
-function goStats() { uni.showToast({ title: '统计功能开发中', icon: 'none' }) }
 function goSettings() { uni.showToast({ title: '设置功能开发中', icon: 'none' }) }
 function goSignIn() { uni.navigateTo({ url: '/pages/signIn/index' }) }
 function goWatch(id: string) { uni.navigateTo({ url: '/pages/course/watch?courseId=' + id }) }
-
-onLoad(() => {})
 </script>
 
 <style scoped>
@@ -191,7 +238,7 @@ onLoad(() => {})
 
 /* ---- 顶部 ---- */
 .header {
-  background: var(--bg-card);
+  background: var(--color-primary);
   padding: 44px 16px 14px;
   display: flex;
   align-items: center;
@@ -201,7 +248,7 @@ onLoad(() => {})
 .header-title {
   font-size: var(--font-2xl);
   font-weight: var(--weight-bold);
-  color: var(--text-primary);
+  color: #fff;
 }
 
 .header-actions {
@@ -210,24 +257,25 @@ onLoad(() => {})
 }
 
 .header-btn {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-circle);
 }
 
 /* ---- 统计卡 ---- */
 .stats-card {
   margin: 12px 16px 0;
-  background: var(--color-primary-gradient);
-  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  border-radius: var(--radius-xl);
   padding: 20px;
   display: flex;
   justify-content: space-around;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.25);
 }
 
 .stats-deco {
@@ -236,8 +284,8 @@ onLoad(() => {})
   top: -20px;
   width: 100px;
   height: 100px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-circle);
+  background: rgba(139, 92, 246, 0.2);
 }
 
 .stat-item {
@@ -255,16 +303,53 @@ onLoad(() => {})
 
 .stat-label {
   font-size: var(--font-sm);
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.5);
   margin-top: 4px;
   display: block;
 }
 
 .stat-divider {
   width: 1px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
   align-self: stretch;
   margin: 4px 0;
+}
+
+/* ---- 快捷入口 ---- */
+.quick-actions {
+  background: var(--bg-card);
+  margin: 12px 16px 0;
+  border-radius: var(--radius-lg);
+  padding: 16px 8px;
+  display: flex;
+  justify-content: space-around;
+  box-shadow: var(--shadow-sm);
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-item:active {
+  opacity: 0.7;
+}
+
+.action-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-label {
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
 }
 
 /* ---- 功能入口 ---- */
@@ -290,8 +375,8 @@ onLoad(() => {})
 }
 
 .func-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -321,7 +406,7 @@ onLoad(() => {})
 }
 
 .section-title {
-  font-size: var(--font-lg);
+  font-size: var(--font-xl);
   font-weight: var(--weight-semibold);
   color: var(--text-primary);
 }
@@ -335,6 +420,65 @@ onLoad(() => {})
 .more-text {
   font-size: var(--font-sm);
   color: var(--text-hint);
+}
+
+/* ---- 讲师 ---- */
+.lecturer-scroll {
+  white-space: nowrap;
+  padding-bottom: 4px;
+}
+
+.lecturer-card {
+  display: inline-block;
+  width: 80px;
+  margin-right: 14px;
+  vertical-align: top;
+  text-align: center;
+}
+
+.lecturer-card:last-child {
+  margin-right: 0;
+}
+
+.lecturer-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-circle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+  box-shadow: var(--shadow-md);
+  margin: 0 auto;
+}
+
+.lecturer-avatar-text {
+  font-size: 18px;
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary);
+}
+
+.lecturer-name {
+  font-size: var(--font-sm);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+  text-align: center;
+  margin-top: 8px;
+  display: block;
+}
+
+.lecturer-tag {
+  background: var(--color-accent-light);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.lecturer-tag-text {
+  font-size: 10px;
+  color: var(--color-accent);
+  font-weight: var(--weight-medium);
 }
 
 /* ---- 连续学习 ---- */
@@ -353,7 +497,7 @@ onLoad(() => {})
 }
 
 .streak-title {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   font-weight: var(--weight-semibold);
   color: var(--text-primary);
 }
@@ -380,7 +524,7 @@ onLoad(() => {})
 
 .streak-btn-text {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -388,14 +532,14 @@ onLoad(() => {})
 .continue-card {
   display: flex;
   gap: 12px;
-  background: var(--bg-gray);
+  background: var(--bg-page);
   border-radius: var(--radius-md);
   padding: 12px;
   margin-bottom: 12px;
 }
 
 .continue-card:active {
-  background: #e8eaed;
+  background: #eef0f4;
 }
 
 .continue-img {
@@ -412,7 +556,7 @@ onLoad(() => {})
 .play-btn-wrap {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255, 255, 255, 0.95);
   display: flex;
   align-items: center;
@@ -428,7 +572,7 @@ onLoad(() => {})
 }
 
 .continue-title {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   font-weight: var(--weight-medium);
   color: var(--text-primary);
   display: -webkit-box;
@@ -457,7 +601,7 @@ onLoad(() => {})
 
 .progress-fill {
   height: 100%;
-  background: var(--color-primary);
+  background: var(--color-accent);
   border-radius: 2px;
 }
 
@@ -490,7 +634,7 @@ onLoad(() => {})
 }
 
 .course-tab-text {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   color: var(--text-secondary);
   font-weight: var(--weight-medium);
 }
@@ -531,7 +675,7 @@ onLoad(() => {})
   position: absolute;
   bottom: 4px;
   right: 4px;
-  background: var(--color-primary);
+  background: var(--color-accent);
   padding: 2px 6px;
   border-radius: 4px;
   display: flex;
@@ -552,7 +696,7 @@ onLoad(() => {})
 }
 
 .my-course-title {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   font-weight: var(--weight-medium);
   color: var(--text-primary);
   display: -webkit-box;
@@ -582,23 +726,23 @@ onLoad(() => {})
 
 .my-course-progress {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
 .my-course-btn {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
   padding: 4px 12px;
   border-radius: var(--radius-full);
 }
 
 .my-course-btn:active {
-  background: #ffe0cc;
+  background: #e8dffc;
 }
 
 .my-course-btn-text {
   font-size: var(--font-xs);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
