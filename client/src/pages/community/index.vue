@@ -5,10 +5,10 @@
       <text class="nav-title">社区</text>
       <view class="nav-actions">
         <view class="nav-btn" @tap="goSearch">
-          <Icon icon="solar:magnifer-bold" :size="20" color="var(--text-secondary)" />
+          <Icon icon="solar:magnifer-bold" :size="20" color="rgba(255,255,255,0.6)" />
         </view>
         <view class="nav-btn create-btn" @tap="goCreate">
-          <Icon icon="solar:pen-new-square-bold" :size="18" color="var(--color-primary)" />
+          <Icon icon="solar:pen-new-square-bold" :size="18" color="#8B5CF6" />
         </view>
       </view>
     </view>
@@ -239,7 +239,7 @@ onLoad(() => {
 
 /* ---- 顶部导航 ---- */
 .nav-bar {
-  background: var(--bg-card);
+  background: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -249,7 +249,7 @@ onLoad(() => {
 .nav-title {
   font-size: var(--font-2xl);
   font-weight: var(--weight-bold);
-  color: var(--text-primary);
+  color: #fff;
 }
 
 .nav-actions {
@@ -258,17 +258,17 @@ onLoad(() => {
 }
 
 .nav-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  background: var(--bg-gray);
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-circle);
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .create-btn {
-  background: var(--color-primary-light);
+  background: rgba(139, 92, 246, 0.3);
 }
 
 /* ---- 话题标签 ---- */
@@ -293,7 +293,7 @@ onLoad(() => {
 }
 
 .topic-text {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   color: var(--text-secondary);
   font-weight: var(--weight-medium);
 }
@@ -342,7 +342,7 @@ onLoad(() => {
 .user-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: linear-gradient(135deg, #FFE0D0, #FFB088);
   display: flex;
   align-items: center;
@@ -362,7 +362,7 @@ onLoad(() => {
 }
 
 .user-name {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   font-weight: var(--weight-semibold);
   color: var(--text-primary);
 }
@@ -373,14 +373,14 @@ onLoad(() => {
 }
 
 .topic-badge {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
   padding: 3px 10px;
   border-radius: var(--radius-full);
 }
 
 .topic-badge-text {
   font-size: var(--font-xs);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -454,8 +454,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid #eee;
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
+  border-top-color: var(--color-accent);
+  border-radius: var(--radius-circle);
   animation: spin 0.6s linear infinite;
 }
 
@@ -472,7 +472,7 @@ onLoad(() => {
 }
 
 .empty-text {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   color: var(--text-hint);
 }
 
@@ -491,7 +491,7 @@ onLoad(() => {
 }
 
 .empty-btn-text {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   color: #fff;
   font-weight: var(--weight-medium);
 }
