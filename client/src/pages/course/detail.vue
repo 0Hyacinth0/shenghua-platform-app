@@ -3,7 +3,7 @@
     <!-- 顶部导航栏 -->
     <view class="nav-bar">
       <view class="nav-back" @tap="goBack">
-        <text class="back-icon">&lsaquo;</text>
+        <Icon icon="solar:arrow-left-bold" width="20" height="20" color="#fff" />
       </view>
       <view class="nav-actions">
         <view class="nav-btn" @tap="onShare">
@@ -19,7 +19,7 @@
     <view class="course-cover">
       <view class="cover-placeholder" :style="{ background: coverGradient }">
         <view class="play-icon">
-          <Icon icon="solar:play-bold" width="28" height="28" color="var(--color-primary)" />
+          <Icon icon="solar:play-bold" width="28" height="28" color="var(--color-accent)" />
         </view>
       </view>
     </view>
@@ -33,12 +33,12 @@
         <text v-if="course.originalPrice" class="original-price">¥{{ course.originalPrice }}</text>
       </view>
       <view class="price-tags">
-        <view v-if="course.price === 0" class="tag-free">
-          <text class="tag-free-text">免费课程</text>
+        <view v-if="course.price === 0" class="tag tag-free">
+          <text class="tag-text-free">免费课程</text>
         </view>
-        <view v-else class="tag-hot">
+        <view v-else class="tag tag-hot">
           <Icon icon="solar:fire-bold" width="12" height="12" color="var(--color-danger)" style="margin-right: 2px; vertical-align: -1px;" />
-          <text class="tag-hot-text">热门</text>
+          <text class="tag-text-hot">热门</text>
         </view>
         <text class="students-text">{{ course.studentCount || 0 }}人学习</text>
       </view>
@@ -143,7 +143,7 @@
         <view class="recommend-card" v-for="c in recommendCourses" :key="c.id" @tap="goCourse(c.id)">
           <view class="recommend-img" :style="{ background: c.coverColor }">
             <view class="recommend-play">
-              <Icon icon="solar:play-bold" width="16" height="16" color="var(--color-primary)" />
+              <Icon icon="solar:play-bold" width="16" height="16" color="var(--color-accent)" />
             </view>
           </view>
           <view class="recommend-info">
@@ -165,7 +165,7 @@
     <view class="bottom-bar">
       <view class="bar-left">
         <view class="bar-action" @tap="onFavorite">
-          <Icon :icon="favorited ? 'solar:heart-bold' : 'solar:heart-linear'" width="22" height="22" color="var(--text-hint)" />
+          <Icon :icon="favorited ? 'solar:heart-bold' : 'solar:heart-linear'" width="22" height="22" :color="favorited ? 'var(--color-accent)' : 'var(--text-hint)'" />
           <text class="bar-label">收藏</text>
         </view>
         <view class="bar-action" @tap="onShare">
@@ -207,10 +207,10 @@ let courseId = ''
 
 const coverGradient = computed(() => {
   const gradients = [
-    'linear-gradient(135deg, #FF6B35 0%, #FF8F5E 100%)',
+    'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
     'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    'linear-gradient(135deg, #1A1A2E 0%, #3B3B6B 100%)',
+    'linear-gradient(135deg, #0EA5E9 0%, #38BDF8 100%)',
   ]
   return gradients[Math.floor(Math.random() * gradients.length)]
 })
@@ -218,9 +218,9 @@ const coverGradient = computed(() => {
 const reviewTags = ['讲解清晰', '内容实用', '案例丰富', '通俗易懂', '值得推荐']
 
 const recommendCourses = [
-  { id: 'r1', title: 'Vue 3 + TypeScript 实战', coverColor: 'linear-gradient(135deg,#667eea,#764ba2)', price: 0, students: 2341 },
-  { id: 'r2', title: 'React 18 新特性精讲', coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)', price: 199, students: 892 },
-  { id: 'r3', title: 'Node.js 后端开发', coverColor: 'linear-gradient(135deg,#4facfe,#00f2fe)', price: 299, students: 5621 },
+  { id: 'r1', title: 'Vue 3 + TypeScript 实战', coverColor: 'linear-gradient(135deg,#8B5CF6,#A78BFA)', price: 0, students: 2341 },
+  { id: 'r2', title: 'React 18 新特性精讲', coverColor: 'linear-gradient(135deg,#1A1A2E,#3B3B6B)', price: 199, students: 892 },
+  { id: 'r3', title: 'Node.js 后端开发', coverColor: 'linear-gradient(135deg,#0EA5E9,#38BDF8)', price: 299, students: 5621 },
 ]
 
 function goBack() {
@@ -324,17 +324,11 @@ onLoad((options: any) => {
 .nav-back {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background: rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.back-icon {
-  font-size: var(--font-3xl);
-  color: var(--text-white);
-  font-weight: var(--weight-normal);
 }
 
 .nav-actions {
@@ -345,7 +339,7 @@ onLoad((options: any) => {
 .nav-btn {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background: rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
@@ -369,12 +363,12 @@ onLoad((options: any) => {
 .play-icon {
   width: 56px;
   height: 56px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.9);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
 }
 
 /* 价格栏 */
@@ -395,7 +389,7 @@ onLoad((options: any) => {
 .current-price {
   font-size: var(--font-3xl);
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-danger);
 }
 
 .current-price.free {
@@ -414,13 +408,18 @@ onLoad((options: any) => {
   gap: 10px;
 }
 
-.tag-free {
-  background: var(--color-success-light);
-  padding: 2px var(--space-sm);
-  border-radius: var(--radius-sm);
+.tag {
+  padding: 3px var(--space-sm);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
 }
 
-.tag-free-text {
+.tag-free {
+  background: var(--color-success-light);
+}
+
+.tag-text-free {
   font-size: var(--font-sm);
   color: var(--color-success);
   font-weight: var(--weight-medium);
@@ -428,13 +427,9 @@ onLoad((options: any) => {
 
 .tag-hot {
   background: var(--color-danger-light);
-  padding: 2px var(--space-sm);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
 }
 
-.tag-hot-text {
+.tag-text-hot {
   font-size: var(--font-sm);
   color: var(--color-danger);
   font-weight: var(--weight-medium);
@@ -452,7 +447,7 @@ onLoad((options: any) => {
 }
 
 .course-title {
-  font-size: var(--font-2xl);
+  font-size: var(--font-xl);
   font-weight: var(--weight-bold);
   color: var(--text-primary);
   line-height: 1.4;
@@ -496,8 +491,8 @@ onLoad((options: any) => {
 .lecturer-avatar {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
+  border-radius: var(--radius-circle);
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -506,7 +501,7 @@ onLoad((options: any) => {
 .avatar-text {
   font-size: var(--font-2xl);
   font-weight: var(--weight-semibold);
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .lecturer-info {
@@ -538,18 +533,22 @@ onLoad((options: any) => {
 .section-card {
   background: var(--bg-card);
   margin-top: var(--space-sm);
+  margin-left: var(--space-sm);
+  margin-right: var(--space-sm);
   padding: var(--space-lg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
 }
 
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: var(--space-md);
 }
 
 .section-title {
-  font-size: 17px;
+  font-size: var(--font-xl);
   font-weight: var(--weight-semibold);
   color: var(--text-primary);
 }
@@ -566,7 +565,7 @@ onLoad((options: any) => {
 
 /* 课程介绍 */
 .course-desc {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   color: var(--text-secondary);
   line-height: 1.8;
 }
@@ -596,7 +595,7 @@ onLoad((options: any) => {
 .lesson-index {
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: var(--bg-gray);
   display: flex;
   align-items: center;
@@ -605,7 +604,7 @@ onLoad((options: any) => {
 }
 
 .lesson-index.active {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
 }
 
 .index-text {
@@ -615,7 +614,7 @@ onLoad((options: any) => {
 }
 
 .lesson-index.active .index-text {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .lesson-info {
@@ -624,7 +623,7 @@ onLoad((options: any) => {
 }
 
 .lesson-title {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   color: var(--text-primary);
   line-height: 1.4;
   display: -webkit-box;
@@ -647,10 +646,10 @@ onLoad((options: any) => {
 
 .lesson-free-badge {
   font-size: var(--font-xs);
-  color: var(--color-primary);
-  background: var(--color-primary-light);
+  color: var(--color-accent);
+  background: var(--color-accent-light);
   padding: 1px 6px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full);
 }
 
 .lesson-status {
@@ -659,7 +658,7 @@ onLoad((options: any) => {
 
 .status-progress {
   font-size: var(--font-sm);
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: var(--weight-medium);
 }
 
@@ -682,7 +681,7 @@ onLoad((options: any) => {
 }
 
 .rating-score {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   font-weight: var(--weight-semibold);
   color: var(--color-warning);
 }
@@ -715,7 +714,7 @@ onLoad((options: any) => {
 .recommend-card {
   flex-shrink: 0;
   width: 160px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--bg-card);
   box-shadow: var(--shadow-sm);
@@ -737,7 +736,7 @@ onLoad((options: any) => {
 .recommend-play {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.9);
   display: flex;
   align-items: center;
@@ -745,7 +744,7 @@ onLoad((options: any) => {
 }
 
 .recommend-info {
-  padding: 10px;
+  padding: var(--space-sm) 10px;
 }
 
 .recommend-title {
@@ -767,9 +766,9 @@ onLoad((options: any) => {
 }
 
 .recommend-price {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   font-weight: var(--weight-bold);
-  color: var(--color-primary);
+  color: var(--color-danger);
 }
 
 .recommend-price.free {
@@ -788,7 +787,7 @@ onLoad((options: any) => {
 }
 
 .empty-text {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   color: var(--text-hint);
 }
 
@@ -868,11 +867,11 @@ onLoad((options: any) => {
 }
 
 .btn-cart:active {
-  background: var(--color-primary-light);
+  background: var(--color-accent-light);
 }
 
 .btn-cart-text {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   color: var(--color-primary);
   font-weight: var(--weight-medium);
 }
@@ -893,7 +892,7 @@ onLoad((options: any) => {
 }
 
 .btn-buy-text {
-  font-size: var(--font-base);
+  font-size: var(--font-md);
   font-weight: var(--weight-semibold);
   color: var(--text-white);
 }
