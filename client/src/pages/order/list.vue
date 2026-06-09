@@ -36,8 +36,9 @@
           </view>
 
           <view v-for="item in order.items" :key="item.id" class="order-item">
-            <view class="item-img" :style="{ background: item.coverColor || '#f5f5f5' }">
-              <Icon icon="solar:box-bold" width="24" color="var(--text-hint)" />
+            <view class="item-img">
+              <image v-if="item.mainImage" :src="imgUrl(item.mainImage)" class="item-image" mode="aspectFill" />
+              <Icon v-else icon="solar:box-bold" width="24" color="var(--text-hint)" />
             </view>
             <view class="item-info">
               <text class="item-name">{{ item.productName }}</text>
@@ -92,6 +93,7 @@ import { onLoad } from '@dcloudio/uni-app'
 import { Icon } from '@iconify/vue'
 import { getOrderList, cancelOrder, dummyPay, confirmReceipt, imgUrl } from '@/api'
 import { getCurrentUserId } from '@/utils/user'
+import { goHome as navGoHome } from '@/utils/navigation'
 
 const tabs = [
   { key: '', label: '全部' },
@@ -112,7 +114,7 @@ function goBack() {
 }
 
 function goHome() {
-  uni.switchTab({ url: '/pages/home/index' })
+  navGoHome()
 }
 
 function goDetail(id: string) {
@@ -345,6 +347,13 @@ onLoad((options: any) => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  background: var(--bg-gray, #f5f5f5);
+  overflow: hidden;
+}
+
+.item-image {
+  width: 100%;
+  height: 100%;
 }
 
 .item-info {

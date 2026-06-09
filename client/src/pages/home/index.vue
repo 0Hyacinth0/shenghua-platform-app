@@ -1,14 +1,17 @@
 <template>
   <view class="page">
-    <!-- 顶部导航栏 -->
-    <view class="header">
-      <view class="header-content">
-        <view class="search-bar" @tap="goSearch">
-          <Icon icon="solar:magnifer-bold" :size="18" color="rgba(255,255,255,0.4)" />
-          <text class="search-placeholder">搜索课程、讲师</text>
+    <!-- 顶部标题栏 -->
+    <view class="home-header">
+      <view>
+        <text class="home-title">盛桦</text>
+        <text class="home-subtitle">商城 · 学堂 · 社区</text>
+      </view>
+      <view class="header-actions">
+        <view class="header-icon" @tap="goCart">
+          <Icon icon="solar:cart-large-2-bold" :size="20" color="#111" />
         </view>
-        <view class="header-btn" @tap="goMessages">
-          <Icon icon="solar:bell-bold" :size="20" color="#fff" />
+        <view class="header-icon" @tap="goMessages">
+          <Icon icon="solar:bell-bold" :size="20" color="#111" />
           <view v-if="msgBadge > 0" class="header-badge">
             <text class="badge-text">{{ msgBadge > 99 ? '99+' : msgBadge }}</text>
           </view>
@@ -16,139 +19,134 @@
       </view>
     </view>
 
-    <!-- Banner 横滑 -->
-    <view class="banner">
-      <scroll-view scroll-x class="banner-scroll">
-        <view class="banner-card" v-for="b in banners" :key="b.id" @tap="navigateTo(b.route)">
-          <view class="banner-deco" />
-          <text class="banner-eyebrow">{{ b.eyebrow }}</text>
-          <text class="banner-title">{{ b.title }}</text>
-          <text class="banner-sub">{{ b.subtitle }}</text>
-          <view class="banner-btn">
-            <text class="banner-btn-text">{{ b.btnText }}</text>
-          </view>
+    <!-- 搜索入口 -->
+    <view class="search-card" @tap="goSearch">
+      <Icon icon="solar:magnifer-bold" :size="18" color="var(--color-text-hint)" />
+      <text class="search-text">搜索商品、课程、帖子</text>
+    </view>
+
+    <!-- Hero 推荐卡片 -->
+    <view class="color-block-section color-block-section-navy hero-section" @tap="heroProduct && goProduct(heroProduct.id)">
+      <view class="hero-copy">
+        <text class="block-eyebrow" style="color: rgba(255,255,255,0.6);">TODAY</text>
+        <text class="hero-title">{{ heroProduct?.spuName || '发现盛桦精选' }}</text>
+        <text class="hero-sub">{{ heroProduct ? '今日商城推荐' : '商品、好课和社区内容都会在这里聚合' }}</text>
+      </view>
+      <image v-if="heroProduct?.mainImage" :src="imgUrl(heroProduct.mainImage)" class="hero-img" mode="aspectFill" />
+    </view>
+
+    <!-- 快捷入口 -->
+    <view class="quick-grid">
+      <view class="quick-item" @tap="goMall">
+        <text class="quick-title">商城</text>
+        <text class="quick-sub">分类好物</text>
+      </view>
+      <view class="quick-item" @tap="navigateToPage('/pages/learn/index')">
+        <text class="quick-title">学习</text>
+        <text class="quick-sub">课程进度</text>
+      </view>
+      <view class="quick-item" @tap="navigateToPage('/pages/seckill/index')">
+        <text class="quick-title">秒杀</text>
+        <text class="quick-sub">限时抢购</text>
+      </view>
+      <view class="quick-item" @tap="navigateToPage('/pages/community/index')">
+        <text class="quick-title">社区</text>
+        <text class="quick-sub">逛逛动态</text>
+      </view>
+    </view>
+
+    <!-- 商品分类 -->
+    <view class="section" v-if="categories.length">
+      <view class="section-header">
+        <text class="section-title">商品分类</text>
+        <text class="section-more" @tap="goCategory()">全部</text>
+      </view>
+      <scroll-view scroll-x class="category-scroll">
+        <view v-for="cat in categories" :key="cat.id" class="category-pill" @tap="goCategory(cat.id)">
+          <text class="category-name">{{ cat.name }}</text>
         </view>
       </scroll-view>
     </view>
 
-    <!-- 课程分类 -->
+    <!-- 商城精选 -->
     <view class="section">
       <view class="section-header">
-        <text class="section-title">课程分类</text>
-        <view class="section-more" @tap="goCategory">
-          <text class="more-text">查看全部</text>
-          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--text-hint)" />
+        <text class="section-title">商城精选</text>
+        <text class="section-more" @tap="goMall">更多</text>
+      </view>
+      <view v-if="productGrid.length" class="product-grid">
+        <view v-for="item in productGrid" :key="item.id" class="product-card" @tap="goProduct(item.id)">
+          <view class="product-img-wrap">
+            <image v-if="item.mainImage" :src="imgUrl(item.mainImage)" class="product-img" mode="aspectFill" />
+            <view v-else class="product-img empty-img" />
+          </view>
+          <view class="product-info-wrap">
+            <text class="product-name">{{ item.spuName }}</text>
+            <text class="product-price price-commerce">¥{{ item.minPrice || 0 }}</text>
+          </view>
         </view>
       </view>
-      <view class="category-grid">
-        <view class="cat-item" v-for="cat in categories" :key="cat.name" :style="{ background: cat.bg }" @tap="navigateTo(cat.route)">
-          <Icon :icon="cat.icon" :size="24" :color="cat.color" />
-          <text class="cat-name">{{ cat.name }}</text>
-          <text class="cat-count">{{ cat.count }} 门课程</text>
-        </view>
+      <view v-else class="inline-empty">
+        <text class="inline-empty-text">暂无精选商品</text>
       </view>
     </view>
 
-    <!-- 频道 Tab + 课程列表 -->
-    <view class="section">
+    <!-- 限时活动 -->
+    <view class="section" v-if="promoList.length">
       <view class="section-header">
-        <text class="section-title">热门课程</text>
-        <view class="section-more" @tap="goCourseList">
-          <text class="more-text">更多</text>
-          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--text-hint)" />
-        </view>
+        <text class="section-title">限时活动</text>
       </view>
-      <view class="channel-tabs">
-        <view v-for="ch in channels" :key="ch.key" class="channel-tab" :class="{ active: activeChannel === ch.key }" @tap="activeChannel = ch.key">
-          <text class="channel-tab-text" :class="{ active: activeChannel === ch.key }">{{ ch.label }}</text>
-        </view>
-      </view>
-      <view class="course-list">
-        <view class="course-card" v-for="c in recommendCourses" :key="c.id" @tap="goCourse(c.id)">
-          <view class="course-img" :style="{ background: c.coverColor }">
-            <view class="play-icon-wrap">
-              <Icon icon="solar:play-bold" :size="16" color="#8B5CF6" />
+      <view class="color-block-section color-block-section-lime">
+        <text class="block-eyebrow">LIMITED TIME PROMO</text>
+        <view class="promo-list-container">
+          <view v-for="item in promoList" :key="item.id" class="promo-item-card" @tap="goProduct(item.spuId || item.id)">
+            <view class="promo-top-row">
+              <text class="promo-item-badge">{{ item.promoType }}</text>
+              <text class="promo-item-title">{{ item.spuName || item.productName || '活动商品' }}</text>
             </view>
-          </view>
-          <view class="course-info">
-            <text class="course-title">{{ c.title }}</text>
-            <view class="course-meta">
-              <text class="course-lecturer">{{ c.lecturer }}</text>
-              <text class="course-dot">·</text>
-              <text class="course-lessons">{{ c.lessons }}课时</text>
-            </view>
-            <view class="course-bottom">
-              <text class="course-price" :class="{ free: c.free }">
-                {{ c.free ? '免费' : '¥' + c.price }}
-              </text>
-              <view class="students-row">
-                <Icon icon="solar:users-group-rounded-bold" :size="12" color="var(--text-hint)" />
-                <text class="course-students">{{ c.students }}人学习</text>
-              </view>
+            <view class="promo-bottom-row">
+              <text class="promo-item-price price-commerce">¥{{ item.seckillPrice || item.groupPrice || item.price || 0 }}</text>
+              <view class="promo-action-btn">抢购</view>
             </view>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 免费公开课 -->
-    <view class="section">
+    <!-- 继续学习 -->
+    <view class="section" v-if="courseList.length">
       <view class="section-header">
-        <text class="section-title">免费公开课</text>
-        <view class="section-more" @tap="goCourseList">
-          <text class="more-text">全部</text>
-          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--text-hint)" />
-        </view>
+        <text class="section-title">继续学习</text>
+        <text class="section-more" @tap="navigateToPage('/pages/learn/index')">学习中心</text>
       </view>
-      <view class="course-list">
-        <view class="course-card" v-for="c in freeCourses" :key="c.id" @tap="goCourse(c.id)">
-          <view class="course-img" :style="{ background: c.coverColor }">
-            <view class="free-tag">
-              <text class="free-tag-text">免费</text>
-            </view>
-          </view>
-          <view class="course-info">
-            <text class="course-title">{{ c.title }}</text>
-            <view class="course-meta">
-              <text class="course-lecturer">{{ c.lecturer }}</text>
-              <text class="course-dot">·</text>
-              <text class="course-lessons">{{ c.students }}次播放</text>
+      <view class="color-block-section color-block-section-lilac">
+        <text class="block-eyebrow">ACADEMY PROGRESS</text>
+        <view class="course-list-container">
+          <view v-for="course in courseList" :key="course.id" class="course-item-row" @tap="goCourse(course.id)">
+            <text class="course-item-title">{{ course.title || course.courseName }}</text>
+            <view class="course-item-footer">
+              <text class="course-item-lecturer">{{ course.lecturerName || '盛桦讲师' }}</text>
+              <view class="course-action-btn">学习</view>
             </view>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 精选好课 -->
-    <view class="section">
+    <!-- 社区热帖 -->
+    <view class="section" v-if="postList.length">
       <view class="section-header">
-        <text class="section-title">精选好课</text>
-        <view class="section-more" @tap="goCourseList">
-          <text class="more-text">更多</text>
-          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--text-hint)" />
-        </view>
+        <text class="section-title">社区热帖</text>
+        <text class="section-more" @tap="navigateToPage('/pages/community/index')">逛逛</text>
       </view>
-      <view class="course-list">
-        <view class="course-card" v-for="c in featuredCourses" :key="c.id" @tap="goCourse(c.id)">
-          <view class="course-img" :style="{ background: c.coverColor }">
-            <view class="play-icon-wrap">
-              <Icon icon="solar:play-bold" :size="16" color="#8B5CF6" />
-            </view>
-          </view>
-          <view class="course-info">
-            <text class="course-title">{{ c.title }}</text>
-            <view class="course-meta">
-              <text class="course-lecturer">{{ c.lecturer }}</text>
-            </view>
-            <view class="course-bottom">
-              <text class="course-price" :class="{ free: c.free }">
-                {{ c.free ? '免费' : '¥' + c.price }}
-                <text v-if="c.originalPrice" class="original-price">¥{{ c.originalPrice }}</text>
-              </text>
-              <view class="students-row">
-                <Icon icon="solar:users-group-rounded-bold" :size="12" color="var(--text-hint)" />
-                <text class="course-students">{{ c.students }}人学习</text>
-              </view>
+      <view class="color-block-section color-block-section-mint">
+        <text class="block-eyebrow">COMMUNITY BUZZ</text>
+        <view class="post-list-container">
+          <view v-for="post in postList" :key="post.id" class="post-item-row" @tap="goPost(post.id)">
+            <text class="post-item-title">{{ post.title || post.content }}</text>
+            <view class="post-item-footer">
+              <text class="post-item-likes">{{ post.likeCount || 0 }} 赞</text>
+              <view class="post-action-btn">阅读</view>
             </view>
           </view>
         </view>
@@ -156,68 +154,143 @@
     </view>
 
     <view class="bottom-spacer" />
+    <CustomTabBar :active="0" />
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { Icon } from '@iconify/vue'
+import {
+  getCategoryTree,
+  getFrontProductList,
+  getSeckillProductList,
+  getGroupBuyList,
+  getPostFrontList,
+  imgUrl,
+} from '@/api'
+import http from '@/utils/http'
+import { goCart, goMall, navigateToPage } from '@/utils/navigation'
+import CustomTabBar from '@/components/CustomTabBar.vue'
 
-const msgBadge = ref(3)
-const activeChannel = ref('recommend')
+const loading = ref(false)
+const products = ref<any[]>([])
+const categories = ref<any[]>([])
+const courses = ref<any[]>([])
+const posts = ref<any[]>([])
+const seckillProducts = ref<any[]>([])
+const groupBuys = ref<any[]>([])
+const msgBadge = ref(0)
 
-const banners = [
-  { id: '1', eyebrow: 'NEW TERM', title: '探索新学期', subtitle: '发现你的下一门课程', btnText: '立即探索', route: '/pages/course/index' },
-  { id: '2', eyebrow: 'LIMITED', title: '开学季大促', subtitle: '精选好课限时优惠', btnText: '查看优惠', route: '/pages/coupon/index' },
-  { id: '3', eyebrow: 'GROUP', title: '拼团学习更划算', subtitle: '邀请好友一起学习', btnText: '立即拼团', route: '/pages/groupBuy/index' },
-]
+const heroProduct = computed(() => products.value[0] || null)
+const productGrid = computed(() => products.value.slice(0, 6))
+const courseList = computed(() => courses.value.slice(0, 3))
+const postList = computed(() => posts.value.slice(0, 3))
+const promoList = computed(() => [
+  ...seckillProducts.value.slice(0, 1).map(item => ({ ...item, promoType: '秒杀' })),
+  ...groupBuys.value.slice(0, 1).map(item => ({ ...item, promoType: '拼团' })),
+])
 
-const categories = [
-  { name: '编程开发', icon: 'solar:code-bold', bg: '#F5F3FF', color: '#8B5CF6', count: 128, route: '/pages/course/index' },
-  { name: '设计创作', icon: 'solar:palette-bold', bg: '#FFF4EE', color: '#FF6B35', count: 86, route: '/pages/course/index' },
-  { name: '语言学习', icon: 'solar:global-bold', bg: '#F0FDF4', color: '#22C55E', count: 64, route: '/pages/course/index' },
-  { name: 'AI 技能', icon: 'solar:cpu-bold', bg: '#FEF3C7', color: '#F59E0B', count: 42, route: '/pages/course/index' },
-]
+/* ---- 数据加载 ---- */
 
-const channels = [
-  { key: 'recommend', label: '推荐' },
-  { key: 'hot', label: '热门' },
-  { key: 'new', label: '新课' },
-  { key: 'live', label: '直播' },
-]
-
-const recommendCourses = [
-  { id: '1', title: 'Vue 3 + TypeScript 实战教程', coverColor: 'linear-gradient(135deg,#667eea,#764ba2)', lecturer: '张明远', free: true, price: 0, lessons: 24, students: 2341 },
-  { id: '2', title: 'UI/UX 设计思维与方法论', coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)', lecturer: '李思琪', free: false, price: 199, lessons: 18, students: 892 },
-  { id: '3', title: 'Python 数据分析从入门到精通', coverColor: 'linear-gradient(135deg,#4facfe,#00f2fe)', lecturer: '王建国', free: false, price: 299, lessons: 32, students: 5621 },
-]
-
-const freeCourses = [
-  { id: 'f1', title: '算法与数据结构精讲', coverColor: 'linear-gradient(135deg,#a8edea,#fed6e3)', lecturer: '刘老师', students: 4503 },
-  { id: 'f2', title: 'React Native 跨平台开发', coverColor: 'linear-gradient(135deg,#ffecd2,#fcb69f)', lecturer: '王老师', students: 1892 },
-  { id: 'f3', title: '英语口语速成班', coverColor: 'linear-gradient(135deg,#a1c4fd,#c2e9fb)', lecturer: '陈老师', students: 3201 },
-]
-
-const featuredCourses = [
-  { id: 'v1', title: 'React Native 跨平台移动开发实战', coverColor: 'linear-gradient(135deg,#667eea,#764ba2)', lecturer: '王老师', price: 299, originalPrice: 799, students: 1892, free: false },
-  { id: 'v2', title: 'AI 人工智能入门到实战', coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)', lecturer: '王建国', price: 399, students: 3456, free: false },
-  { id: 'v3', title: '商务英语口语提升课', coverColor: 'linear-gradient(135deg,#43e97b,#38f9d7)', lecturer: '陈雨薇', price: 0, students: 7821, free: true },
-]
-
-function navigateTo(url: string) {
-  const tabPages = ['/pages/home/index', '/pages/learn/index', '/pages/community/index', '/pages/profile/index']
-  if (tabPages.includes(url)) {
-    uni.switchTab({ url })
-  } else {
-    uni.navigateTo({ url })
+async function loadCategories() {
+  try {
+    const res = await getCategoryTree()
+    categories.value = Array.isArray(res) ? res.slice(0, 8) : []
+  } catch {
+    categories.value = []
   }
 }
 
-function goSearch() { uni.showToast({ title: '搜索功能开发中', icon: 'none' }) }
-function goMessages() { uni.navigateTo({ url: '/pages/message/index' }) }
-function goCategory() { uni.switchTab({ url: '/pages/learn/index' }) }
-function goCourseList() { uni.navigateTo({ url: '/pages/course/index' }) }
-function goCourse(id: string) { uni.navigateTo({ url: '/pages/course/detail?id=' + id }) }
+async function loadProducts() {
+  try {
+    const res: any = await getFrontProductList({ pageNo: 1, pageSize: 8 })
+    products.value = res?.records || []
+  } catch {
+    products.value = []
+  }
+}
+
+async function loadCourses() {
+  try {
+    const res: any = await http.get('/course/list', { params: { pageNo: 1, pageSize: 4 } })
+    courses.value = res?.records || []
+  } catch {
+    courses.value = []
+  }
+}
+
+async function loadPosts() {
+  try {
+    const res: any = await getPostFrontList({ pageNo: 1, pageSize: 4 })
+    posts.value = res?.records || []
+  } catch {
+    posts.value = []
+  }
+}
+
+async function loadPromotions() {
+  try {
+    const [seckillRes, groupRes] = await Promise.all([
+      getSeckillProductList({ pageNo: 1, pageSize: 2 }).catch(() => ({ records: [] })),
+      getGroupBuyList({ pageNo: 1, pageSize: 2 }).catch(() => ({ records: [] })),
+    ])
+    seckillProducts.value = (seckillRes as any)?.records || []
+    groupBuys.value = (groupRes as any)?.records || []
+  } catch {
+    seckillProducts.value = []
+    groupBuys.value = []
+  }
+}
+
+async function refreshHome() {
+  loading.value = true
+  try {
+    await Promise.all([
+      loadCategories(),
+      loadProducts(),
+      loadCourses(),
+      loadPosts(),
+      loadPromotions(),
+    ])
+  } finally {
+    loading.value = false
+  }
+}
+
+/* ---- 导航操作 ---- */
+
+function goSearch() {
+  goMall()
+}
+
+function goMessages() {
+  uni.navigateTo({ url: '/pages/message/index' })
+}
+
+function goProduct(id: string) {
+  uni.navigateTo({ url: '/pages/product/detail?id=' + id })
+}
+
+function goCourse(id: string) {
+  uni.navigateTo({ url: '/pages/course/detail?id=' + id })
+}
+
+function goPost(id: string) {
+  uni.navigateTo({ url: '/pages/community/detail?id=' + id })
+}
+
+function goCategory(id?: string) {
+  if (id) uni.setStorageSync('mall_target_category_id', id)
+  goMall()
+}
+
+onLoad(refreshHome)
+onShow(() => {
+  uni.hideTabBar({ animation: false })
+  if (products.value.length === 0 && !loading.value) refreshHome()
+})
 </script>
 
 <style scoped>
@@ -225,46 +298,49 @@ function goCourse(id: string) { uni.navigateTo({ url: '/pages/course/detail?id='
 
 .page {
   min-height: 100vh;
-  background: var(--bg-page);
-  padding-bottom: 16px;
+  background: var(--color-bg-page, #F7F7F8);
+  padding: 44px 16px 16px;
+  box-sizing: border-box;
 }
 
-/* ---- 顶部导航 ---- */
-.header {
-  background: var(--color-primary);
-  padding: 44px 16px 14px;
-}
-
-.header-content {
+/* ---- 顶部标题栏 ---- */
+.home-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 14px;
 }
 
-.search-bar {
-  flex: 1;
+.home-title {
+  display: block;
+  font-size: 28px;
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text, #111);
+  letter-spacing: var(--letter-spacing-display, -0.5px);
+}
+
+.home-subtitle {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--font-sm, 12px);
+  color: var(--color-text-secondary, #666);
+}
+
+.header-actions {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-2xl);
-  padding: 9px 14px;
+  gap: 10px;
 }
 
-.search-placeholder {
-  font-size: var(--font-md);
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.header-btn {
-  width: 34px;
-  height: 34px;
+.header-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--color-card, #fff);
+  border: 1px solid var(--color-border, #eee);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-circle);
 }
 
 .header-badge {
@@ -273,263 +349,312 @@ function goCourse(id: string) { uni.navigateTo({ url: '/pages/course/detail?id='
   right: -2px;
   min-width: 16px;
   height: 16px;
-  background: var(--color-danger);
-  border-radius: var(--radius-circle);
+  background: var(--color-commerce, #e4393c);
+  border-radius: var(--radius-full, 999px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 4px;
-  border: 2px solid var(--color-primary);
 }
 
 .badge-text {
   font-size: 10px;
   color: #fff;
-  font-weight: var(--weight-bold);
+  font-weight: var(--weight-bold, 700);
 }
 
-/* ---- Banner ---- */
-.banner {
-  padding: 16px;
+/* ---- 搜索 ---- */
+.search-card {
+  height: 42px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--color-card, #fff);
+  border: 1px solid var(--color-border, #eee);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  margin-bottom: 14px;
 }
 
-.banner-scroll {
-  white-space: nowrap;
+.search-text {
+  font-size: var(--font-base, 14px);
+  color: var(--color-text-hint, #999);
 }
 
-.banner-card {
-  display: inline-block;
-  width: calc(100vw - 32px);
-  border-radius: var(--radius-xl);
-  padding: 22px;
-  position: relative;
-  overflow: hidden;
-  background: var(--color-primary);
-  vertical-align: top;
-  white-space: normal;
-  box-sizing: border-box;
+/* ---- Hero section ---- */
+.hero-section {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  min-height: 140px;
 }
 
-.banner-card + .banner-card {
-  margin-left: 12px;
+.hero-copy {
+  flex: 1;
+  min-width: 0;
 }
 
-.banner-deco {
-  position: absolute;
-  right: -15px;
-  top: -15px;
-  width: 80px;
-  height: 80px;
-  border-radius: var(--radius-circle);
-  background: rgba(139, 92, 246, 0.2);
-}
-
-.banner-eyebrow {
-  font-size: var(--font-xs);
-  color: rgba(255, 255, 255, 0.4);
-  font-weight: var(--weight-semibold);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-
-.banner-title {
-  font-size: var(--font-2xl);
-  font-weight: var(--weight-bold);
-  color: #fff;
+.hero-title {
+  display: block;
   margin-top: 6px;
-  display: block;
+  font-size: 20px;
+  line-height: 1.25;
+  color: #ffffff;
+  font-weight: var(--weight-bold, 700);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.banner-sub {
-  font-size: var(--font-md);
-  color: rgba(255, 255, 255, 0.45);
+.hero-sub {
+  display: block;
+  margin-top: 8px;
+  font-size: var(--font-sm, 12px);
+  color: rgba(255, 255, 255, 0.7);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hero-img {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-md, 12px);
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+/* ---- 快捷入口 ---- */
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.quick-item {
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-card, #fff);
+  border: 1px solid var(--color-border, #eee);
+  padding: 12px 6px;
+  min-height: 72px;
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.quick-item:active {
+  background: var(--color-bg-page, #f7f7f8);
+}
+
+.quick-title {
+  display: block;
+  font-size: var(--font-base, 14px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text, #111);
+}
+
+.quick-sub {
+  display: block;
   margin-top: 4px;
-  display: block;
+  font-size: 10px;
+  color: var(--color-text-secondary, #666);
 }
 
-.banner-btn {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 6px 16px;
-  border-radius: var(--radius-2xl);
-  margin-top: 12px;
-}
-
-.banner-btn-text {
-  font-size: var(--font-sm);
-  color: #fff;
-  font-weight: var(--weight-semibold);
-}
-
-/* ---- Section ---- */
+/* ---- 通用 Section ---- */
 .section {
-  background: var(--bg-card);
-  margin: 0 16px;
-  margin-top: 12px;
-  border-radius: var(--radius-lg);
-  padding: 16px;
+  margin-bottom: 18px;
 }
 
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .section-title {
-  font-size: var(--font-xl);
-  font-weight: var(--weight-semibold);
-  color: var(--text-primary);
+  font-size: var(--font-lg, 16px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text, #111);
+  letter-spacing: var(--letter-spacing-display, -0.5px);
 }
 
 .section-more {
-  display: flex;
-  align-items: center;
-  gap: 2px;
+  font-size: var(--font-sm, 12px);
+  color: var(--color-text-secondary, #666);
 }
 
-.more-text {
-  font-size: var(--font-sm);
-  color: var(--text-hint);
+/* ---- 分类横滑 ---- */
+.category-scroll {
+  white-space: nowrap;
 }
 
-/* ---- 分类 ---- */
-.category-grid {
+.category-pill {
+  display: inline-flex;
+  padding: 6px 14px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--color-card, #fff);
+  border: 1px solid var(--color-border, #eee);
+  margin-right: 8px;
+}
+
+.category-pill:active {
+  background: var(--color-bg, #f5f5f5);
+}
+
+.category-name {
+  font-size: var(--font-sm, 12px);
+  color: var(--color-text, #111);
+  font-weight: var(--weight-medium, 500);
+}
+
+/* ---- 商品网格 ---- */
+.product-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
-.cat-item {
-  border-radius: var(--radius-lg);
-  padding: 16px;
+.product-card {
+  background: var(--color-card, #fff);
+  border-radius: var(--radius-lg, 16px);
+  border: 1px solid var(--color-border, #eee);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:active {
+  background: var(--color-bg-page, #f7f7f8);
+}
+
+.product-img-wrap {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--color-bg, #f5f5f5);
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+}
+
+.empty-img {
+  background: linear-gradient(135deg, #f5f5f5, #fafafa);
+}
+
+.product-info-wrap {
+  padding: 10px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.cat-item:active {
-  opacity: 0.8;
+.product-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--font-sm, 12px);
+  line-height: 1.4;
+  color: var(--color-text, #1a1a1a);
+  min-height: 34px;
 }
 
-.cat-name {
-  font-size: var(--font-md);
-  color: var(--text-primary);
-  font-weight: var(--weight-semibold);
+.product-price {
+  font-size: var(--font-md, 15px);
+  font-weight: var(--weight-bold, 700);
 }
 
-.cat-count {
-  font-size: var(--font-sm);
-  color: var(--text-hint);
-}
-
-/* ---- 频道 Tab ---- */
-.channel-tabs {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 14px;
-}
-
-.channel-tab {
-  flex: 1;
-  text-align: center;
-  padding: 10px 0;
-  position: relative;
-}
-
-.channel-tab-text {
-  font-size: var(--font-md);
-  color: var(--text-secondary);
-  font-weight: var(--weight-medium);
-}
-
-.channel-tab-text.active {
-  color: var(--text-primary);
-  font-weight: var(--weight-semibold);
-}
-
-.channel-tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24px;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--color-accent);
-}
-
-/* ---- 课程列表 ---- */
-.course-list {
+/* ---- 限时促销/秒杀色块 ---- */
+.promo-list-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
-.course-card {
-  display: flex;
-  gap: 12px;
-  background: var(--bg-page);
-  border-radius: var(--radius-lg);
+.promo-item-card {
+  background: #ffffff;
+  border-radius: var(--radius-md, 12px);
   padding: 12px;
-}
-
-.course-card:active {
-  background: #eef0f4;
-}
-
-.course-img {
-  width: 100px;
-  height: 75px;
-  border-radius: var(--radius-md);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.play-icon-wrap {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-circle);
-  background: rgba(255, 255, 255, 0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.free-tag {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  background: var(--color-success);
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-}
-
-.free-tag-text {
-  font-size: 10px;
-  color: #fff;
-  font-weight: var(--weight-semibold);
-}
-
-.course-info {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-width: 0;
+  gap: 10px;
 }
 
-.course-title {
-  font-size: var(--font-lg);
-  font-weight: var(--weight-semibold);
-  color: var(--text-primary);
+.promo-top-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.promo-item-badge {
+  background: var(--color-commerce, #e4393c);
+  color: #ffffff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: var(--radius-full, 999px);
+  font-weight: var(--weight-bold, 700);
+  flex-shrink: 0;
+}
+
+.promo-item-title {
+  font-size: var(--font-sm, 12px);
+  color: #111111;
+  font-weight: var(--weight-semibold, 600);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.promo-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.promo-item-price {
+  font-size: var(--font-lg, 16px);
+  font-weight: var(--weight-bold, 700);
+}
+
+.promo-action-btn {
+  background: #111111;
+  color: #ffffff;
+  font-size: var(--font-sm, 12px);
+  font-weight: var(--weight-bold, 700);
+  padding: 4px 14px;
+  border-radius: var(--radius-full, 999px);
+}
+
+/* ---- 课程色块 ---- */
+.course-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.course-item-row {
+  background: #ffffff;
+  border-radius: var(--radius-md, 12px);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.course-item-title {
+  font-size: var(--font-sm, 12px);
+  color: #111111;
+  font-weight: var(--weight-semibold, 600);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -537,65 +662,78 @@ function goCourse(id: string) { uni.navigateTo({ url: '/pages/course/detail?id='
   overflow: hidden;
 }
 
-.course-meta {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 4px;
-}
-
-.course-lecturer {
-  font-size: var(--font-sm);
-  color: var(--text-hint);
-}
-
-.course-dot {
-  font-size: var(--font-sm);
-  color: var(--text-hint);
-}
-
-.course-lessons {
-  font-size: var(--font-sm);
-  color: var(--text-hint);
-}
-
-.course-bottom {
+.course-item-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: auto;
 }
 
-.course-price {
-  font-size: var(--font-lg);
-  font-weight: var(--weight-bold);
-  color: var(--color-warning);
+.course-item-lecturer {
+  font-size: var(--font-xs, 10px);
+  color: var(--color-text-secondary, #666);
 }
 
-.course-price.free {
-  color: var(--color-success);
+.course-action-btn, .post-action-btn {
+  background: #111111;
+  color: #ffffff;
+  font-size: var(--font-sm, 12px);
+  font-weight: var(--weight-bold, 700);
+  padding: 4px 14px;
+  border-radius: var(--radius-full, 999px);
 }
 
-.original-price {
-  font-size: var(--font-xs);
-  color: var(--text-hint);
-  text-decoration: line-through;
-  font-weight: var(--weight-normal);
-  margin-left: 4px;
+/* ---- 帖子色块 ---- */
+.post-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.students-row {
+.post-item-row {
+  background: #ffffff;
+  border-radius: var(--radius-md, 12px);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.post-item-title {
+  font-size: var(--font-sm, 12px);
+  color: #111111;
+  font-weight: var(--weight-semibold, 600);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.post-item-footer {
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: space-between;
 }
 
-.course-students {
-  font-size: var(--font-xs);
-  color: var(--text-hint);
+.post-item-likes {
+  font-size: var(--font-xs, 10px);
+  color: var(--color-text-secondary, #666);
+}
+
+/* ---- 空状态 ---- */
+.inline-empty {
+  background: var(--color-card, #fff);
+  border: 1px solid var(--color-border, #eee);
+  border-radius: var(--radius-lg, 16px);
+  padding: 24px;
+  text-align: center;
+}
+
+.inline-empty-text {
+  font-size: var(--font-sm, 12px);
+  color: var(--color-text-hint, #999);
 }
 
 .bottom-spacer {
-  height: 16px;
+  height: 76px;
 }
 </style>

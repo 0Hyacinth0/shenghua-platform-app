@@ -83,6 +83,7 @@ import { onLoad } from '@dcloudio/uni-app'
 import { Icon } from '@iconify/vue'
 import { getUserCoupons, imgUrl } from '@/api'
 import { getCurrentUserId } from '@/utils/user'
+import { goMall } from '@/utils/navigation'
 
 const tabs = [
   { key: 'available', label: '可使用' },
@@ -100,7 +101,7 @@ function goBack() {
 
 function goCouponCenter() {
   // TODO: 领券中心
-  uni.showToast({ title: '领券中心开发中', icon: 'none' })
+  uni.showToast({ title: '暂无可领取的优惠券', icon: 'none' })
 }
 
 function formatDate(date: string) {
@@ -114,7 +115,7 @@ function onTabChange(key: string) {
 }
 
 function onUse(coupon: any) {
-  uni.switchTab({ url: '/pages/mall/index' })
+  goMall()
 }
 
 async function loadCoupons() {

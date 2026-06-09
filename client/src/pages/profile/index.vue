@@ -1,54 +1,57 @@
 <template>
   <view class="page">
-    <!-- 用户信息卡片 -->
-    <view class="profile-hero">
-      <view class="hero-bg" />
-      <view class="hero-content">
+    <!-- 用户信息大色块 (Hero) -->
+    <view class="profile-hero-section">
+      <view class="color-block-section color-block-section-lilac hero-block">
         <template v-if="loggedIn">
-          <view class="hero-avatar">
-            <text class="avatar-text">{{ (userInfo.nickname || '用').charAt(0) }}</text>
-          </view>
-          <view class="hero-info">
-            <text class="hero-name">{{ userInfo.nickname || userInfo.username || '用户' }}</text>
-            <view class="hero-tag">
-              <view v-if="userInfo.memberLevel" class="member-badge">
-                <Icon icon="solar:crown-bold" :size="12" color="#fff" />
-                <text class="member-text">{{ userInfo.memberLevel }}</text>
-              </view>
-              <view class="points-row">
-                <Icon icon="solar:star-bold" :size="12" color="rgba(255,255,255,0.7)" />
-                <text class="hero-points">积分 {{ userInfo.points }}</text>
+          <view class="hero-content">
+            <view class="hero-avatar">
+              <text class="avatar-text">{{ (userInfo.nickname || '用').charAt(0) }}</text>
+            </view>
+            <view class="hero-info">
+              <text class="hero-name">{{ userInfo.nickname || userInfo.username || '用户' }}</text>
+              <view class="hero-tag-row">
+                <view v-if="userInfo.memberLevel" class="member-badge">
+                  <Icon icon="solar:crown-bold" :size="12" color="#111" />
+                  <text class="member-text">{{ userInfo.memberLevel }}</text>
+                </view>
+                <view class="points-badge">
+                  <Icon icon="solar:star-bold" :size="12" color="#666" />
+                  <text class="points-text">积分 {{ userInfo.points }}</text>
+                </view>
               </view>
             </view>
-          </view>
-          <view class="hero-setting" @tap="goPage('/pages/page/index')">
-            <Icon icon="solar:settings-bold" :size="20" color="#fff" />
+            <view class="hero-setting" @tap="goPage('/pages/page/index')">
+              <Icon icon="solar:settings-bold" :size="18" color="#111" />
+            </view>
           </view>
         </template>
         <template v-else>
-          <view class="hero-avatar">
-            <Icon icon="solar:user-bold" :size="28" color="#fff" />
-          </view>
-          <view class="hero-info">
-            <text class="hero-name hero-login" @tap="goPage('/pages/login/index')">登录 / 注册</text>
-            <text class="hero-sub">登录后享受更多权益</text>
+          <view class="hero-content">
+            <view class="hero-avatar">
+              <Icon icon="solar:user-bold" :size="24" color="#111" />
+            </view>
+            <view class="hero-info" @tap="goPage('/pages/login/index')">
+              <text class="hero-name hero-login">登录 / 注册</text>
+              <text class="hero-sub">登录后享受更多会员权益</text>
+            </view>
           </view>
         </template>
       </view>
 
-      <!-- 订单快捷入口 -->
-      <view class="order-shortcuts">
-        <view class="order-title">
+      <!-- 我的订单快捷入口 -->
+      <view class="order-container card">
+        <view class="order-title-row">
           <text class="order-title-text">我的订单</text>
           <view class="order-all" @tap="goPage('/pages/order/list')">
             <text class="order-all-text">全部订单</text>
-            <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--text-hint)" />
+            <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--color-text-hint)" />
           </view>
         </view>
         <view class="order-grid">
           <view class="order-item" @tap="goPage('/pages/order/list?tab=unpaid')">
             <view class="order-icon-wrap">
-              <Icon icon="solar:wallet-bold" :size="24" color="var(--text-primary)" />
+              <Icon icon="solar:wallet-bold" :size="24" color="#111" />
               <view v-if="orderCounts.unpaid" class="order-dot">
                 <text class="order-dot-text">{{ orderCounts.unpaid }}</text>
               </view>
@@ -57,7 +60,7 @@
           </view>
           <view class="order-item" @tap="goPage('/pages/order/list?tab=unshipped')">
             <view class="order-icon-wrap">
-              <Icon icon="solar:box-bold" :size="24" color="var(--text-primary)" />
+              <Icon icon="solar:box-bold" :size="24" color="#111" />
               <view v-if="orderCounts.unshipped" class="order-dot">
                 <text class="order-dot-text">{{ orderCounts.unshipped }}</text>
               </view>
@@ -66,7 +69,7 @@
           </view>
           <view class="order-item" @tap="goPage('/pages/order/list?tab=shipped')">
             <view class="order-icon-wrap">
-              <Icon icon="solar:delivery-bold" :size="24" color="var(--text-primary)" />
+              <Icon icon="solar:delivery-bold" :size="24" color="#111" />
               <view v-if="orderCounts.shipped" class="order-dot">
                 <text class="order-dot-text">{{ orderCounts.shipped }}</text>
               </view>
@@ -75,7 +78,7 @@
           </view>
           <view class="order-item" @tap="goPage('/pages/order/list?tab=received')">
             <view class="order-icon-wrap">
-              <Icon icon="solar:check-circle-bold" :size="24" color="var(--text-primary)" />
+              <Icon icon="solar:check-circle-bold" :size="24" color="#111" />
             </view>
             <text class="order-label">已完成</text>
           </view>
@@ -84,29 +87,38 @@
     </view>
 
     <!-- 工具栏 -->
-    <view class="profile-tools">
+    <view class="profile-tools card">
+      <view class="tools-header">
+        <text class="tools-title-text">我的服务</text>
+      </view>
       <view class="tool-grid">
+        <view class="tool-item" @tap="goCart">
+          <view class="tool-icon" style="background: var(--color-block-cream)">
+            <Icon icon="solar:cart-large-2-bold" :size="20" color="#D97706" />
+          </view>
+          <text class="tool-label">购物车</text>
+        </view>
         <view class="tool-item" @tap="goPage('/pages/coupon/index')">
-          <view class="tool-icon" style="background: #FEF2F2">
+          <view class="tool-icon" style="background: var(--color-block-pink)">
             <Icon icon="solar:ticket-bold" :size="20" color="#EF4444" />
           </view>
           <text class="tool-label">优惠券</text>
         </view>
         <view class="tool-item" @tap="goPage('/pages/signIn/index')">
-          <view class="tool-icon" style="background: #FFFBEB">
-            <Icon icon="solar:check-circle-bold" :size="20" color="#F59E0B" />
+          <view class="tool-icon" style="background: var(--color-block-lime)">
+            <Icon icon="solar:check-circle-bold" :size="20" color="#4F7E04" />
           </view>
           <text class="tool-label">签到</text>
         </view>
         <view class="tool-item" @tap="goPage('/pages/seckill/index')">
-          <view class="tool-icon" style="background: #F5F3FF">
-            <Icon icon="solar:flash-bold" :size="20" color="#8B5CF6" />
+          <view class="tool-icon" style="background: var(--color-block-coral)">
+            <Icon icon="solar:flash-bold" :size="20" color="#EA580C" />
           </view>
           <text class="tool-label">秒杀</text>
         </view>
         <view class="tool-item" @tap="goPage('/pages/groupBuy/index')">
-          <view class="tool-icon" style="background: #EFF6FF">
-            <Icon icon="solar:users-group-rounded-bold" :size="20" color="#3B82F6" />
+          <view class="tool-icon" style="background: var(--color-block-mint)">
+            <Icon icon="solar:users-group-rounded-bold" :size="20" color="#0D9488" />
           </view>
           <text class="tool-label">拼团</text>
         </view>
@@ -115,56 +127,58 @@
 
     <!-- 功能菜单 -->
     <view class="profile-menu">
-      <view class="menu-group">
+      <view class="menu-group card">
         <view class="menu-item" @tap="goPage('/pages/course/my')">
-          <view class="menu-icon"><Icon icon="solar:notebook-bold" :size="18" color="var(--text-secondary)" /></view>
+          <view class="menu-icon"><Icon icon="solar:notebook-bold" :size="18" color="#111" /></view>
           <text class="menu-label">我的课程</text>
-          <Icon icon="solar:alt-arrow-right-bold" :size="16" color="var(--text-hint)" />
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--color-text-hint)" />
         </view>
         <view class="menu-item" @tap="goPage('/pages/address/index')">
-          <view class="menu-icon"><Icon icon="solar:map-point-bold" :size="18" color="var(--text-secondary)" /></view>
+          <view class="menu-icon"><Icon icon="solar:map-point-bold" :size="18" color="#111" /></view>
           <text class="menu-label">收货地址</text>
-          <Icon icon="solar:alt-arrow-right-bold" :size="16" color="var(--text-hint)" />
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--color-text-hint)" />
         </view>
         <view class="menu-item" @tap="goPage('/pages/distributor/index')">
-          <view class="menu-icon"><Icon icon="solar:wallet-money-bold" :size="18" color="var(--text-secondary)" /></view>
+          <view class="menu-icon"><Icon icon="solar:wallet-money-bold" :size="18" color="#111" /></view>
           <text class="menu-label">分销中心</text>
-          <Icon icon="solar:alt-arrow-right-bold" :size="16" color="var(--text-hint)" />
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--color-text-hint)" />
         </view>
       </view>
 
-      <view class="menu-group">
+      <view class="menu-group card">
         <view class="menu-item" @tap="goPage('/pages/merchant/apply')">
-          <view class="menu-icon"><Icon icon="solar:shop-bold" :size="18" color="var(--text-secondary)" /></view>
+          <view class="menu-icon"><Icon icon="solar:shop-bold" :size="18" color="#111" /></view>
           <text class="menu-label">商家入驻</text>
-          <Icon icon="solar:alt-arrow-right-bold" :size="16" color="var(--text-hint)" />
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--color-text-hint)" />
         </view>
         <view class="menu-item" @tap="goPage('/pages/course/lecturer/apply')">
-          <view class="menu-icon"><Icon icon="solar:user-speak-bold" :size="18" color="var(--text-secondary)" /></view>
+          <view class="menu-icon"><Icon icon="solar:user-speak-bold" :size="18" color="#111" /></view>
           <text class="menu-label">讲师入驻</text>
-          <Icon icon="solar:alt-arrow-right-bold" :size="16" color="var(--text-hint)" />
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--color-text-hint)" />
         </view>
         <view class="menu-item" @tap="goPage('/pages/message/index')">
-          <view class="menu-icon"><Icon icon="solar:bell-bold" :size="18" color="var(--text-secondary)" /></view>
+          <view class="menu-icon"><Icon icon="solar:bell-bold" :size="18" color="#111" /></view>
           <text class="menu-label">消息通知</text>
-          <Icon icon="solar:alt-arrow-right-bold" :size="16" color="var(--text-hint)" />
+          <Icon icon="solar:alt-arrow-right-bold" :size="14" color="var(--color-text-hint)" />
         </view>
       </view>
     </view>
 
-    <!-- 退出登录 -->
+    <!-- 退出登录药丸按钮 -->
     <view v-if="loggedIn" class="profile-logout">
-      <button class="logout-btn" @tap="handleLogout">
-        <Icon icon="solar:logout-3-bold" :size="18" color="var(--color-accent)" />
+      <button class="logout-btn btn btn-primary" @tap="handleLogout">
+        <Icon icon="solar:logout-3-bold" :size="18" color="#fff" />
         <text class="logout-text">退出登录</text>
       </button>
     </view>
+    <CustomTabBar :active="4" />
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
+import CustomTabBar from '@/components/CustomTabBar.vue'
 import { getToken, removeToken, getUser } from '@/utils/auth'
 import http from '@/utils/http'
 import { Icon } from '@iconify/vue'
@@ -187,6 +201,10 @@ function goPage(url: string) {
   uni.navigateTo({ url })
 }
 
+function goCart() {
+  uni.switchTab({ url: '/pages/cart/index' })
+}
+
 function handleLogout() {
   uni.showModal({
     title: '退出登录',
@@ -204,20 +222,38 @@ function handleLogout() {
   })
 }
 
-onShow(() => {
+onShow(async () => {
+  uni.hideTabBar({ animation: false })
   loggedIn.value = !!getToken()
-})
-
-onLoad(async () => {
   if (loggedIn.value) {
+    // 刷新用户信息
     try {
       const res: any = await http.get('/mall/user/queryByUserId', { params: { userId: userInfo.value.id } })
       if (res) {
         userInfo.value.points = res.availablePoints || res.totalPoints || 0
         userInfo.value.memberLevel = res.memberLevelId ? '会员' : '普通会员'
+        if (res.nickname) userInfo.value.nickname = res.nickname
       }
     } catch { /* fallback */ }
+
+    // 加载订单计数
+    try {
+      const countRes: any = await http.get('/mall/order/countByStatus', { params: { userId: userInfo.value.id } })
+      if (countRes) {
+        orderCounts.value = {
+          unpaid: countRes.unpaid || countRes.waitPay || 0,
+          unshipped: countRes.unshipped || countRes.waitSend || 0,
+          shipped: countRes.shipped || countRes.waitReceive || 0,
+        }
+      }
+    } catch {
+      orderCounts.value = { unpaid: 0, unshipped: 0, shipped: 0 }
+    }
   }
+})
+
+onLoad(() => {
+  // onShow 已处理数据加载
 })
 </script>
 
@@ -226,39 +262,40 @@ onLoad(async () => {
 
 .page {
   min-height: 100vh;
-  background: var(--bg-page);
+  background: var(--color-bg-page, #F7F7F8);
   padding-bottom: 16px;
+  box-sizing: border-box;
 }
 
-/* ---- Hero 区域 ---- */
-.profile-hero {
-  position: relative;
-  overflow: hidden;
+/* ---- Hero 区域大色块 ---- */
+.profile-hero-section {
+  padding: 16px 16px 0;
+  display: flex;
+  flex-direction: column;
 }
 
-.hero-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 180px;
-  background: var(--color-primary);
+.hero-block {
+  margin-bottom: 12px;
+  padding: 24px var(--space-base);
+  min-height: 120px;
+  display: flex;
+  align-items: center;
 }
 
 .hero-content {
-  position: relative;
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 48px 20px 20px;
+  width: 100%;
+  position: relative;
 }
 
 .hero-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: var(--radius-circle);
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-md, 12px);
+  background: #ffffff;
+  border: 1px solid var(--color-border, #eee);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -266,9 +303,9 @@ onLoad(async () => {
 }
 
 .avatar-text {
-  font-size: 28px;
-  color: #fff;
-  font-weight: var(--weight-bold);
+  font-size: 24px;
+  color: #111111;
+  font-weight: var(--weight-bold, 700);
 }
 
 .hero-info {
@@ -277,74 +314,76 @@ onLoad(async () => {
 }
 
 .hero-name {
-  font-size: var(--font-xl);
-  font-weight: var(--weight-bold);
-  color: #fff;
-  margin-bottom: 4px;
+  font-size: var(--font-xl, 18px);
+  font-weight: var(--weight-bold, 700);
+  color: #111111;
+  margin-bottom: 6px;
+  display: block;
 }
 
 .hero-login {
-  color: #fff;
+  color: #111111;
+  text-decoration: underline;
 }
 
 .hero-sub {
-  font-size: var(--font-md);
-  color: rgba(255, 255, 255, 0.5);
+  font-size: var(--font-sm, 12px);
+  color: var(--color-text-secondary, #666);
 }
 
-.hero-tag {
+.hero-tag-row {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .member-badge {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 2px 10px;
-  border-radius: var(--radius-full);
+  background: #ffffff;
+  border: 1px solid var(--color-border, #eee);
+  padding: 2px 8px;
+  border-radius: var(--radius-full, 999px);
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
 .member-text {
-  font-size: var(--font-xs);
-  color: #fff;
-  font-weight: var(--weight-semibold);
+  font-size: 10px;
+  color: #111111;
+  font-weight: var(--weight-bold, 700);
 }
 
-.points-row {
+.points-badge {
   display: flex;
   align-items: center;
   gap: 4px;
+  padding: 2px 4px;
 }
 
-.hero-points {
-  font-size: var(--font-sm);
-  color: rgba(255, 255, 255, 0.5);
+.points-text {
+  font-size: var(--font-xs, 10px);
+  color: var(--color-text-secondary, #666);
+  font-weight: var(--weight-medium, 500);
 }
 
 .hero-setting {
-  position: absolute;
-  top: 48px;
-  right: 16px;
-  width: 34px;
-  height: 34px;
-  border-radius: var(--radius-circle);
-  background: rgba(255, 255, 255, 0.1);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full, 999px);
+  background: #ffffff;
+  border: 1px solid var(--color-border, #eee);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* ---- 订单快捷入口 ---- */
-.order-shortcuts {
-  margin: -12px 16px 0;
-  position: relative;
-  z-index: 1;
+/* ---- 订单快捷入口容器 ---- */
+.order-container {
+  padding: 16px;
 }
 
-.order-title {
+.order-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -352,9 +391,9 @@ onLoad(async () => {
 }
 
 .order-title-text {
-  font-size: var(--font-xl);
-  font-weight: var(--weight-semibold);
-  color: var(--text-primary);
+  font-size: var(--font-base, 14px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text, #111);
 }
 
 .order-all {
@@ -364,24 +403,22 @@ onLoad(async () => {
 }
 
 .order-all-text {
-  font-size: var(--font-sm);
-  color: var(--text-hint);
+  font-size: var(--font-sm, 12px);
+  color: var(--color-text-secondary, #666);
 }
 
 .order-grid {
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  padding: 16px;
   display: flex;
-  justify-content: space-around;
-  box-shadow: var(--shadow-md);
+  justify-content: space-between;
+  padding: 4px 8px;
 }
 
 .order-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  width: 50px;
 }
 
 .order-item:active {
@@ -396,10 +433,10 @@ onLoad(async () => {
   position: absolute;
   top: -4px;
   right: -8px;
-  min-width: 16px;
-  height: 16px;
-  border-radius: var(--radius-full);
-  background: var(--color-danger);
+  min-width: 15px;
+  height: 15px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--color-commerce, #e4393c);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -408,27 +445,35 @@ onLoad(async () => {
 
 .order-dot-text {
   color: #fff;
-  font-size: 10px;
-  font-weight: var(--weight-bold);
+  font-size: 9px;
+  font-weight: var(--weight-bold, 700);
 }
 
 .order-label {
-  font-size: var(--font-sm);
-  color: var(--text-secondary);
+  font-size: 11px;
+  color: var(--color-text-secondary, #666);
 }
 
-/* ---- 工具栏 ---- */
+/* ---- 我的服务工具栏 ---- */
 .profile-tools {
   margin: 12px 16px;
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
   padding: 16px;
-  box-shadow: var(--shadow-sm);
+}
+
+.tools-header {
+  margin-bottom: 12px;
+}
+
+.tools-title-text {
+  font-size: var(--font-base, 14px);
+  font-weight: var(--weight-bold, 700);
+  color: var(--color-text, #111);
 }
 
 .tool-grid {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  padding: 4px 0;
 }
 
 .tool-item {
@@ -436,6 +481,7 @@ onLoad(async () => {
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  width: 56px;
 }
 
 .tool-item:active {
@@ -443,21 +489,21 @@ onLoad(async () => {
 }
 
 .tool-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md, 12px);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .tool-label {
-  font-size: var(--font-sm);
-  font-weight: var(--weight-medium);
-  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: var(--weight-medium, 500);
+  color: var(--color-text, #111);
 }
 
-/* ---- 菜单 ---- */
+/* ---- 功能菜单列表 ---- */
 .profile-menu {
   margin: 0 16px;
   display: flex;
@@ -466,32 +512,31 @@ onLoad(async () => {
 }
 
 .menu-group {
-  background: var(--bg-card);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 15px 16px;
+  gap: 12px;
+  padding: 14px 16px;
 }
 
 .menu-item:active {
-  background: #fafafa;
+  background: var(--color-bg-page, #f7f7f8);
 }
 
 .menu-item + .menu-item {
-  border-top: 0.5px solid #f0f0f0;
+  border-top: 1px solid var(--color-border, #eee);
 }
 
 .menu-icon {
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-gray);
+  border-radius: var(--radius-sm, 8px);
+  background: var(--color-bg-page, #f7f7f8);
+  border: 1px solid var(--color-border, #eee);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -499,37 +544,32 @@ onLoad(async () => {
 
 .menu-label {
   flex: 1;
-  font-size: var(--font-md);
-  color: var(--text-primary);
-  font-weight: var(--weight-medium);
+  font-size: var(--font-base, 14px);
+  color: var(--color-text, #111);
+  font-weight: var(--weight-medium, 500);
 }
 
 /* ---- 退出登录 ---- */
 .profile-logout {
   margin: 20px 16px;
-  padding-bottom: 16px;
+  padding-bottom: calc(76px + var(--safe-area-bottom));
 }
 
 .logout-btn {
   width: 100%;
-  padding: 14px;
-  border-radius: var(--radius-md);
+  padding: 12px;
   border: none;
-  background: var(--bg-card);
+  background: #111111;
+  color: #ffffff;
+  font-size: var(--font-base, 14px);
+  font-weight: var(--weight-bold, 700);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: var(--shadow-sm);
 }
 
 .logout-btn:active {
-  background: var(--color-accent-light);
-}
-
-.logout-text {
-  font-size: var(--font-md);
-  color: var(--color-accent);
-  font-weight: var(--weight-medium);
+  background: #000000;
 }
 </style>

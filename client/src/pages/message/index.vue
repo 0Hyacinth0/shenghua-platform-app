@@ -76,22 +76,15 @@ const loading = ref(true)
 const messages = ref<any[]>([])
 const activeCategory = ref('all')
 
-const categories = [
+const categories = ref([
   { key: 'all', label: '全部', icon: 'solar:mailbox-bold', badge: 0 },
-  { key: 'system', label: '系统', icon: 'solar:settings-bold', badge: 2 },
-  { key: 'order', label: '订单', icon: 'solar:box-bold', badge: 1 },
-  { key: 'comment', label: '评论', icon: 'solar:chat-round-dots-bold', badge: 3 },
+  { key: 'system', label: '系统', icon: 'solar:settings-bold', badge: 0 },
+  { key: 'order', label: '订单', icon: 'solar:box-bold', badge: 0 },
+  { key: 'comment', label: '评论', icon: 'solar:chat-round-dots-bold', badge: 0 },
   { key: 'like', label: '点赞', icon: 'solar:heart-bold', badge: 0 },
-]
+])
 
-// 模拟数据
-const mockMessages = [
-  { id: '1', type: 'system', title: '系统通知', content: '欢迎加入盛桦学堂，开始你的学习之旅！', createTime: '2024-01-15 10:30', unread: true },
-  { id: '2', type: 'order', title: '订单通知', content: '您的课程订单已支付成功，快去学习吧！', createTime: '2024-01-15 09:20', unread: true },
-  { id: '3', type: 'comment', title: '评论回复', senderName: '张同学', content: '回复了你的评论：讲得很有道理！', createTime: '2024-01-14 18:45', unread: true },
-  { id: '4', type: 'like', title: '点赞通知', senderName: '李同学', content: '赞了你的帖子', createTime: '2024-01-14 16:30', unread: false },
-  { id: '5', type: 'system', title: '活动通知', content: '新年特惠活动开始啦，精选课程低至3折！', createTime: '2024-01-13 10:00', unread: false },
-]
+
 
 const filteredMessages = computed(() => {
   if (activeCategory.value === 'all') return messages.value
@@ -160,14 +153,24 @@ async function loadMessages() {
   try {
     const res = await http.get('/mall/userMessage/list', { params: { userId: getCurrentUserId(), pageNo: 1, pageSize: 50 } })
     messages.value = res?.records || (Array.isArray(res) ? res : [])
-    if (messages.value.length === 0) {
-      messages.value = mockMessages
-    }
   } catch {
-    messages.value = mockMessages
+    messages.value = []
   } finally {
     loading.value = false
+    // 动态计算 badge
+    updateBadges()
   }
+}
+
+function updateBadges() {
+  const unreadAll = messages.value.filter((m: any) => m.unread).length
+  categories.value.forEach(cat => {
+    if (cat.key === 'all') {
+      cat.badge = unreadAll
+    } else {
+      cat.badge = messages.value.filter((m: any) => m.type === cat.key && m.unread).length
+    }
+  })
 }
 
 onLoad(() => {

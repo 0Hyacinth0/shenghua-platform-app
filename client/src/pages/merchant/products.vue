@@ -95,11 +95,11 @@ function onTabChange(key: string) {
 }
 
 function onAdd() {
-  uni.showToast({ title: '商品新增功能开发中', icon: 'none' })
+  uni.showToast({ title: '请在管理后台添加商品', icon: 'none' })
 }
 
 function onEdit(item: any) {
-  uni.showToast({ title: '商品编辑功能开发中', icon: 'none' })
+  uni.showToast({ title: '请在管理后台编辑商品', icon: 'none' })
 }
 
 async function loadProducts() {

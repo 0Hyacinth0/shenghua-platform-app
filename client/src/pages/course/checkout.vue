@@ -16,9 +16,12 @@
     <template v-else-if="course">
       <!-- 课程信息 -->
       <view class="course-card">
-        <view class="card-cover" :style="{ background: course.coverColor || defaultGradient }">
-          <view class="card-play">
-            <Icon icon="solar:play-bold" width="14" height="14" color="var(--color-accent)" />
+        <view class="card-cover">
+          <image v-if="course.coverImage" :src="imgUrl(course.coverImage)" class="cover-img" mode="aspectFill" />
+          <view v-else class="cover-fallback" :style="{ background: defaultGradient }">
+            <view class="card-play">
+              <Icon icon="solar:play-bold" width="14" height="14" color="var(--color-accent)" />
+            </view>
           </view>
         </view>
         <view class="card-info">
@@ -252,6 +255,20 @@ onLoad((options: any) => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.cover-img {
+  width: 100%;
+  height: 100%;
+}
+
+.cover-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card-play {

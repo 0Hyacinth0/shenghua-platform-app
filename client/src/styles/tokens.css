@@ -4,14 +4,14 @@
   --color-primary-light: #f2f2f2;
   --color-primary-gradient: linear-gradient(135deg, #111111 0%, #333333 100%);
 
-  --color-commerce: #e4393c;
+  --color-commerce: #D9383A;
   --color-commerce-dark: #c9282c;
   --color-commerce-light: #fff1f0;
   --color-learning: #6d5dfc;
   --color-learning-light: #f1efff;
   --color-community: #12a37f;
   --color-community-light: #e8f8f3;
-  --color-accent: #e4393c;
+  --color-accent: #D9383A;
   --color-accent-light: #fff1f0;
 
   --color-success: #22c55e;
@@ -34,7 +34,7 @@
   --color-text-hint: var(--text-hint);
   --color-text-disabled: var(--text-disabled);
 
-  --bg-page: #f6f6f6;
+  --bg-page: #F8F9FA;
   --bg-card: #ffffff;
   --bg-gray: #f1f1f1;
   --bg-soft: #fafafa;
@@ -82,4 +82,19 @@
 
   --page-padding: 16px;
   --tab-bar-height: 56px;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* ---- 粉彩大色块背景 (基于 DESIGN.md) ---- */
+  --color-block-lime: #E2F876;
+  --color-block-lilac: #E5DEFF;
+  --color-block-cream: #FFF8E7;
+  --color-block-mint: #E0F8F1;
+  --color-block-pink: #FFE4E6;
+  --color-block-coral: #FFECE5;
+  --color-block-navy: #1A1D36;
+
+  /* ---- 等宽字体与字母间距 (基于 DESIGN.md) ---- */
+  --font-mono: figmaMono, monospace;
+  --letter-spacing-display: -0.5px;
+  --letter-spacing-mono: 1.5px;
 }

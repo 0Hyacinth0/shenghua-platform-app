@@ -61,9 +61,12 @@
           class="course-card"
           @tap="goDetail(course.id)"
         >
-          <view class="card-cover" :style="{ background: course.coverColor || defaultGradient }">
-            <view class="card-play">
-              <Icon icon="solar:play-bold" width="20" height="20" color="var(--color-accent)" />
+          <view class="card-cover">
+            <image v-if="course.coverImage" :src="imgUrl(course.coverImage)" class="cover-img" mode="aspectFill" />
+            <view v-else class="cover-fallback" :style="{ background: course.coverColor || defaultGradient }">
+              <view class="card-play">
+                <Icon icon="solar:play-bold" width="20" height="20" color="var(--color-accent)" />
+              </view>
             </view>
             <view v-if="course.price === 0" class="card-badge free">
               <text class="badge-text">免费</text>
@@ -143,16 +146,6 @@ const filters = [
   { key: 'free', label: '免费' },
 ]
 
-// 模拟数据
-const mockCourses = [
-  { id: '1', title: 'Vue 3 + TypeScript 实战教程', lecturerName: '张明远', coverColor: 'linear-gradient(135deg,#667eea,#764ba2)', price: 0, originalPrice: 0, studentCount: 2341, totalLessons: 24, isHot: true },
-  { id: '2', title: 'React 18 新特性深度解析', lecturerName: '李思琪', coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)', price: 199, originalPrice: 399, studentCount: 892, totalLessons: 18, isHot: true },
-  { id: '3', title: 'Python 数据分析从入门到精通', lecturerName: '王建国', coverColor: 'linear-gradient(135deg,#4facfe,#00f2fe)', price: 299, originalPrice: 599, studentCount: 5621, totalLessons: 32, isHot: false },
-  { id: '4', title: 'Node.js 后端开发实战', lecturerName: '陈雨薇', coverColor: 'linear-gradient(135deg,#43e97b,#38f9d7)', price: 259, originalPrice: 499, studentCount: 1892, totalLessons: 28, isHot: false },
-  { id: '5', title: 'Flutter 跨平台开发入门', lecturerName: '刘志强', coverColor: 'linear-gradient(135deg,#fa709a,#fee140)', price: 0, originalPrice: 0, studentCount: 3456, totalLessons: 20, isHot: false },
-  { id: '6', title: 'AI 人工智能基础与实战', lecturerName: '王建国', coverColor: 'linear-gradient(135deg,#a18cd1,#fbc2eb)', price: 399, originalPrice: 799, studentCount: 7821, totalLessons: 36, isHot: true },
-]
-
 function goBack() {
   uni.navigateBack()
 }
@@ -221,11 +214,11 @@ async function loadCourses(append = false) {
     if (append) {
       courses.value = [...courses.value, ...records]
     } else {
-      courses.value = records.length > 0 ? records : mockCourses
+      courses.value = records
     }
     noMore.value = records.length < 10
   } catch {
-    if (!append) courses.value = mockCourses
+    if (!append) courses.value = []
     noMore.value = true
   } finally {
     loading.value = false
@@ -415,6 +408,20 @@ onLoad(() => {
   width: 100%;
   height: 160px;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cover-img {
+  width: 100%;
+  height: 100%;
+}
+
+.cover-fallback {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

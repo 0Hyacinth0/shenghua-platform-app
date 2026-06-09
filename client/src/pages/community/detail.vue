@@ -178,7 +178,21 @@ function onMore() {
 }
 
 function onShare() {
-  uni.showToast({ title: '分享功能开发中', icon: 'none' })
+  // #ifdef H5
+  const url = window.location.href
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url)
+    uni.showToast({ title: '链接已复制', icon: 'success' })
+  } else {
+    uni.showToast({ title: '复制失败', icon: 'none' })
+  }
+  // #endif
+  // #ifndef H5
+  uni.setClipboardData({
+    data: '分享帖子: ' + postId,
+    success: () => uni.showToast({ title: '链接已复制', icon: 'success' }),
+  })
+  // #endif
 }
 
 function previewImage(images: string[], idx: number) {

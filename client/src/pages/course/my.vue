@@ -61,9 +61,12 @@
           class="course-card"
           @tap="goWatch(course)"
         >
-          <view class="card-cover" :style="{ background: course.coverColor || defaultGradient }">
-            <view class="card-play">
-              <Icon icon="solar:play-bold" width="20" height="20" color="var(--color-accent)" />
+          <view class="card-cover">
+            <image v-if="course.coverImage" :src="imgUrl(course.coverImage)" class="cover-img" mode="aspectFill" />
+            <view v-else class="cover-fallback" :style="{ background: course.coverColor || defaultGradient }">
+              <view class="card-play">
+                <Icon icon="solar:play-bold" width="20" height="20" color="var(--color-accent)" />
+              </view>
             </view>
             <view v-if="course.progress >= 100" class="card-badge completed">
               <text class="badge-text">已完成</text>
@@ -119,6 +122,7 @@ import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { Icon } from '@iconify/vue'
 import http from '@/utils/http'
+import { imgUrl } from '@/api'
 import { getCurrentUserId } from '@/utils/user'
 
 const loading = ref(true)
@@ -132,14 +136,6 @@ const filters = [
   { key: 'learning', label: '学习中' },
   { key: 'completed', label: '已完成' },
   { key: 'free', label: '免费课' },
-]
-
-// 模拟数据
-const mockCourses = [
-  { id: '1', title: 'Vue 3 + TypeScript 实战教程', lecturerName: '张明远', coverColor: 'linear-gradient(135deg,#667eea,#764ba2)', totalLessons: 24, progress: 75, currentLesson: '第18节 组合式API', price: 0 },
-  { id: '2', title: 'React 18 新特性深度解析', lecturerName: '李思琪', coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)', totalLessons: 18, progress: 100, currentLesson: '已完成', price: 199 },
-  { id: '3', title: 'Python 数据分析从入门到精通', lecturerName: '王建国', coverColor: 'linear-gradient(135deg,#4facfe,#00f2fe)', totalLessons: 32, progress: 30, currentLesson: '第10节 Pandas基础', price: 299 },
-  { id: '4', title: 'AI 人工智能基础与实战', lecturerName: '王建国', coverColor: 'linear-gradient(135deg,#a18cd1,#fbc2eb)', totalLessons: 36, progress: 0, currentLesson: '未开始', price: 0 },
 ]
 
 const totalCourses = computed(() => courses.value.length)
@@ -178,11 +174,8 @@ async function loadCourses() {
   try {
     const res = await http.get('/course/myCourses', { params: { userId: getCurrentUserId(), pageSize: 50 } })
     courses.value = res?.records || (Array.isArray(res) ? res : [])
-    if (courses.value.length === 0) {
-      courses.value = mockCourses
-    }
   } catch {
-    courses.value = mockCourses
+    courses.value = []
   } finally {
     loading.value = false
   }
@@ -365,6 +358,20 @@ onLoad(() => {
   width: 100%;
   height: 140px;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cover-img {
+  width: 100%;
+  height: 100%;
+}
+
+.cover-fallback {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

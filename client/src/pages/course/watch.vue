@@ -15,11 +15,19 @@
 
     <!-- 视频播放区 -->
     <view class="video-area">
-      <view class="video-placeholder">
+      <video
+        v-if="lesson.videoUrl"
+        :src="imgUrl(lesson.videoUrl)"
+        class="video-player"
+        controls
+        :autoplay="true"
+        object-fit="contain"
+      />
+      <view v-else class="video-placeholder">
         <view class="play-btn">
           <Icon icon="solar:play-bold" width="30" height="30" color="var(--color-accent)" />
         </view>
-        <text class="video-hint">视频播放区域</text>
+        <text class="video-hint">暂无视频资源</text>
       </view>
     </view>
 
@@ -108,22 +116,26 @@
           </view>
         </view>
       </view>
-      <view class="review-list">
+      <view v-if="reviews.length > 0" class="review-list">
         <view class="review-item" v-for="(review, idx) in reviews" :key="idx">
           <view class="review-header">
             <view class="review-user">
               <view class="user-avatar">
-                <text class="avatar-text">{{ review.user.charAt(0) }}</text>
+                <text class="avatar-text">{{ (review.nickname || review.user || '匿').charAt(0) }}</text>
               </view>
-              <text class="user-name">{{ review.user }}</text>
+              <text class="user-name">{{ review.nickname || review.user || '匿名用户' }}</text>
             </view>
             <view class="review-rating">
               <Icon v-for="i in 5" :key="i" icon="solar:star-bold" width="14" height="14" color="var(--color-warning)" />
             </view>
           </view>
           <text class="review-content">{{ review.content }}</text>
-          <text class="review-time">{{ review.time }}</text>
+          <text class="review-time">{{ review.createTime || review.time }}</text>
         </view>
+      </view>
+      <view v-else class="empty-reviews">
+        <Icon icon="solar:chat-round-dots-linear" width="40" color="var(--text-hint)" />
+        <text class="empty-text">暂无评价</text>
       </view>
     </scroll-view>
 
@@ -158,6 +170,7 @@ import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { Icon } from '@iconify/vue'
 import http from '@/utils/http'
+import { imgUrl } from '@/api'
 
 const tabs = [
   { key: 'lessons', label: '目录' },
@@ -173,11 +186,7 @@ let courseId = ''
 
 const reviewTags = ['讲解清晰', '内容实用', '案例丰富', '通俗易懂']
 
-const reviews = [
-  { user: '张同学', content: '老师讲得很清楚，案例也很实用，学完就能用到项目里。', time: '2024-01-15' },
-  { user: '李同学', content: '课程内容很系统，从基础到进阶都有覆盖，推荐！', time: '2024-01-10' },
-  { user: '王同学', content: '视频画质清晰，老师声音也很清楚，学习体验很好。', time: '2024-01-05' },
-]
+const reviews = ref<any[]>([])
 
 const currentLessonIndex = computed(() => {
   return lessons.value.findIndex(l => l.id === lesson.value.id)
@@ -188,7 +197,10 @@ function goBack() {
 }
 
 function onShare() {
-  uni.showToast({ title: '分享功能开发中', icon: 'none' })
+  uni.setClipboardData({
+    data: '盛桦课程: ' + (courseData.value?.title || '') + ' https://shenghua.com/course/' + courseId,
+    success: () => uni.showToast({ title: '链接已复制', icon: 'success' }),
+  })
 }
 
 function switchLesson(item: any) {
@@ -209,7 +221,7 @@ function onNext() {
 }
 
 function onNote() {
-  uni.showToast({ title: '笔记功能开发中', icon: 'none' })
+  uni.showToast({ title: '笔记功能即将上线', icon: 'none' })
 }
 
 function onMarkDone() {
@@ -237,7 +249,7 @@ async function loadLessons() {
   }
 }
 
-onLoad((options: any) => {
+onLoad(async (options: any) => {
   courseId = options?.courseId || ''
   const lessonId = options?.lessonId || ''
   loadCourse()
@@ -247,6 +259,14 @@ onLoad((options: any) => {
       if (found) lesson.value = found
     }
   })
+
+  // 加载评价
+  try {
+    const revRes: any = await http.get('/course/review/list', { params: { courseId, pageSize: 20 } })
+    reviews.value = revRes?.records || (Array.isArray(revRes) ? revRes : [])
+  } catch {
+    reviews.value = []
+  }
 })
 </script>
 
@@ -311,6 +331,11 @@ onLoad((options: any) => {
   width: 100%;
   height: 210px;
   background: #000;
+}
+
+.video-player {
+  width: 100%;
+  height: 100%;
 }
 
 .video-placeholder {
@@ -698,7 +723,7 @@ onLoad((options: any) => {
   align-items: center;
   justify-content: space-between;
   padding: 10px var(--space-lg);
-  padding-bottom: var(--space-3xl);
+  padding-bottom: calc(var(--space-3xl) + var(--safe-area-bottom));
   background: var(--bg-card);
   border-top: 1px solid var(--bg-gray);
 }

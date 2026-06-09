@@ -17,7 +17,8 @@
 
     <!-- 课程封面 -->
     <view class="course-cover">
-      <view class="cover-placeholder" :style="{ background: coverGradient }">
+      <image v-if="course.coverImage" :src="imgUrl(course.coverImage)" class="cover-image" mode="aspectFill" />
+      <view v-else class="cover-placeholder" :style="{ background: coverGradient }">
         <view class="play-icon">
           <Icon icon="solar:play-bold" width="28" height="28" color="var(--color-accent)" />
         </view>
@@ -141,8 +142,9 @@
       </view>
       <scroll-view scroll-x class="recommend-scroll">
         <view class="recommend-card" v-for="c in recommendCourses" :key="c.id" @tap="goCourse(c.id)">
-          <view class="recommend-img" :style="{ background: c.coverColor }">
-            <view class="recommend-play">
+          <view class="recommend-img">
+            <image v-if="c.coverImage" :src="imgUrl(c.coverImage)" class="recommend-cover" mode="aspectFill" />
+            <view v-else class="recommend-play">
               <Icon icon="solar:play-bold" width="16" height="16" color="var(--color-accent)" />
             </view>
           </view>
@@ -152,7 +154,7 @@
               <text class="recommend-price" :class="{ free: c.price === 0 }">
                 {{ c.price === 0 ? '免费' : '¥' + c.price }}
               </text>
-              <text class="recommend-students">{{ c.students }}人在学</text>
+              <text class="recommend-students">{{ c.studentCount || 0 }}人在学</text>
             </view>
           </view>
         </view>
@@ -217,11 +219,7 @@ const coverGradient = computed(() => {
 
 const reviewTags = ['讲解清晰', '内容实用', '案例丰富', '通俗易懂', '值得推荐']
 
-const recommendCourses = [
-  { id: 'r1', title: 'Vue 3 + TypeScript 实战', coverColor: 'linear-gradient(135deg,#8B5CF6,#A78BFA)', price: 0, students: 2341 },
-  { id: 'r2', title: 'React 18 新特性精讲', coverColor: 'linear-gradient(135deg,#1A1A2E,#3B3B6B)', price: 199, students: 892 },
-  { id: 'r3', title: 'Node.js 后端开发', coverColor: 'linear-gradient(135deg,#0EA5E9,#38BDF8)', price: 299, students: 5621 },
-]
+const recommendCourses = ref<any[]>([])
 
 function goBack() {
   uni.navigateBack()
@@ -244,7 +242,10 @@ function goCourse(id: string) {
 }
 
 function onShare() {
-  uni.showToast({ title: '分享功能开发中', icon: 'none' })
+  uni.setClipboardData({
+    data: '盛桦课程: ' + (courseData.value?.title || '') + ' https://shenghua.com/course/' + courseId,
+    success: () => uni.showToast({ title: '链接已复制', icon: 'success' }),
+  })
 }
 
 async function onFavorite() {
@@ -289,12 +290,21 @@ async function loadLessons() {
   }
 }
 
-onLoad((options: any) => {
+onLoad(async (options: any) => {
   courseId = options?.id || ''
   loading.value = true
   Promise.all([loadCourse(), loadLessons()]).finally(() => {
     loading.value = false
   })
+
+  // 加载推荐课程
+  try {
+    const recRes: any = await http.get('/course/frontList', { params: { pageNo: 1, pageSize: 4 } })
+    const records = recRes?.records || []
+    recommendCourses.value = records.filter((r: any) => r.id !== courseId).slice(0, 3)
+  } catch {
+    recommendCourses.value = []
+  }
 })
 </script>
 
@@ -350,6 +360,12 @@ onLoad((options: any) => {
 .course-cover {
   width: 100%;
   height: 220px;
+  overflow: hidden;
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
 }
 
 .cover-placeholder {
@@ -731,6 +747,13 @@ onLoad((options: any) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  background: var(--bg-gray, #f5f5f5);
+}
+
+.recommend-cover {
+  width: 100%;
+  height: 100%;
 }
 
 .recommend-play {
@@ -805,7 +828,7 @@ onLoad((options: any) => {
   align-items: center;
   justify-content: space-between;
   padding: 10px var(--space-lg);
-  padding-bottom: var(--space-3xl);
+  padding-bottom: calc(var(--space-3xl) + var(--safe-area-bottom));
   background: var(--bg-card);
   border-top: 1px solid var(--bg-gray);
   z-index: 100;

@@ -29,7 +29,11 @@
 
       <view v-else-if="groups.length > 0" class="group-items">
         <view v-for="item in groups" :key="item.id" class="group-card" @tap="goDetail(item)">
-          <view class="card-cover" :style="{ background: item.coverColor || defaultGradient }">
+          <view class="card-cover">
+            <image v-if="item.mainImage" :src="imgUrl(item.mainImage)" class="cover-img" mode="aspectFill" />
+            <view v-else class="cover-placeholder" :style="{ background: defaultGradient }">
+              <Icon icon="solar:users-group-rounded-bold" width="32" color="rgba(255,255,255,0.6)" />
+            </view>
             <view class="card-badge">
               <text class="badge-text">{{ item.groupSize || 2 }}人团</text>
             </view>
@@ -82,13 +86,6 @@ const noMore = ref(false)
 
 const defaultGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
 
-// 模拟数据
-const mockGroups = [
-  { id: '1', spuName: 'Vue 3 + TypeScript 实战教程', groupPrice: 99, originalPrice: 299, groupSize: 3, groupCount: 128, remaining: 2, coverColor: 'linear-gradient(135deg,#667eea,#764ba2)' },
-  { id: '2', spuName: 'React 18 新特性深度解析', groupPrice: 129, originalPrice: 399, groupSize: 2, groupCount: 89, remaining: 1, coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)' },
-  { id: '3', spuName: 'Python 数据分析从入门到精通', groupPrice: 159, originalPrice: 599, groupSize: 5, groupCount: 256, remaining: 3, coverColor: 'linear-gradient(135deg,#4facfe,#00f2fe)' },
-]
-
 function goBack() {
   uni.navigateBack()
 }
@@ -111,11 +108,11 @@ async function loadGroups(append = false) {
     if (append) {
       groups.value = [...groups.value, ...records]
     } else {
-      groups.value = records.length > 0 ? records : mockGroups
+      groups.value = records
     }
     noMore.value = records.length < 10
   } catch {
-    if (!append) groups.value = mockGroups
+    if (!append) groups.value = []
     noMore.value = true
   } finally {
     loading.value = false
@@ -247,6 +244,20 @@ onLoad(() => {
   width: 100%;
   height: 140px;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cover-img {
+  width: 100%;
+  height: 100%;
+}
+
+.cover-placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

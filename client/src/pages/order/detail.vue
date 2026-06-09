@@ -37,8 +37,9 @@
       <view class="section-card">
         <text class="section-title">商品信息</text>
         <view v-for="item in order.items" :key="item.id" class="item-row" @tap="goProduct(item.spuId)">
-          <view class="item-img" :style="{ background: item.coverColor || '#f5f5f5' }">
-            <Icon icon="solar:box-bold" width="24" color="var(--text-hint)" />
+          <view class="item-img">
+            <image v-if="item.mainImage" :src="imgUrl(item.mainImage)" class="item-image" mode="aspectFill" />
+            <Icon v-else icon="solar:box-bold" width="24" color="var(--text-hint)" />
           </view>
           <view class="item-info">
             <text class="item-name">{{ item.productName }}</text>
@@ -365,6 +366,13 @@ onLoad((options: any) => {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  background: var(--bg-gray, #f5f5f5);
+  overflow: hidden;
+}
+
+.item-image {
+  width: 100%;
+  height: 100%;
 }
 
 .item-info {
@@ -514,7 +522,7 @@ onLoad((options: any) => {
   justify-content: flex-end;
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
-  padding-bottom: var(--space-2xl);
+  padding-bottom: calc(var(--space-2xl) + var(--safe-area-bottom));
   background: var(--bg-card);
   border-top: 1px solid #f0f0f0;
   z-index: 100;

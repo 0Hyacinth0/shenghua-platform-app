@@ -100,6 +100,7 @@ import {
   getCartList, updateCartQty, toggleCartSelect, removeCartItem, imgUrl,
 } from '@/api'
 import { getCurrentUserId } from '@/utils/user'
+import { goHome as navGoHome } from '@/utils/navigation'
 
 const currentUserId = getCurrentUserId()
 const cartItems = ref<any[]>([])
@@ -191,7 +192,7 @@ function goDetail(spuId: string) {
 }
 
 function goHome() {
-  uni.switchTab({ url: '/pages/home/index' })
+  navGoHome()
 }
 
 function goCheckout() {

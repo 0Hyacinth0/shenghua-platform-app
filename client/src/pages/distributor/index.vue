@@ -99,7 +99,10 @@ function goPage(url: string) {
 }
 
 function onShare() {
-  uni.showToast({ title: '分享功能开发中', icon: 'none' })
+  uni.setClipboardData({
+    data: '盛桦商城推广链接: https://shenghua.com/invite/' + getCurrentUserId(),
+    success: () => uni.showToast({ title: '推广链接已复制', icon: 'success' }),
+  })
 }
 
 async function loadData() {

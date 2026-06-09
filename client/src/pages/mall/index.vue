@@ -1,25 +1,37 @@
 <template>
   <view class="page-container">
-    <!-- 搜索栏 -->
+    <!-- 搜索栏 + 购物车 -->
     <view class="page-header">
-      <view class="search-bar" @tap="onFocusSearch">
-        <text class="search-icon">⌕</text>
-        <text class="search-placeholder">搜索商品</text>
+      <view class="search-bar">
+        <Icon icon="solar:magnifer-bold" width="16" color="var(--color-text-hint)" />
+        <input
+          v-model="keyword"
+          class="search-input"
+          placeholder="搜索商品"
+          confirm-type="search"
+          @confirm="onSearchConfirm"
+        />
+      </view>
+      <view class="cart-shortcut" @tap="goCart">
+        <Icon icon="solar:cart-large-2-bold" width="20" color="#111" />
       </view>
     </view>
 
     <view class="mall-body">
       <!-- 左侧分类列表 -->
       <scroll-view scroll-y class="category-sidebar">
-        <view
-          v-for="cat in categories"
-          :key="cat.id"
-          class="sidebar-item"
-          :class="{ active: activeCategoryId === cat.id }"
-          @tap="onSelectCategory(cat.id)"
-        >
-          <view v-if="activeCategoryId === cat.id" class="sidebar-indicator" />
-          <text class="sidebar-text" :class="{ active: activeCategoryId === cat.id }">{{ cat.name }}</text>
+        <view class="sidebar-wrapper">
+          <view
+            v-for="cat in categories"
+            :key="cat.id"
+            class="sidebar-item"
+            :class="{ active: activeCategoryId === cat.id }"
+            @tap="onSelectCategory(cat.id)"
+          >
+            <view class="sidebar-pill" :class="{ active: activeCategoryId === cat.id }">
+              <text class="sidebar-text" :class="{ active: activeCategoryId === cat.id }">{{ cat.name }}</text>
+            </view>
+          </view>
         </view>
       </scroll-view>
 
@@ -28,16 +40,17 @@
         <!-- 子分类 -->
         <view v-if="subCategories.length > 0" class="sub-category-wrap">
           <view
-            v-for="sub in subCategories"
+            v-for="(sub, idx) in subCategories"
             :key="sub.id"
             class="sub-category-item"
             :class="{ active: activeSubId === sub.id }"
             @tap="onSelectSub(sub.id)"
           >
-            <view class="sub-icon" :style="{ background: sub.bg || '#F5F5F5' }">
-              <text class="sub-icon-text">{{ sub.icon || '⊞' }}</text>
+            <!-- 轮流使用粉彩底色 -->
+            <view class="sub-icon" :style="{ background: activeSubId === sub.id ? '#111111' : getPastelBg(idx) }">
+              <text class="sub-icon-text" :style="{ color: activeSubId === sub.id ? '#ffffff' : '#111111' }">{{ sub.icon || '⊞' }}</text>
             </view>
-            <text class="sub-name">{{ sub.name }}</text>
+            <text class="sub-name" :class="{ active: activeSubId === sub.id }">{{ sub.name }}</text>
           </view>
         </view>
 
@@ -57,25 +70,27 @@
             <view class="product-img-wrap">
               <image v-if="item.mainImage" :src="imgUrl(item.mainImage)" class="product-img" mode="aspectFill" />
               <view v-else class="img-placeholder">
-                <Icon icon="solar:bag-bold" width="32" color="var(--text-hint)" />
+                <Icon icon="solar:bag-bold" width="32" color="var(--color-text-hint)" />
               </view>
             </view>
             <view class="product-info">
               <text class="product-name">{{ item.spuName }}</text>
-              <view class="product-bottom">
-                <text class="product-price">
-                  <text class="price-symbol">¥</text>{{ item.minPrice }}
-                </text>
-                <text v-if="item.originalPrice" class="price-original">¥{{ item.originalPrice }}</text>
+              <view class="product-info-bottom">
+                <view class="product-bottom">
+                  <text class="product-price price-commerce">
+                    <text class="price-symbol">¥</text>{{ item.minPrice }}
+                  </text>
+                  <text v-if="item.originalPrice" class="price-original">¥{{ item.originalPrice }}</text>
+                </view>
+                <text class="product-sales">已售{{ item.sales || 0 }}件</text>
               </view>
-              <text class="product-sales">已售{{ item.sales || 0 }}件</text>
             </view>
           </view>
         </view>
 
         <!-- 空状态 -->
         <view v-else-if="!loading" class="empty-wrap">
-          <Icon icon="solar:bag-bold" width="48" color="var(--text-hint)" />
+          <Icon icon="solar:bag-bold" width="48" color="var(--color-text-hint)" />
           <text class="empty-text">暂无商品</text>
         </view>
 
@@ -85,14 +100,17 @@
         </view>
       </scroll-view>
     </view>
+    <CustomTabBar :active="1" />
   </view>
 </template>
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { ref, computed } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { getCategoryTree, getFrontProductList, imgUrl } from '@/api'
+import { goCart } from '@/utils/navigation'
+import CustomTabBar from '@/components/CustomTabBar.vue'
 
 const loading = ref(false)
 const categories = ref<any[]>([])
@@ -101,6 +119,7 @@ const activeSubId = ref('')
 const products = ref<any[]>([])
 const pageNo = ref(1)
 const noMore = ref(false)
+const keyword = ref('')
 
 const subCategories = computed(() => {
   const cat = categories.value.find((c: any) => c.id === activeCategoryId.value)
@@ -111,8 +130,11 @@ function goDetail(id: string) {
   uni.navigateTo({ url: '/pages/product/detail?id=' + id })
 }
 
-function onFocusSearch() {
-  // TODO: 跳转搜索页
+function onSearchConfirm() {
+  pageNo.value = 1
+  noMore.value = false
+  products.value = []
+  loadProducts()
 }
 
 function onSelectCategory(id: string) {
@@ -138,13 +160,37 @@ function loadMore() {
   loadProducts(true)
 }
 
+function applyStoredCategory(list: any[]) {
+  const targetId = uni.getStorageSync('mall_target_category_id')
+  if (targetId) {
+    for (const cat of list) {
+      if (cat.id === targetId) {
+        activeCategoryId.value = cat.id
+        activeSubId.value = ''
+        uni.removeStorageSync('mall_target_category_id')
+        return true
+      }
+      const child = (cat.children || []).find((sub: any) => sub.id === targetId)
+      if (child) {
+        activeCategoryId.value = cat.id
+        activeSubId.value = child.id
+        uni.removeStorageSync('mall_target_category_id')
+        return true
+      }
+    }
+    uni.removeStorageSync('mall_target_category_id')
+  }
+  return false
+}
+
 async function loadCategories() {
   try {
     const res = await getCategoryTree()
     const list: any[] = Array.isArray(res) ? res : (res?.records || [])
     categories.value = list
     if (list.length > 0) {
-      activeCategoryId.value = list[0].id
+      const applied = applyStoredCategory(list)
+      if (!applied) activeCategoryId.value = list[0].id
       loadProducts()
     }
   } catch {
@@ -160,6 +206,11 @@ async function loadProducts(append = false) {
       params.categoryId = activeSubId.value
     } else if (activeCategoryId.value) {
       params.categoryId = activeCategoryId.value
+    }
+    const kw = keyword.value.trim()
+    if (kw) {
+      params.keyword = kw
+      params.spuName = kw
     }
     const res = await getFrontProductList(params)
     const records: any[] = res?.records || []
@@ -179,6 +230,32 @@ async function loadProducts(append = false) {
 onLoad(() => {
   loadCategories()
 })
+
+onShow(() => {
+  uni.hideTabBar({ animation: false })
+  const targetId = uni.getStorageSync('mall_target_category_id')
+  if (targetId && categories.value.length > 0) {
+    const applied = applyStoredCategory(categories.value)
+    if (applied) {
+      pageNo.value = 1
+      noMore.value = false
+      products.value = []
+      loadProducts()
+    }
+  }
+})
+
+const pastelColors = [
+  'var(--color-block-cream)',
+  'var(--color-block-lime)',
+  'var(--color-block-lilac)',
+  'var(--color-block-mint)',
+  'var(--color-block-coral)',
+  'var(--color-block-pink)'
+]
+function getPastelBg(idx: number) {
+  return pastelColors[idx % pastelColors.length]
+}
 </script>
 
 <style scoped>
@@ -196,25 +273,39 @@ onLoad(() => {
   z-index: 100;
   background: var(--color-card, #fff);
   padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--color-border, #eee);
 }
 
 .search-bar {
+  flex: 1;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--color-bg, #f5f5f5);
+  background: var(--color-bg-page, #f7f7f8);
   border-radius: var(--radius-full, 999px);
+  border: 1px solid var(--color-border, #eee);
   padding: 9px 16px;
 }
 
-.search-icon {
-  font-size: 15px;
-  color: var(--color-text-hint, #999);
+.search-input {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-base, 14px);
+  color: var(--color-text, #111);
 }
 
-.search-placeholder {
-  font-size: var(--font-base, 14px);
-  color: var(--color-text-hint, #999);
+.cart-shortcut {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full, 999px);
+  background: var(--color-card, #fff);
+  border: 1px solid var(--color-border, #eee);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ---- 主体布局 ---- */
@@ -226,52 +317,58 @@ onLoad(() => {
 
 /* ---- 左侧分类 ---- */
 .category-sidebar {
-  width: 88px;
+  width: 96px;
   height: calc(100vh - 56px);
   background: var(--color-card, #fff);
+  border-right: 1px solid var(--color-border, #eee);
+}
+
+.sidebar-wrapper {
+  padding: 10px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .sidebar-item {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 52px;
-  padding: 0 8px;
+  height: 44px;
 }
 
-.sidebar-item:active {
-  background: var(--color-bg, #f5f5f5);
+.sidebar-pill {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full, 999px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
 }
 
-.sidebar-indicator {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 20px;
-  border-radius: 0 3px 3px 0;
-  background: var(--color-primary, var(--color-accent));
+.sidebar-pill.active {
+  background: #111111;
 }
 
 .sidebar-text {
-  font-size: var(--font-base, 14px);
+  font-size: var(--font-sm, 12px);
   color: var(--color-text-secondary, #666);
   text-align: center;
-  line-height: 1.3;
+  font-weight: var(--weight-medium, 500);
 }
 
 .sidebar-text.active {
-  color: var(--color-text, #1a1a1a);
-  font-weight: var(--weight-semibold, 600);
+  color: #ffffff;
+  font-weight: var(--weight-bold, 700);
 }
 
 /* ---- 右侧商品区 ---- */
 .product-area {
   flex: 1;
   height: calc(100vh - 56px);
-  padding: 12px;
+  padding: 12px 12px 80px;
+  box-sizing: border-box;
 }
 
 /* ---- 子分类 ---- */
@@ -281,7 +378,8 @@ onLoad(() => {
   gap: 12px;
   margin-bottom: 16px;
   background: var(--color-card, #fff);
-  border-radius: var(--radius-md, 12px);
+  border: 1px solid var(--color-border, #eee);
+  border-radius: var(--radius-lg, 16px);
   padding: 16px 12px;
 }
 
@@ -300,49 +398,57 @@ onLoad(() => {
 .sub-icon {
   width: 44px;
   height: 44px;
-  border-radius: var(--radius-sm, 8px);
+  border-radius: var(--radius-md, 12px);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.2s;
 }
 
 .sub-icon-text {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .sub-name {
-  font-size: var(--font-sm, 12px);
-  color: var(--color-text, #1a1a1a);
+  font-size: 11px;
+  color: var(--color-text-secondary, #666);
   text-align: center;
   line-height: 1.3;
+}
+
+.sub-name.active {
+  color: var(--color-text, #111);
+  font-weight: var(--weight-bold, 700);
 }
 
 /* ---- 商品列表 ---- */
 .product-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .product-card {
   display: flex;
   gap: 12px;
   background: var(--color-card, #fff);
-  border-radius: var(--radius-md, 12px);
+  border: 1px solid var(--color-border, #eee);
+  border-radius: var(--radius-lg, 16px);
   padding: 12px;
   overflow: hidden;
 }
 
 .product-card:active {
-  background: var(--color-bg, #f5f5f5);
+  background: var(--color-bg-page, #f7f7f8);
 }
 
 .product-img-wrap {
-  width: 100px;
-  height: 100px;
-  border-radius: var(--radius-sm, 8px);
+  width: 90px;
+  height: 90px;
+  border-radius: var(--radius-md, 12px);
   overflow: hidden;
   flex-shrink: 0;
+  background: var(--color-bg, #f5f5f5);
 }
 
 .product-img {
@@ -353,15 +459,9 @@ onLoad(() => {
 .img-placeholder {
   width: 100%;
   height: 100%;
-  background: var(--color-bg, #f5f5f5);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.placeholder-icon {
-  font-size: 32px;
-  color: var(--color-text-disabled, #ccc);
 }
 
 .product-info {
@@ -373,14 +473,20 @@ onLoad(() => {
 }
 
 .product-name {
-  font-size: var(--font-base, 14px);
-  font-weight: var(--weight-medium, 500);
-  color: var(--color-text, #1a1a1a);
+  font-size: var(--font-sm, 12px);
+  font-weight: var(--weight-semibold, 600);
+  color: var(--color-text, #111);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.product-info-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
 }
 
 .product-bottom {
@@ -392,7 +498,6 @@ onLoad(() => {
 .product-price {
   font-size: var(--font-lg, 16px);
   font-weight: var(--weight-bold, 700);
-  color: var(--color-primary, var(--color-accent));
 }
 
 .price-symbol {
@@ -400,7 +505,7 @@ onLoad(() => {
 }
 
 .price-original {
-  font-size: var(--font-sm, 12px);
+  font-size: var(--font-xs, 10px);
   color: var(--color-text-disabled, #ccc);
   text-decoration: line-through;
 }
@@ -433,8 +538,8 @@ onLoad(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--color-border, #eee);
-  border-top-color: var(--color-primary, var(--color-accent));
-  border-radius: var(--radius-circle);
+  border-top-color: #111111;
+  border-radius: var(--radius-full, 999px);
   animation: spin 0.6s linear infinite;
 }
 
@@ -449,14 +554,9 @@ onLoad(() => {
   padding: 60px 40px;
 }
 
-.empty-icon {
-  font-size: 48px;
-  color: var(--color-text-disabled, #ccc);
-  margin-bottom: 12px;
-}
-
 .empty-text {
-  font-size: var(--font-base, 14px);
+  font-size: var(--font-sm, 12px);
   color: var(--color-text-hint, #999);
+  margin-top: 8px;
 }
 </style>

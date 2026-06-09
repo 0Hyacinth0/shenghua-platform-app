@@ -42,9 +42,7 @@
         @change="onSwiperChange"
       >
         <swiper-item v-for="(img, idx) in imageList" :key="idx">
-          <view class="gallery-img" :style="{ background: img.placeholder || '#f5f5f5' }">
-            <text class="img-placeholder-text">商品图片</text>
-          </view>
+          <image :src="imgUrl(img)" class="gallery-img" mode="aspectFill" />
         </swiper-item>
       </swiper>
       <view v-else class="gallery-placeholder">
@@ -139,12 +137,13 @@
       </view>
       <scroll-view scroll-x class="recommend-scroll">
         <view class="recommend-card" v-for="p in recommendProducts" :key="p.id" @tap="goProduct(p.id)">
-          <view class="recommend-img" :style="{ background: p.coverColor }">
-            <Icon icon="solar:box-bold" width="24" color="var(--text-hint)" />
+          <view class="recommend-img">
+            <image v-if="p.mainImage" :src="imgUrl(p.mainImage)" class="recommend-image" mode="aspectFill" />
+            <Icon v-else icon="solar:box-bold" width="24" color="var(--text-hint)" />
           </view>
           <view class="recommend-info">
-            <text class="recommend-title">{{ p.title }}</text>
-            <text class="recommend-price">¥{{ p.price }}</text>
+            <text class="recommend-title">{{ p.spuName || p.title }}</text>
+            <text class="recommend-price">¥{{ p.minPrice || p.price }}</text>
           </view>
         </view>
       </scroll-view>
@@ -257,9 +256,10 @@
 import { ref, computed } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { Icon } from '@iconify/vue'
-import { getProductDetail, addToCart, imgUrl } from '@/api'
+import { getProductDetail, addToCart, getFrontProductList, imgUrl } from '@/api'
 import http from '@/utils/http'
 import { getCurrentUserId } from '@/utils/user'
+import { goCart as openCart, goHome as openHome, goMall } from '@/utils/navigation'
 
 const currentUserId = getCurrentUserId()
 const productId = ref('')
@@ -362,11 +362,7 @@ const currentStock = computed(() => {
   return product.value.stock ?? 999
 })
 
-const recommendProducts = [
-  { id: 'r1', title: '学习笔记本', coverColor: 'linear-gradient(135deg,#667eea,#764ba2)', price: 29.9 },
-  { id: 'r2', title: '考试专用笔', coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)', price: 9.9 },
-  { id: 'r3', title: '教材套装', coverColor: 'linear-gradient(135deg,#4facfe,#00f2fe)', price: 199 },
-]
+const recommendProducts = ref<any[]>([])
 
 function onSwiperChange(e: any) {
   currentImageIndex.value = e.detail.current
@@ -393,15 +389,15 @@ function goBack() {
 }
 
 function goHome() {
-  uni.switchTab({ url: '/pages/home/index' })
+  openHome()
 }
 
 function goCart() {
-  uni.switchTab({ url: '/pages/cart/index' })
+  openCart()
 }
 
 function goProductList() {
-  uni.navigateTo({ url: '/pages/product/list' })
+  goMall()
 }
 
 function goProduct(id: string) {
@@ -409,7 +405,10 @@ function goProduct(id: string) {
 }
 
 function onShare() {
-  uni.showToast({ title: '分享功能开发中', icon: 'none' })
+  uni.setClipboardData({
+    data: '盛桦商城商品: ' + (product.value?.spuName || '') + ' https://shenghua.com/product/' + productId,
+    success: () => uni.showToast({ title: '链接已复制', icon: 'success' }),
+  })
 }
 
 function onFavorite() {
@@ -476,6 +475,15 @@ onLoad(async (options) => {
     product.value = {}
   } finally {
     loading.value = false
+  }
+
+  // 加载推荐商品
+  try {
+    const recRes: any = await getFrontProductList({ pageNo: 1, pageSize: 4 })
+    const records = recRes?.records || []
+    recommendProducts.value = records.filter((r: any) => r.id !== productId.value).slice(0, 3)
+  } catch {
+    recommendProducts.value = []
   }
 
   // 秒杀信息
@@ -987,6 +995,14 @@ onLoad(async (options) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--bg-gray, #f5f5f5);
+  border-radius: var(--radius-sm, 6px);
+  overflow: hidden;
+}
+
+.recommend-image {
+  width: 100%;
+  height: 100%;
 }
 
 .recommend-placeholder {
@@ -1027,7 +1043,7 @@ onLoad(async (options) => {
   display: flex;
   align-items: center;
   padding: 8px 16px;
-  padding-bottom: 24px;
+  padding-bottom: calc(24px + var(--safe-area-bottom));
   background: #fff;
   border-top: 1px solid #f0f0f0;
   z-index: 100;

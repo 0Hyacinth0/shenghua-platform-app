@@ -50,7 +50,11 @@
 
       <view v-else-if="products.length > 0" class="seckill-items">
         <view v-for="item in products" :key="item.id" class="seckill-card" @tap="goDetail(item)">
-          <view class="card-cover" :style="{ background: item.coverColor || defaultGradient }">
+          <view class="card-cover">
+            <image v-if="item.mainImage" :src="imgUrl(item.mainImage)" class="cover-img" mode="aspectFill" />
+            <view v-else class="cover-placeholder" :style="{ background: defaultGradient }">
+              <Icon icon="solar:flash-bold" width="32" color="rgba(255,255,255,0.6)" />
+            </view>
             <view class="card-badge">
               <Icon icon="solar:flash-bold" width="12" color="#fff" />
               <text class="badge-text">秒杀</text>
@@ -97,17 +101,13 @@
 import { ref, reactive, onUnmounted } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { Icon } from '@iconify/vue'
-import { getSeckillProductList, imgUrl } from '@/api'
+import { getSeckillProductList, getSeckillList, imgUrl } from '@/api'
 
 const loading = ref(false)
-const sessions = ref([
-  { id: '1', time: '08:00', label: '已结束', status: 'ended' },
-  { id: '2', time: '10:00', label: '抢购中', status: 'active' },
-  { id: '3', time: '14:00', label: '即将开始', status: 'upcoming' },
-  { id: '4', time: '18:00', label: '即将开始', status: 'upcoming' },
-  { id: '5', time: '20:00', label: '即将开始', status: 'upcoming' },
+const sessions = ref<any[]>([
+  { id: 'default', time: '--:--', label: '加载中', status: 'loading' },
 ])
-const activeSessionId = ref('2')
+const activeSessionId = ref('default')
 const products = ref<any[]>([])
 const pageNo = ref(1)
 const noMore = ref(false)
@@ -116,13 +116,6 @@ const countdown = reactive({ hours: '00', minutes: '00', seconds: '00' })
 let timer: any = null
 
 const defaultGradient = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-
-// 模拟数据
-const mockProducts = [
-  { id: '1', spuName: 'Vue 3 + TypeScript 实战教程', seckillPrice: 99, originalPrice: 299, stock: 8, totalStock: 100, coverColor: 'linear-gradient(135deg,#667eea,#764ba2)' },
-  { id: '2', spuName: 'React 18 新特性深度解析', seckillPrice: 129, originalPrice: 399, stock: 15, totalStock: 100, coverColor: 'linear-gradient(135deg,#f093fb,#f5576c)' },
-  { id: '3', spuName: 'Python 数据分析从入门到精通', seckillPrice: 159, originalPrice: 599, stock: 0, totalStock: 100, coverColor: 'linear-gradient(135deg,#4facfe,#00f2fe)' },
-]
 
 function goBack() {
   uni.navigateBack()
@@ -173,23 +166,57 @@ function startCountdown() {
 async function loadProducts(append = false) {
   if (!append) loading.value = true
   try {
-    const res = await getSeckillProductList({ pageNo: pageNo.value, pageSize: 10 })
+    const params: any = { pageNo: pageNo.value, pageSize: 10 }
+    if (activeSessionId.value && activeSessionId.value !== 'default') {
+      params.activityId = activeSessionId.value
+    }
+    const res = await getSeckillProductList(params)
     const records: any[] = res?.records || []
     if (append) {
       products.value = [...products.value, ...records]
     } else {
-      products.value = records.length > 0 ? records : mockProducts
+      products.value = records
     }
     noMore.value = records.length < 10
   } catch {
-    if (!append) products.value = mockProducts
+    if (!append) products.value = []
     noMore.value = true
   } finally {
     loading.value = false
   }
 }
 
-onLoad(() => {
+async function loadSessions() {
+  try {
+    const res = await getSeckillList({ pageSize: 99 })
+    const activities: any[] = res?.records || []
+    if (activities.length > 0) {
+      const now = Date.now()
+      sessions.value = activities.map((act: any) => {
+        const start = new Date(act.startTime).getTime()
+        const end = new Date(act.endTime).getTime()
+        let label = '即将开始'
+        let status = 'upcoming'
+        if (now >= start && now <= end) { label = '抢购中'; status = 'active' }
+        else if (now > end) { label = '已结束'; status = 'ended' }
+        const time = act.startTime ? act.startTime.substring(11, 16) : '--:--'
+        return { id: act.id, time, label, status, startTime: start, endTime: end }
+      })
+      const active = sessions.value.find(s => s.status === 'active')
+      const upcoming = sessions.value.find(s => s.status === 'upcoming')
+      activeSessionId.value = (active || upcoming || sessions.value[0]).id
+    } else {
+      sessions.value = [{ id: 'all', time: '全部', label: '秒杀商品', status: 'active' }]
+      activeSessionId.value = 'all'
+    }
+  } catch {
+    sessions.value = [{ id: 'all', time: '全部', label: '秒杀商品', status: 'active' }]
+    activeSessionId.value = 'all'
+  }
+}
+
+onLoad(async () => {
+  await loadSessions()
   loadProducts()
   startCountdown()
 })
@@ -341,6 +368,20 @@ onUnmounted(() => {
   width: 100%;
   height: 140px;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cover-img {
+  width: 100%;
+  height: 100%;
+}
+
+.cover-placeholder {
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

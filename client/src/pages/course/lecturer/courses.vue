@@ -67,11 +67,11 @@ function getStatusText(status: number) {
 }
 
 function onAdd() {
-  uni.showToast({ title: '课程创建功能开发中', icon: 'none' })
+  uni.showToast({ title: '请在管理后台创建课程', icon: 'none' })
 }
 
 function onEdit(course: any) {
-  uni.showToast({ title: '课程编辑功能开发中', icon: 'none' })
+  uni.showToast({ title: '请在管理后台编辑课程', icon: 'none' })
 }
 
 async function loadCourses() {

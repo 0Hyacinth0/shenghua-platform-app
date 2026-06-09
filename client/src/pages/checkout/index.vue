@@ -625,7 +625,7 @@ async function handleSubmit() {
   justify-content: space-between;
   background: #fff;
   border-top: 1px solid #f0f0f0;
-  padding: 10px 16px 24px;
+  padding: 10px 16px calc(24px + var(--safe-area-bottom));
   z-index: 50;
 }
 

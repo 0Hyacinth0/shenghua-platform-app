@@ -3,15 +3,34 @@
    ============================================ */
 
 :root {
-  /* ---- 品牌色 ---- */
-  --color-primary: #FF4D4F;
-  --color-primary-dark: #E8383A;
-  --color-primary-light: #FFF1F0;
-  --color-primary-bg: #FFF5F5;
+  /* ---- 品牌色 (遵循 DESIGN.md) ---- */
+  --color-primary: #111111;
+  --color-primary-dark: #000000;
+  --color-primary-light: #F2F2F2;
+  --color-primary-bg: #FAFAFA;
+
+  /* ---- 电商主色 ---- */
+  --color-commerce: #D9383A;
+  --color-commerce-dark: #c9282c;
+  --color-commerce-light: #fff1f0;
+
+  /* ---- 粉彩大色块背景 ---- */
+  --color-block-lime: #E2F876;
+  --color-block-lilac: #E5DEFF;
+  --color-block-cream: #FFF8E7;
+  --color-block-mint: #E0F8F1;
+  --color-block-pink: #FFE4E6;
+  --color-block-coral: #FFECE5;
+  --color-block-navy: #1A1D36;
+
+  /* ---- 等宽字体与字母间距 ---- */
+  --font-mono: figmaMono, monospace;
+  --letter-spacing-display: -0.5px;
+  --letter-spacing-mono: 1.5px;
 
   /* ---- 中性色 ---- */
   --color-bg: #F5F5F5;
-  --color-bg-page: #F7F7F8;
+  --color-bg-page: #F8F9FA;
   --color-card: #FFFFFF;
   --color-text: #1A1A1A;
   --color-text-secondary: #666666;
@@ -249,3 +268,63 @@
   justify-content: center;
   padding: 40px;
 }
+
+/* ============================================
+   粉彩大色块区块 (Figma 经典设计风格)
+   ============================================ */
+.color-block-section {
+  border-radius: var(--radius-xl, 20px);
+  padding: var(--space-base) var(--space-base);
+  margin-bottom: var(--space-base);
+  background: var(--color-block-cream);
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.color-block-section-lime {
+  background: var(--color-block-lime);
+  color: #111111;
+}
+
+.color-block-section-lilac {
+  background: var(--color-block-lilac);
+  color: #111111;
+}
+
+.color-block-section-navy {
+  background: var(--color-block-navy);
+  color: #ffffff;
+}
+
+.color-block-section-mint {
+  background: var(--color-block-mint);
+  color: #111111;
+}
+
+.color-block-section-coral {
+  background: var(--color-block-coral);
+  color: #111111;
+}
+
+.color-block-section-cream {
+  background: var(--color-block-cream);
+  color: #111111;
+}
+
+/* 模块小标签 - 等宽大写，字间距拉开 */
+.block-eyebrow {
+  font-family: var(--font-mono, monospace);
+  font-size: var(--font-xs, 10px);
+  letter-spacing: var(--letter-spacing-mono, 1.5px);
+  font-weight: var(--weight-bold, 700);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* 价格电商红 */
+.price-commerce {
+  color: var(--color-commerce, #e4393c) !important;
+}
+

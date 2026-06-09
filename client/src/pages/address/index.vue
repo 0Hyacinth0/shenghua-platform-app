@@ -155,8 +155,27 @@ function onEdit(addr: any) {
 }
 
 function onPickRegion() {
-  // TODO: 地区选择器
-  uni.showToast({ title: '地区选择器开发中', icon: 'none' })
+  // #ifdef MP-WEIXIN
+  // 微信小程序使用内置的地区选择器
+  uni.chooseLocation({
+    success: (res: any) => {
+      editForm.region = res.name || res.address || ''
+    },
+  })
+  // #endif
+  // #ifndef MP-WEIXIN
+  // H5 / App 使用手动输入
+  uni.showModal({
+    title: '请输入所在地区',
+    editable: true,
+    placeholderText: '如：广东省深圳市南山区',
+    success: (res) => {
+      if (res.confirm && res.content) {
+        editForm.region = res.content
+      }
+    },
+  })
+  // #endif
 }
 
 async function loadAddresses() {
@@ -364,7 +383,7 @@ onLoad(() => {
 /* 新增按钮 */
 .add-bar {
   padding: var(--space-md) var(--space-lg);
-  padding-bottom: var(--space-2xl);
+  padding-bottom: calc(var(--space-2xl) + var(--safe-area-bottom));
   background: var(--bg-card);
   border-top: 1px solid var(--bg-gray);
 }

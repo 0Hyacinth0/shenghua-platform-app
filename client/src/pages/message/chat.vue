@@ -270,7 +270,7 @@ onLoad((options: any) => {
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  padding: 10px 16px 24px;
+  padding: 10px 16px calc(24px + var(--safe-area-bottom));
   background: var(--bg-card);
   border-top: 1px solid var(--bg-gray);
 }

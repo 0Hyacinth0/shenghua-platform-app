@@ -8,7 +8,20 @@
       <view style="width:36px" />
     </view>
 
-    <view class="form-card">
+    <!-- 已有申请状态 -->
+    <view v-if="existingStatus !== null" class="status-card" :class="'status-' + existingStatus">
+      <view class="status-icon-wrap">
+        <Icon :icon="existingStatus === 1 ? 'solar:check-circle-bold' : existingStatus === 2 ? 'solar:close-circle-bold' : 'solar:clock-circle-bold'" width="28" :color="existingStatus === 1 ? 'var(--color-success)' : existingStatus === 2 ? 'var(--color-danger)' : 'var(--color-warning)'" />
+      </view>
+      <text class="status-title">{{ existingStatus === 0 ? '审核中' : existingStatus === 1 ? '已通过' : '已拒绝' }}</text>
+      <text class="status-desc">{{ existingStatus === 0 ? '您的入驻申请正在审核中，请耐心等待' : existingStatus === 1 ? '恭喜，您已成功入驻' : '很抱歉，您的申请未通过，可重新提交' }}</text>
+      <view v-if="existingStatus === 1" class="status-action" @tap="goProducts">
+        <text class="status-action-text">管理商品</text>
+        <Icon icon="solar:alt-arrow-right-bold" width="14" color="var(--color-accent)" />
+      </view>
+    </view>
+
+    <view v-if="existingStatus === null || existingStatus === 2" class="form-card">
       <view class="form-item">
         <view class="form-label-row">
           <Icon icon="solar:shop-bold" width="18" color="var(--color-accent)" />
@@ -69,11 +82,13 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 import { Icon } from '@iconify/vue'
-import { merchantApply } from '@/api'
+import { merchantApply, getMyMerchant } from '@/api'
 import { getCurrentUserId } from '@/utils/user'
 
 const submitting = ref(false)
+const existingStatus = ref<number | null>(null)
 const form = reactive({
   shopName: '',
   contactName: '',
@@ -129,6 +144,24 @@ async function onSubmit() {
     submitting.value = false
   }
 }
+
+function goProducts() {
+  uni.navigateTo({ url: '/pages/merchant/products' })
+}
+
+onLoad(async () => {
+  try {
+    const existing: any = await getMyMerchant(getCurrentUserId())
+    if (existing && existing.auditStatus !== undefined) {
+      existingStatus.value = existing.auditStatus
+      if (existing.shopName) form.shopName = existing.shopName
+      if (existing.contactName) form.contactName = existing.contactName
+      if (existing.phone) form.phone = existing.phone
+    }
+  } catch {
+    existingStatus.value = null
+  }
+})
 </script>
 
 <style scoped>
@@ -168,6 +201,51 @@ async function onSubmit() {
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-sm);
+}
+
+.status-card {
+  background: var(--bg-card);
+  margin: var(--space-lg);
+  border-radius: var(--radius-lg);
+  padding: 24px var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  text-align: center;
+}
+
+.status-icon-wrap {
+  margin-bottom: var(--space-xs);
+}
+
+.status-title {
+  font-size: var(--font-xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.status-desc {
+  font-size: var(--font-base);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.status-action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--color-accent-light);
+  border-radius: var(--radius-full);
+}
+
+.status-action-text {
+  font-size: var(--font-base);
+  color: var(--color-accent);
+  font-weight: var(--weight-medium);
 }
 
 .form-item {

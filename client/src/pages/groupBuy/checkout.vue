@@ -399,7 +399,7 @@ onLoad((options: any) => {
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  padding-bottom: 24px;
+  padding-bottom: calc(24px + var(--safe-area-bottom));
   background: #fff;
   border-top: 1px solid #f0f0f0;
 }
