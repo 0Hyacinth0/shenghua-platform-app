@@ -15,5 +15,5 @@ onHide(() => {
 </script>
 
 <style>
-@import './styles/design-system.css';
+/* design-system.css removed — tokens.css is the single source of truth */
 </style>
