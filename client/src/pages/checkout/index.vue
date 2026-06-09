@@ -285,11 +285,7 @@ async function handleSubmit() {
 
 /* ---- 导航栏 ---- */
 .page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  padding: 44px 16px 12px;
+  display: none;
 }
 
 .page-back {
@@ -322,9 +318,9 @@ async function handleSubmit() {
 
 /* ---- 通用卡片 ---- */
 .card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background: var(--color-card, #fff);
+  border-radius: var(--radius-lg, 14px);
+  box-shadow: var(--shadow-sm);
   padding: 16px;
 }
 
@@ -350,7 +346,7 @@ async function handleSubmit() {
   display: flex;
   align-items: center;
   padding: 16px;
-  background: linear-gradient(135deg, #fff5f0, #fff);
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-card, #fff));
 }
 
 .addr-content {
@@ -382,7 +378,7 @@ async function handleSubmit() {
 .addr-default {
   font-size: 10px;
   color: var(--color-accent);
-  background: #fff0eb;
+  background: var(--color-primary-light);
   padding: 1px 6px;
   border-radius: 4px;
 }
@@ -425,7 +421,7 @@ async function handleSubmit() {
 }
 
 .goods-item + .goods-item {
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--color-divider);
 }
 
 .goods-img {
@@ -562,7 +558,7 @@ async function handleSubmit() {
 
 .summary-divider {
   height: 1px;
-  background: #f0f0f0;
+  background: var(--color-divider);
   margin: 10px 0;
 }
 
@@ -623,9 +619,9 @@ async function handleSubmit() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
-  border-top: 1px solid #f0f0f0;
-  padding: 10px 16px calc(24px + var(--safe-area-bottom));
+  background: var(--color-card, #fff);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+  padding: 10px 16px calc(10px + var(--safe-area-bottom));
   z-index: 50;
 }
 

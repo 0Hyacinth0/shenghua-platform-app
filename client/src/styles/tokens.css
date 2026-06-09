@@ -1,49 +1,36 @@
 :root {
-  --color-primary: #111111;
-  --color-primary-dark: #000000;
-  --color-primary-light: #f2f2f2;
-  --color-primary-gradient: linear-gradient(135deg, #111111 0%, #333333 100%);
+  /* 主色 */
+  --color-primary: #1A1A2E;
+  --color-primary-light: #F5F3FF;
+  --color-primary-dark: #0D0D1A;
+  --color-primary-gradient: linear-gradient(135deg, #1A1A2E 0%, #2D2D4E 100%);
 
-  --color-commerce: #D9383A;
-  --color-commerce-dark: #c9282c;
-  --color-commerce-light: #fff1f0;
-  --color-learning: #6d5dfc;
-  --color-learning-light: #f1efff;
-  --color-community: #12a37f;
-  --color-community-light: #e8f8f3;
-  --color-accent: #D9383A;
-  --color-accent-light: #fff1f0;
+  /* 强调色 */
+  --color-accent: #8B5CF6;
+  --color-accent-light: #F5F3FF;
 
-  --color-success: #22c55e;
-  --color-success-light: #f0fdf4;
-  --color-warning: #f59e0b;
-  --color-warning-light: #fffbeb;
-  --color-danger: #ef4444;
-  --color-danger-light: #fef2f2;
-  --color-info: #0ea5e9;
-  --color-info-light: #e0f2fe;
+  /* 语义色 */
+  --color-success: #22C55E;
+  --color-success-light: #F0FDF4;
+  --color-warning: #F59E0B;
+  --color-warning-light: #FEF3C7;
+  --color-danger: #EF4444;
+  --color-danger-light: #FEE2E2;
+  --color-info: #0EA5E9;
+  --color-info-light: #E0F2FE;
 
-  --text-primary: #1f1f1f;
-  --text-secondary: #666666;
-  --text-hint: #999999;
-  --text-disabled: #cccccc;
-  --text-white: #ffffff;
+  /* 文字 */
+  --text-primary: #1A1A2E;
+  --text-secondary: #64748B;
+  --text-hint: #94A3B8;
+  --text-white: #FFFFFF;
 
-  --color-text: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-hint: var(--text-hint);
-  --color-text-disabled: var(--text-disabled);
+  /* 背景 */
+  --bg-page: #F7F8FA;
+  --bg-card: #FFFFFF;
+  --bg-gray: #F1F5F9;
 
-  --bg-page: #F8F9FA;
-  --bg-card: #ffffff;
-  --bg-gray: #f1f1f1;
-  --bg-soft: #fafafa;
-  --color-bg: var(--bg-gray);
-  --color-bg-page: var(--bg-page);
-  --color-card: var(--bg-card);
-  --color-border: #eeeeee;
-  --color-divider: #f0f0f0;
-
+  /* 间距 */
   --space-xs: 4px;
   --space-sm: 8px;
   --space-md: 12px;
@@ -52,39 +39,53 @@
   --space-2xl: 24px;
   --space-3xl: 32px;
 
-  --radius-xs: 4px;
+  /* 圆角 */
   --radius-sm: 8px;
-  --radius-md: 10px;
-  --radius-lg: 12px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
   --radius-xl: 16px;
   --radius-2xl: 20px;
-  --radius-full: 999px;
+  --radius-full: 20px;
   --radius-circle: 50%;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06);
+  /* 阴影 */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.03);
 
+  /* 字号 */
   --font-xs: 11px;
   --font-sm: 12px;
   --font-base: 13px;
   --font-md: 14px;
   --font-lg: 15px;
   --font-xl: 17px;
-  --font-2xl: 20px;
+  --font-2xl: 22px;
   --font-3xl: 24px;
   --font-4xl: 28px;
 
+  /* 字重 */
   --weight-normal: 400;
-  --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
   --weight-bold: 700;
+
+  /* ---- 兼容旧代码的映射 ---- */
+  --color-text: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-hint: var(--text-hint);
+  --color-text-disabled: var(--text-hint);
+  
+  --color-bg: var(--bg-gray);
+  --color-bg-page: var(--bg-page);
+  --color-card: var(--bg-card);
+  --color-border: #E2E8F0;
+  --color-divider: #F1F5F9;
 
   --page-padding: 16px;
   --tab-bar-height: 56px;
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 
-  /* ---- 粉彩大色块背景 (基于 DESIGN.md) ---- */
+  /* 粉彩大色块背景 */
   --color-block-lime: #E2F876;
   --color-block-lilac: #E5DEFF;
   --color-block-cream: #FFF8E7;
@@ -93,7 +94,6 @@
   --color-block-coral: #FFECE5;
   --color-block-navy: #1A1D36;
 
-  /* ---- 等宽字体与字母间距 (基于 DESIGN.md) ---- */
   --font-mono: figmaMono, monospace;
   --letter-spacing-display: -0.5px;
   --letter-spacing-mono: 1.5px;

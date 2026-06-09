@@ -245,11 +245,7 @@ onLoad(() => {
 
 /* 顶部导航 */
 .nav-bar {
-  background: var(--bg-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 44px 16px 12px;
+  display: none;
 }
 
 .nav-back {
@@ -389,7 +385,7 @@ onLoad(() => {
 .calendar-card {
   background: var(--bg-card);
   margin: 12px 16px 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -460,7 +456,7 @@ onLoad(() => {
 .reward-card {
   background: var(--bg-card);
   margin: 12px 16px 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -508,14 +504,14 @@ onLoad(() => {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: var(--bg-gray);
   position: relative;
 }
 
 .reward-item.current {
   background: var(--color-accent-light);
-  border: 1.5px solid var(--color-accent);
+  box-shadow: 0 0 0 1.5px var(--color-accent);
 }
 
 .reward-item.claimed {
@@ -556,7 +552,7 @@ onLoad(() => {
 .rule-card {
   background: var(--bg-card);
   margin: 12px 16px 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-sm);
 }
@@ -599,7 +595,7 @@ onLoad(() => {
 .record-card {
   background: var(--bg-card);
   margin: 12px 16px 0;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-sm);
 }

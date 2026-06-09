@@ -41,9 +41,9 @@
     { "path": "pages/page/index", "style": { "navigationBarTitleText": "页面" } }
   ],
   "globalStyle": {
-    "navigationBarTextStyle": "black",
+    "navigationBarTextStyle": "white",
     "navigationBarTitleText": "盛桦商城",
-    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarBackgroundColor": "#1A1A2E",
     "backgroundColor": "#F5F6FA",
     "app-plus": {
       "background": "#F5F6FA"

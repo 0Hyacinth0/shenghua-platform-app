@@ -272,11 +272,7 @@ onLoad(() => {
 
 /* 顶部导航 */
 .nav-bar {
-  background: var(--bg-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 44px 16px 12px;
+  display: none;
 }
 
 .nav-back {
@@ -308,7 +304,7 @@ onLoad(() => {
 
 .address-card {
   background: var(--bg-card);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
 }
@@ -359,7 +355,7 @@ onLoad(() => {
 
 .address-actions {
   display: flex;
-  border-top: 1px solid var(--bg-page);
+  border-top: 1px solid var(--color-divider);
 }
 
 .action-item {
@@ -383,9 +379,9 @@ onLoad(() => {
 /* 新增按钮 */
 .add-bar {
   padding: var(--space-md) var(--space-lg);
-  padding-bottom: calc(var(--space-2xl) + var(--safe-area-bottom));
+  padding-bottom: calc(10px + var(--safe-area-bottom));
   background: var(--bg-card);
-  border-top: 1px solid var(--bg-gray);
+  border-top: 1px solid var(--color-divider);
 }
 
 .add-btn {
@@ -427,7 +423,7 @@ onLoad(() => {
   width: 100%;
   max-height: 80vh;
   background: var(--bg-card);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   display: flex;
   flex-direction: column;
 }
@@ -437,7 +433,7 @@ onLoad(() => {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-lg);
-  border-bottom: 1px solid var(--bg-gray);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .editor-title {
@@ -510,7 +506,7 @@ onLoad(() => {
   width: 20px;
   height: 20px;
   border-radius: var(--radius-circle);
-  border: 1.5px solid var(--bg-gray);
+  border: 1.5px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;

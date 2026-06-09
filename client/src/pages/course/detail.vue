@@ -243,9 +243,9 @@ function goCourse(id: string) {
 
 function onShare() {
   uni.setClipboardData({
-    data: '盛桦课程: ' + (courseData.value?.title || '') + ' https://shenghua.com/course/' + courseId,
+    data: '盛桦课程: ' + (course.value?.title || '') + ' https://shenghua.com/course/' + courseId,
     success: () => uni.showToast({ title: '链接已复制', icon: 'success' }),
-  })
+  });
 }
 
 async function onFavorite() {
@@ -328,14 +328,15 @@ onLoad(async (options: any) => {
   align-items: center;
   justify-content: space-between;
   padding: 44px var(--space-lg) 10px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
+  background: var(--color-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .nav-back {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  background: rgba(0,0,0,0.3);
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-circle);
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -347,10 +348,10 @@ onLoad(async (options: any) => {
 }
 
 .nav-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-full);
-  background: rgba(0,0,0,0.3);
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-circle);
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -361,6 +362,7 @@ onLoad(async (options: any) => {
   width: 100%;
   height: 220px;
   overflow: hidden;
+  margin-top: 88px; /* 导航栏高度占位 */
 }
 
 .cover-image {
@@ -380,7 +382,7 @@ onLoad(async (options: any) => {
   width: 56px;
   height: 56px;
   border-radius: var(--radius-circle);
-  background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -394,6 +396,7 @@ onLoad(async (options: any) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .price-left {
@@ -459,7 +462,10 @@ onLoad(async (options: any) => {
 /* 标题区 */
 .title-section {
   background: var(--bg-card);
-  padding: 0 var(--space-lg) var(--space-lg);
+  padding: 16px var(--space-lg) var(--space-lg);
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .course-title {
@@ -493,7 +499,11 @@ onLoad(async (options: any) => {
 /* 讲师卡片 */
 .lecturer-card {
   background: var(--bg-card);
-  margin-top: var(--space-sm);
+  margin-top: 12px;
+  margin-left: 12px;
+  margin-right: 12px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   padding: var(--space-lg);
   display: flex;
   align-items: center;
@@ -501,12 +511,12 @@ onLoad(async (options: any) => {
 }
 
 .lecturer-card:active {
-  background: var(--bg-gray);
+  background: #fafafa;
 }
 
 .lecturer-avatar {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
   border-radius: var(--radius-circle);
   background: var(--color-accent-light);
   display: flex;
@@ -515,8 +525,8 @@ onLoad(async (options: any) => {
 }
 
 .avatar-text {
-  font-size: var(--font-2xl);
-  font-weight: var(--weight-semibold);
+  font-size: var(--font-xl);
+  font-weight: var(--weight-bold);
   color: var(--color-accent);
 }
 
@@ -526,7 +536,7 @@ onLoad(async (options: any) => {
 
 .lecturer-name {
   font-size: var(--font-lg);
-  font-weight: var(--weight-semibold);
+  font-weight: var(--weight-bold);
   color: var(--text-primary);
 }
 
@@ -548,11 +558,11 @@ onLoad(async (options: any) => {
 /* 内容区块 */
 .section-card {
   background: var(--bg-card);
-  margin-top: var(--space-sm);
-  margin-left: var(--space-sm);
-  margin-right: var(--space-sm);
+  margin-top: 12px;
+  margin-left: 12px;
+  margin-right: 12px;
   padding: var(--space-lg);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
 
@@ -564,8 +574,8 @@ onLoad(async (options: any) => {
 }
 
 .section-title {
-  font-size: var(--font-xl);
-  font-weight: var(--weight-semibold);
+  font-size: var(--font-lg);
+  font-weight: var(--weight-bold);
   color: var(--text-primary);
 }
 
@@ -583,7 +593,7 @@ onLoad(async (options: any) => {
 .course-desc {
   font-size: var(--font-md);
   color: var(--text-secondary);
-  line-height: 1.8;
+  line-height: 1.6;
 }
 
 /* 课程目录 */
@@ -597,7 +607,7 @@ onLoad(async (options: any) => {
   align-items: center;
   gap: var(--space-md);
   padding: var(--space-md) 0;
-  border-bottom: 1px solid var(--bg-gray);
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .lesson-item:last-child {
@@ -605,7 +615,7 @@ onLoad(async (options: any) => {
 }
 
 .lesson-item:active {
-  background: var(--bg-gray);
+  background: #fafafa;
 }
 
 .lesson-index {
@@ -646,6 +656,7 @@ onLoad(async (options: any) => {
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  font-weight: var(--weight-medium);
 }
 
 .lesson-meta {
@@ -661,7 +672,7 @@ onLoad(async (options: any) => {
 }
 
 .lesson-free-badge {
-  font-size: var(--font-xs);
+  font-size: 10px;
   color: var(--color-accent);
   background: var(--color-accent-light);
   padding: 1px 6px;
@@ -723,16 +734,18 @@ onLoad(async (options: any) => {
 .recommend-scroll {
   display: flex;
   gap: var(--space-md);
-  overflow-x: auto;
+  white-space: nowrap;
   padding-bottom: var(--space-xs);
 }
 
 .recommend-card {
-  flex-shrink: 0;
-  width: 160px;
-  border-radius: var(--radius-lg);
+  display: inline-block;
+  vertical-align: top;
+  width: 150px;
+  margin-right: 12px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  background: var(--bg-card);
+  background: var(--bg-page);
   box-shadow: var(--shadow-sm);
 }
 
@@ -741,14 +754,14 @@ onLoad(async (options: any) => {
 }
 
 .recommend-img {
-  width: 160px;
-  height: 100px;
+  width: 150px;
+  height: 94px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: var(--bg-gray, #f5f5f5);
+  background: var(--bg-gray);
 }
 
 .recommend-cover {
@@ -757,8 +770,8 @@ onLoad(async (options: any) => {
 }
 
 .recommend-play {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radius-circle);
   background: rgba(255,255,255,0.9);
   display: flex;
@@ -767,29 +780,31 @@ onLoad(async (options: any) => {
 }
 
 .recommend-info {
-  padding: var(--space-sm) 10px;
+  padding: 8px 10px;
 }
 
 .recommend-title {
   font-size: var(--font-sm);
-  font-weight: var(--weight-medium);
+  font-weight: var(--weight-semibold);
   color: var(--text-primary);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-height: 1.4;
+  line-height: 1.35;
+  white-space: normal;
+  min-height: 32px;
 }
 
 .recommend-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: var(--space-sm);
+  margin-top: 6px;
 }
 
 .recommend-price {
-  font-size: var(--font-md);
+  font-size: var(--font-sm);
   font-weight: var(--weight-bold);
   color: var(--color-danger);
 }
@@ -815,7 +830,7 @@ onLoad(async (options: any) => {
 }
 
 .bottom-spacer {
-  height: var(--space-lg);
+  height: 16px;
 }
 
 /* 底部操作栏 */
@@ -828,10 +843,11 @@ onLoad(async (options: any) => {
   align-items: center;
   justify-content: space-between;
   padding: 10px var(--space-lg);
-  padding-bottom: calc(var(--space-3xl) + var(--safe-area-bottom));
+  padding-bottom: calc(var(--space-md) + var(--safe-area-bottom));
   background: var(--bg-card);
-  border-top: 1px solid var(--bg-gray);
+  border-top: 1px solid var(--color-divider);
   z-index: 100;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.02);
 }
 
 .bar-left {
@@ -858,7 +874,7 @@ onLoad(async (options: any) => {
 
 .btn-free {
   flex: 1;
-  height: 44px;
+  height: 40px;
   border-radius: var(--radius-full);
   border: none;
   background: var(--color-primary);
@@ -873,16 +889,16 @@ onLoad(async (options: any) => {
 }
 
 .btn-free-text {
-  font-size: var(--font-lg);
-  font-weight: var(--weight-semibold);
-  color: var(--text-white);
+  font-size: var(--font-md);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
 }
 
 .btn-cart {
-  height: 44px;
+  height: 40px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-primary);
-  background: var(--bg-card);
+  border: none;
+  background: var(--color-accent-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -890,17 +906,17 @@ onLoad(async (options: any) => {
 }
 
 .btn-cart:active {
-  background: var(--color-accent-light);
+  background: #e8dffc;
 }
 
 .btn-cart-text {
-  font-size: var(--font-md);
-  color: var(--color-primary);
-  font-weight: var(--weight-medium);
+  font-size: var(--font-sm);
+  color: var(--color-accent);
+  font-weight: var(--weight-bold);
 }
 
 .btn-buy {
-  height: 44px;
+  height: 40px;
   border-radius: var(--radius-full);
   border: none;
   background: var(--color-primary);
@@ -915,9 +931,9 @@ onLoad(async (options: any) => {
 }
 
 .btn-buy-text {
-  font-size: var(--font-md);
-  font-weight: var(--weight-semibold);
-  color: var(--text-white);
+  font-size: var(--font-sm);
+  font-weight: var(--weight-bold);
+  color: #ffffff;
 }
 
 /* 隐藏滚动条 */

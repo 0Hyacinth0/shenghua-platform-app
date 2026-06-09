@@ -17,7 +17,10 @@
       </view>
     </view>
 
-    <view class="mall-body">
+    <!-- 骨架屏 -->
+    <SkeletonPage v-if="loading && products.length === 0 && categories.length === 0" type="list" />
+
+    <view class="mall-body" v-else>
       <!-- 左侧分类列表 -->
       <scroll-view scroll-y class="category-sidebar">
         <view class="sidebar-wrapper">
@@ -47,24 +50,25 @@
             @tap="onSelectSub(sub.id)"
           >
             <!-- 轮流使用粉彩底色 -->
-            <view class="sub-icon" :style="{ background: activeSubId === sub.id ? '#111111' : getPastelBg(idx) }">
-              <text class="sub-icon-text" :style="{ color: activeSubId === sub.id ? '#ffffff' : '#111111' }">{{ sub.icon || '⊞' }}</text>
+            <view class="sub-icon" :style="{ background: activeSubId === sub.id ? 'var(--color-accent)' : getPastelBg(idx) }">
+              <text class="sub-icon-text" :style="{ color: activeSubId === sub.id ? '#ffffff' : 'var(--text-primary)' }">{{ sub.icon || '⊞' }}</text>
             </view>
             <text class="sub-name" :class="{ active: activeSubId === sub.id }">{{ sub.name }}</text>
           </view>
         </view>
 
         <!-- 加载中 -->
-        <view v-if="loading" class="loading-wrap">
+        <view v-if="loading && products.length === 0" class="loading-wrap fade-in">
           <view class="loading-spinner" />
         </view>
 
         <!-- 商品列表 -->
-        <view v-else-if="products.length > 0" class="product-list">
+        <view v-else-if="products.length > 0" class="product-list fade-in">
           <view
-            v-for="item in products"
+            v-for="(item, idx) in products"
             :key="item.id"
-            class="product-card"
+            class="product-card pressable"
+            :class="'slide-up delay-' + Math.min(idx + 1, 8)"
             @tap="goDetail(item.id)"
           >
             <view class="product-img-wrap">
@@ -111,6 +115,7 @@ import { onLoad, onShow } from '@dcloudio/uni-app'
 import { getCategoryTree, getFrontProductList, imgUrl } from '@/api'
 import { goCart } from '@/utils/navigation'
 import CustomTabBar from '@/components/CustomTabBar.vue'
+import SkeletonPage from '@/components/SkeletonPage.vue'
 
 const loading = ref(false)
 const categories = ref<any[]>([])
@@ -262,7 +267,7 @@ function getPastelBg(idx: number) {
 @import url('@/styles/tokens.css');
 .page-container {
   min-height: 100vh;
-  background: var(--color-bg-page, #F7F7F8);
+  background: var(--bg-page, #F8F9FA);
   display: flex;
   flex-direction: column;
 }
@@ -276,7 +281,7 @@ function getPastelBg(idx: number) {
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid var(--color-border, #eee);
+  box-shadow: var(--shadow-sm);
 }
 
 .search-bar {
@@ -284,9 +289,8 @@ function getPastelBg(idx: number) {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--color-bg-page, #f7f7f8);
+  background: var(--bg-page, #F8F9FA);
   border-radius: var(--radius-full, 999px);
-  border: 1px solid var(--color-border, #eee);
   padding: 9px 16px;
 }
 
@@ -301,8 +305,7 @@ function getPastelBg(idx: number) {
   width: 38px;
   height: 38px;
   border-radius: var(--radius-full, 999px);
-  background: var(--color-card, #fff);
-  border: 1px solid var(--color-border, #eee);
+  background: var(--bg-page, #F8F9FA);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -320,7 +323,6 @@ function getPastelBg(idx: number) {
   width: 96px;
   height: calc(100vh - 56px);
   background: var(--color-card, #fff);
-  border-right: 1px solid var(--color-border, #eee);
 }
 
 .sidebar-wrapper {
@@ -344,11 +346,26 @@ function getPastelBg(idx: number) {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
 }
 
 .sidebar-pill.active {
-  background: #111111;
+  background: var(--color-primary-light);
+  transform: translateX(4px);
+}
+
+.sidebar-pill.active::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(180deg, var(--color-accent) 0%, #7C3AED 100%);
+  box-shadow: 0 0 8px var(--color-accent);
 }
 
 .sidebar-text {
@@ -359,7 +376,7 @@ function getPastelBg(idx: number) {
 }
 
 .sidebar-text.active {
-  color: #ffffff;
+  color: var(--color-accent);
   font-weight: var(--weight-bold, 700);
 }
 
@@ -378,8 +395,8 @@ function getPastelBg(idx: number) {
   gap: 12px;
   margin-bottom: 16px;
   background: var(--color-card, #fff);
-  border: 1px solid var(--color-border, #eee);
-  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-lg, 14px);
   padding: 16px 12px;
 }
 
@@ -398,11 +415,12 @@ function getPastelBg(idx: number) {
 .sub-icon {
   width: 44px;
   height: 44px;
-  border-radius: var(--radius-md, 12px);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: var(--shadow-sm);
 }
 
 .sub-icon-text {
@@ -432,14 +450,20 @@ function getPastelBg(idx: number) {
   display: flex;
   gap: 12px;
   background: var(--color-card, #fff);
-  border: 1px solid var(--color-border, #eee);
-  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-lg, 14px);
   padding: 12px;
   overflow: hidden;
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s;
 }
 
 .product-card:active {
-  background: var(--color-bg-page, #f7f7f8);
+  transform: scale(0.98);
+  box-shadow: var(--shadow-md);
+}
+
+.product-card:active {
+  background: var(--bg-page, #F8F9FA);
 }
 
 .product-img-wrap {
@@ -496,8 +520,9 @@ function getPastelBg(idx: number) {
 }
 
 .product-price {
-  font-size: var(--font-lg, 16px);
+  font-size: var(--font-lg, 15px);
   font-weight: var(--weight-bold, 700);
+  color: var(--color-accent);
 }
 
 .price-symbol {
@@ -512,7 +537,10 @@ function getPastelBg(idx: number) {
 
 .product-sales {
   font-size: var(--font-xs, 10px);
-  color: var(--color-text-hint, #999);
+  color: var(--color-accent);
+  background: var(--color-primary-light);
+  padding: 1px 6px;
+  border-radius: 4px;
 }
 
 /* ---- 加载更多 ---- */
@@ -538,7 +566,7 @@ function getPastelBg(idx: number) {
   width: 32px;
   height: 32px;
   border: 3px solid var(--color-border, #eee);
-  border-top-color: #111111;
+  border-top-color: var(--color-accent);
   border-radius: var(--radius-full, 999px);
   animation: spin 0.6s linear infinite;
 }

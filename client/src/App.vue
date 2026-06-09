@@ -17,4 +17,5 @@ onHide(() => {
 <style>
 @import './styles/tokens.css';
 @import './styles/design-system.css';
+@import './styles/animations.css';
 </style>

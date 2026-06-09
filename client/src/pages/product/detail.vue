@@ -1,6 +1,11 @@
 <template>
   <view class="page">
+    <!-- 骨架屏 -->
+    <SkeletonPage v-if="loading && !product.spuName" type="product" />
+
     <!-- 顶部导航 -->
+    <template v-else>
+    <view class="page-enter">
     <view class="nav-bar" :class="{ scrolled: isScrolled }">
       <view class="nav-back" @tap="goBack">
         <text class="back-icon">‹</text>
@@ -188,9 +193,12 @@
       </view>
     </view>
 
+    </view><!-- /page-enter -->
+    </template><!-- /v-else -->
+
     <!-- 规格选择弹窗 -->
-    <view v-if="showSpecSheet" class="spec-overlay" @tap="showSpecSheet = false">
-      <view class="spec-sheet" @tap.stop>
+    <view v-if="showSpecSheet" class="spec-overlay overlay-enter" @tap="showSpecSheet = false">
+      <view class="spec-sheet sheet-enter" @tap.stop>
         <view class="spec-sheet-header">
           <view class="spec-sheet-info">
             <view class="spec-sheet-img" :style="{ background: '#f5f5f5' }">
@@ -260,6 +268,7 @@ import { getProductDetail, addToCart, getFrontProductList, imgUrl } from '@/api'
 import http from '@/utils/http'
 import { getCurrentUserId } from '@/utils/user'
 import { goCart as openCart, goHome as openHome, goMall } from '@/utils/navigation'
+import SkeletonPage from '@/components/SkeletonPage.vue'
 
 const currentUserId = getCurrentUserId()
 const productId = ref('')
@@ -520,7 +529,7 @@ onLoad(async (options) => {
 @import url('@/styles/tokens.css');
 .page {
   min-height: 100vh;
-  background: #F5F6FA;
+  background: var(--bg-page, #F8F9FA);
   padding-bottom: 70px;
 }
 
@@ -983,10 +992,12 @@ onLoad(async (options) => {
   overflow: hidden;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .recommend-card:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
+  opacity: 0.85;
 }
 
 .recommend-img {

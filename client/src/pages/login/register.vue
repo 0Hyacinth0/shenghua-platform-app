@@ -344,7 +344,7 @@ async function handleRegister() {
   width: 18px;
   height: 18px;
   border-radius: 4px;
-  border: 1.5px solid #ddd;
+  border: 1.5px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -372,11 +372,11 @@ async function handleRegister() {
   height: 52px;
   border-radius: var(--radius-full);
   border: none;
-  background: var(--color-primary-gradient);
+  background: linear-gradient(135deg, var(--color-accent), #7C3AED);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(255,107,53,0.3);
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
   margin-bottom: var(--space-lg);
 }
 

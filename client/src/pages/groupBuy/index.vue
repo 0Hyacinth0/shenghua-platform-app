@@ -136,11 +136,7 @@ onLoad(() => {
 
 /* 顶部导航 */
 .nav-bar {
-  background: var(--bg-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 44px 16px 12px;
+  display: none;
 }
 
 .nav-back {
@@ -174,7 +170,7 @@ onLoad(() => {
 .banner-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #FA8C16 0%, #FFA940 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #7C3AED 100%);
 }
 
 .banner-deco {
@@ -230,24 +226,26 @@ onLoad(() => {
 }
 
 .group-card {
+  position: relative;
   background: var(--bg-card);
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-}
-
-.group-card:active {
-  transform: scale(0.99);
+  display: flex;
+  gap: 14px;
+  padding: 12px;
 }
 
 .card-cover {
-  width: 100%;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
 }
 
 .cover-img {
@@ -265,25 +263,30 @@ onLoad(() => {
 
 .card-badge {
   position: absolute;
-  top: var(--space-md);
-  left: var(--space-md);
-  background: linear-gradient(135deg, #FA8C16, #FFA940);
-  padding: 4px var(--space-md);
-  border-radius: var(--radius-md);
+  top: 4px;
+  left: 4px;
+  background: linear-gradient(135deg, var(--color-accent), #7C3AED);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
 }
 
 .badge-text {
-  font-size: var(--font-sm);
+  font-size: 10px;
   color: var(--text-white);
   font-weight: var(--weight-semibold);
 }
 
 .card-info {
-  padding: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 0;
 }
 
 .card-title {
-  font-size: var(--font-lg);
+  font-size: var(--font-base);
   font-weight: var(--weight-semibold);
   color: var(--text-primary);
   line-height: 1.4;
@@ -291,14 +294,14 @@ onLoad(() => {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 .card-price {
   display: flex;
   align-items: baseline;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-sm);
+  gap: var(--space-xs);
+  margin-bottom: 4px;
 }
 
 .price-current {
@@ -307,15 +310,15 @@ onLoad(() => {
 }
 
 .price-symbol {
-  font-size: var(--font-md);
-  color: #FA8C16;
+  font-size: var(--font-sm);
+  color: var(--color-accent);
   font-weight: var(--weight-semibold);
 }
 
 .price-current {
-  font-size: var(--space-2xl);
+  font-size: var(--font-xl);
   font-weight: var(--weight-bold);
-  color: #FA8C16;
+  color: var(--color-accent);
 }
 
 .price-original {
@@ -342,10 +345,13 @@ onLoad(() => {
 }
 
 .card-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
   display: inline-flex;
-  padding: var(--space-sm) 20px;
-  background: linear-gradient(135deg, #FA8C16, #FFA940);
-  border-radius: var(--radius-xl);
+  padding: 6px 14px;
+  background: linear-gradient(135deg, var(--color-accent), #7C3AED);
+  border-radius: var(--radius-full);
 }
 
 .card-btn:active {

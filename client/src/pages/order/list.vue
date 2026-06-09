@@ -227,11 +227,7 @@ onLoad((options: any) => {
 
 /* 顶部导航 */
 .nav-bar {
-  background: var(--bg-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 44px 16px 12px;
+  display: none;
 }
 
 .nav-back {
@@ -252,7 +248,7 @@ onLoad((options: any) => {
 .tab-bar {
   display: flex;
   background: var(--bg-card);
-  border-bottom: 1px solid #f0f0f0;
+  box-shadow: var(--shadow-sm);
   padding: 0 var(--space-sm);
 }
 
@@ -314,7 +310,7 @@ onLoad((options: any) => {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-md) var(--space-lg);
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .order-no {
@@ -403,7 +399,7 @@ onLoad((options: any) => {
   align-items: center;
   justify-content: space-between;
   padding: var(--space-md) var(--space-lg);
-  border-top: 1px solid #f5f5f5;
+  border-top: 1px solid var(--color-divider);
 }
 
 .order-total {
@@ -424,15 +420,18 @@ onLoad((options: any) => {
 .action-btn {
   padding: 6px 14px;
   border-radius: var(--radius-full);
-  border: 1px solid #eee;
+  background: var(--bg-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .action-btn:active {
-  background: #f5f5f5;
+  opacity: 0.8;
 }
 
 .action-btn.primary {
-  border-color: var(--color-accent);
+  background: var(--color-primary-light);
 }
 
 .action-btn-text {

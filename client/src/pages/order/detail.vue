@@ -246,11 +246,7 @@ onLoad((options: any) => {
 
 /* 顶部导航 */
 .nav-bar {
-  background: var(--bg-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 44px 16px 12px;
+  display: none;
 }
 
 .nav-back {
@@ -299,7 +295,9 @@ onLoad((options: any) => {
   gap: var(--space-md);
   background: var(--bg-card);
   padding: var(--space-lg);
-  margin-top: var(--space-sm);
+  margin: var(--space-sm) var(--space-lg) 0;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .address-info {
@@ -332,8 +330,10 @@ onLoad((options: any) => {
 /* 区块 */
 .section-card {
   background: var(--bg-card);
-  margin-top: var(--space-sm);
+  margin: var(--space-sm) var(--space-lg) 0;
   padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .section-title {
@@ -347,7 +347,7 @@ onLoad((options: any) => {
   display: flex;
   gap: var(--space-md);
   padding: 10px 0;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--color-divider);
 }
 
 .item-row:last-child {
@@ -447,7 +447,7 @@ onLoad((options: any) => {
 
 .price-divider {
   height: 1px;
-  background: #f0f0f0;
+  background: var(--color-divider);
   margin: var(--space-sm) 0;
 }
 
@@ -494,7 +494,7 @@ onLoad((options: any) => {
 
 .copy-btn {
   padding: 3px 10px;
-  border: 1px solid var(--color-accent);
+  background: var(--color-primary-light);
   border-radius: 12px;
 }
 
@@ -521,25 +521,27 @@ onLoad((options: any) => {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-md);
-  padding: var(--space-md) var(--space-lg);
-  padding-bottom: calc(var(--space-2xl) + var(--safe-area-bottom));
+  padding: var(--space-md) var(--space-lg) calc(10px + var(--safe-area-bottom));
   background: var(--bg-card);
-  border-top: 1px solid #f0f0f0;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
   z-index: 100;
 }
 
 .action-btn {
   padding: 10px var(--space-2xl);
   border-radius: var(--radius-full);
-  border: 1px solid #eee;
+  background: var(--bg-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .action-btn:active {
-  background: #f5f5f5;
+  opacity: 0.8;
 }
 
 .action-btn.primary {
-  border-color: var(--color-accent);
+  background: var(--color-primary-light);
 }
 
 .action-btn-text {

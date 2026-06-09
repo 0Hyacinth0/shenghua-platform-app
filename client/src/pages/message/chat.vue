@@ -147,15 +147,7 @@ onLoad((options: any) => {
 
 /* ---- 导航栏 ---- */
 .page-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--bg-card);
-  padding: 44px 16px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: var(--shadow-sm);
+  display: none;
 }
 
 .header-back {
@@ -224,10 +216,10 @@ onLoad((options: any) => {
 }
 
 .msg-bubble.self {
-  background: var(--color-primary-gradient);
+  background: linear-gradient(135deg, var(--color-accent), #7C3AED);
   border-top-left-radius: var(--radius-md);
   border-top-right-radius: 4px;
-  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
 }
 
 .msg-text {
@@ -270,9 +262,9 @@ onLoad((options: any) => {
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  padding: 10px 16px calc(24px + var(--safe-area-bottom));
+  padding: 10px 16px calc(10px + var(--safe-area-bottom));
   background: var(--bg-card);
-  border-top: 1px solid var(--bg-gray);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .input-wrap {

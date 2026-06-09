@@ -13,6 +13,15 @@
       </view>
     </view>
 
+    <!-- 领券中心 Banner -->
+    <view class="coupon-header-banner" @tap="goCouponCenter">
+      <text class="banner-title">领券中心</text>
+      <view class="banner-right">
+        <text class="banner-desc">查看可领取的优惠券</text>
+        <Icon icon="solar:alt-arrow-right-bold" width="14" color="var(--color-accent)" />
+      </view>
+    </view>
+
     <!-- 标签切换 -->
     <view class="tab-bar">
       <view
@@ -154,11 +163,7 @@ onLoad(() => {
 
 /* 顶部导航 */
 .nav-bar {
-  background: var(--bg-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 44px 16px 12px;
+  display: none;
 }
 
 .nav-back {
@@ -197,7 +202,7 @@ onLoad(() => {
 .tab-bar {
   display: flex;
   background: var(--bg-card);
-  border-bottom: 1px solid var(--bg-gray);
+  box-shadow: var(--shadow-sm);
   padding: 0 var(--space-lg);
 }
 
@@ -246,7 +251,7 @@ onLoad(() => {
 .coupon-card {
   display: flex;
   background: var(--bg-card);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
 }
@@ -263,7 +268,11 @@ onLoad(() => {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  background: var(--color-primary-gradient);
+  background: linear-gradient(135deg, var(--color-accent), #7C3AED);
+}
+
+.coupon-card.disabled .coupon-left {
+  background: linear-gradient(135deg, var(--text-hint), #94A3B8);
 }
 
 .coupon-type {
@@ -357,7 +366,7 @@ onLoad(() => {
   align-self: flex-start;
   margin-top: 6px;
   padding: 5px 14px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   background: var(--color-accent);
 }
 
@@ -428,5 +437,38 @@ onLoad(() => {
   font-size: var(--font-base);
   color: var(--text-white);
   font-weight: var(--weight-medium);
+}
+
+/* 领券中心 Banner */
+.coupon-header-banner {
+  margin: var(--space-md) var(--space-lg) 0;
+  background: var(--color-primary-light);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+
+.coupon-header-banner:active {
+  opacity: 0.9;
+}
+
+.banner-title {
+  font-size: var(--font-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.banner-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.banner-desc {
+  font-size: var(--font-xs);
+  color: var(--color-accent);
 }
 </style>

@@ -1,28 +1,26 @@
 <template>
   <view class="page-container">
+    <!-- 骨架屏 -->
+    <SkeletonPage v-if="loading && cartItems.length === 0" type="cart" />
+
     <!-- 顶部 -->
-    <view class="page-header">
+    <view v-if="!loading || cartItems.length > 0" class="page-header slide-up">
       <text class="page-title">购物车</text>
     </view>
 
     <!-- 空状态 -->
-    <view v-if="cartItems.length === 0 && !loading" class="empty-wrap">
+    <view v-if="cartItems.length === 0 && !loading" class="empty-wrap fade-in">
       <Icon icon="solar:cart-large-2-bold" width="64" color="var(--text-hint)" />
       <text class="empty-text">购物车是空的</text>
       <button class="btn btn-primary" style="margin-top:16px" @tap="goHome">去逛逛</button>
     </view>
 
-    <!-- 加载中 -->
-    <view v-if="loading" class="loading-wrap">
-      <view class="loading-spinner" />
-    </view>
-
     <!-- 购物车列表 -->
     <view v-if="!loading && cartItems.length > 0" class="cart-list">
-      <view v-for="item in cartItems" :key="item.id" class="cart-card">
+      <view v-for="(item, idx) in cartItems" :key="item.id" class="cart-card slide-up" :class="'delay-' + Math.min(idx + 1, 8)">
         <view class="cart-card-check" @tap="onSelectChange(item)">
           <view class="checkbox" :class="{ checked: item.selected }">
-            <text v-if="item.selected" class="checkbox-icon">✓</text>
+            <Icon v-if="item.selected" icon="mingcute:check-fill" width="12" color="#fff" />
           </view>
         </view>
         <view class="cart-card-img" @tap="goDetail(item.spuId)">
@@ -56,7 +54,7 @@
           </view>
         </view>
         <view class="cart-card-del" @tap="handleRemove(item)">
-          <text class="del-icon">✕</text>
+          <Icon icon="solar:trash-bin-trash-bold" width="18" color="var(--text-hint)" />
         </view>
       </view>
     </view>
@@ -65,8 +63,8 @@
     <view v-if="!loading && cartItems.length > 0" class="cart-actions">
       <view class="select-all" @tap="toggleAll(!allChecked)">
         <view class="checkbox" :class="{ checked: allChecked, indeterminate: indeterminate }">
-          <text v-if="allChecked" class="checkbox-icon">✓</text>
-          <text v-else-if="indeterminate" class="checkbox-icon">-</text>
+          <Icon v-if="allChecked" icon="mingcute:check-fill" width="12" color="#fff" />
+          <Icon v-else-if="indeterminate" icon="mingcute:minimize-line" width="12" color="#fff" />
         </view>
         <text class="select-all-text">全选</text>
       </view>
@@ -101,6 +99,7 @@ import {
 } from '@/api'
 import { getCurrentUserId } from '@/utils/user'
 import { goHome as navGoHome } from '@/utils/navigation'
+import SkeletonPage from '@/components/SkeletonPage.vue'
 
 const currentUserId = getCurrentUserId()
 const cartItems = ref<any[]>([])
@@ -212,20 +211,12 @@ onShow(() => fetchCart())
 <style scoped>
 .page-container {
   min-height: 100vh;
-  background: var(--color-bg-page, #F7F7F8);
+  background: var(--bg-page, #F8F9FA);
   padding-bottom: 70px;
 }
 
 .page-header {
-  background: #fff;
-  padding: 12px 16px;
-  text-align: center;
-}
-
-.page-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-text, #1a1a1a);
+  display: none;
 }
 
 /* ---- 购物车列表 ---- */
@@ -238,10 +229,16 @@ onShow(() => fetchCart())
   align-items: center;
   gap: 12px;
   background: var(--color-card, #fff);
-  border-radius: 12px;
+  border-radius: var(--radius-lg, 14px);
   padding: 12px;
   margin-bottom: 10px;
   position: relative;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.cart-card:active {
+  transform: scale(0.99);
 }
 
 .cart-card-check {
@@ -252,7 +249,7 @@ onShow(() => fetchCart())
   width: 22px;
   height: 22px;
   border-radius: var(--radius-circle);
-  border: 2px solid var(--color-border, #ddd);
+  border: 1.5px solid var(--color-border, #ddd);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -444,11 +441,11 @@ onShow(() => fetchCart())
   left: 0;
   right: 0;
   background: var(--color-card, #fff);
-  border-top: 0.5px solid var(--color-border, #eee);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
+  padding: 10px 16px env(safe-area-inset-bottom, 10px);
   z-index: 50;
 }
 
@@ -521,25 +518,7 @@ onShow(() => fetchCart())
   color: var(--color-text-hint, #999);
 }
 
-.loading-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-}
-
-.loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--color-border, #eee);
-  border-top-color: var(--color-accent);
-  border-radius: var(--radius-circle);
-  animation: spin 0.6s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+/* 加载态已由骨架屏替代 */
 
 .btn {
   display: inline-flex;

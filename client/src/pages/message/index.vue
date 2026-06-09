@@ -32,6 +32,15 @@
       </view>
     </view>
 
+    <!-- 消息操作条 -->
+    <view v-if="filteredMessages.length > 0" class="message-action-header">
+      <text class="message-count-text">最近消息</text>
+      <view class="clear-action-btn" @tap="onClear">
+        <Icon icon="solar:trash-bin-trash-bold" width="14" color="var(--text-hint)" />
+        <text class="clear-action-text">清除全部</text>
+      </view>
+    </view>
+
     <!-- 消息列表 -->
     <scroll-view scroll-y class="message-list">
       <view v-if="loading" class="loading-wrap">
@@ -190,11 +199,7 @@ onLoad(() => {
 
 /* 顶部导航 */
 .nav-bar {
-  background: var(--bg-card);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 44px 16px 12px;
+  display: none;
 }
 
 .nav-back {
@@ -232,7 +237,7 @@ onLoad(() => {
   display: flex;
   justify-content: space-around;
   padding: var(--space-lg) var(--space-sm);
-  border-bottom: 1px solid var(--bg-gray);
+  box-shadow: var(--shadow-sm);
 }
 
 .category-item {
@@ -290,11 +295,13 @@ onLoad(() => {
 /* 消息列表 */
 .message-list {
   flex: 1;
+  padding-top: var(--space-md);
 }
 
 .message-items {
   display: flex;
   flex-direction: column;
+  padding-bottom: 20px;
 }
 
 .message-card {
@@ -302,7 +309,9 @@ onLoad(() => {
   gap: var(--space-md);
   background: var(--bg-card);
   padding: 14px var(--space-lg);
-  border-bottom: 1px solid var(--bg-page);
+  margin: 0 var(--space-lg) 10px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .message-card:active {
@@ -422,6 +431,35 @@ onLoad(() => {
 
 .empty-sub {
   font-size: var(--font-base);
+  color: var(--text-hint);
+}
+
+/* 消息操作条 */
+.message-action-header {
+  padding: var(--space-md) var(--space-lg) var(--space-xs);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.message-count-text {
+  font-size: var(--font-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.clear-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.clear-action-btn:active {
+  opacity: 0.8;
+}
+
+.clear-action-text {
+  font-size: var(--font-sm);
   color: var(--text-hint);
 }
 </style>

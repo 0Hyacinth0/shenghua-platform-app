@@ -5,7 +5,7 @@
       <text class="nav-title">社区</text>
       <view class="nav-actions">
         <view class="nav-btn" @tap="goSearch">
-          <Icon icon="solar:magnifer-bold" :size="20" color="#111" />
+          <Icon icon="solar:magnifer-bold" :size="20" color="#fff" />
         </view>
       </view>
     </view>
@@ -43,7 +43,7 @@
           <!-- 头部信息 -->
           <view class="post-header">
             <view class="post-user" @tap.stop="goUser(post.userId)">
-              <view class="user-avatar">
+              <view class="user-avatar" :style="{ background: getPastelAvatarBg(idx) }">
                 <text class="avatar-text">{{ (post.nickname || '匿').charAt(0) }}</text>
               </view>
               <view class="user-info">
@@ -86,14 +86,14 @@
               <Icon
                 :icon="post.liked ? 'solar:heart-bold' : 'solar:heart-linear'"
                 :size="16"
-                :color="post.liked ? '#EF4444' : '#555555'"
+                :color="post.liked ? '#EF4444' : 'var(--text-secondary)'"
               />
               <text class="action-count" :class="{ active: post.liked }">{{ post.likeCount || 0 }}</text>
             </view>
 
             <!-- 评论 -->
             <view class="action-chip">
-              <Icon icon="solar:chat-round-dots-linear" :size="16" color="#555555" />
+              <Icon icon="solar:chat-round-dots-linear" :size="16" color="var(--text-secondary)" />
               <text class="action-count">{{ post.commentCount || 0 }}</text>
             </view>
 
@@ -106,7 +106,7 @@
               <Icon
                 :icon="post.favorited ? 'solar:star-bold' : 'solar:star-linear'"
                 :size="16"
-                :color="post.favorited ? '#F59E0B' : '#555555'"
+                :color="post.favorited ? '#F59E0B' : 'var(--text-secondary)'"
               />
               <text class="action-count" :class="{ active: post.favorited }">
                 {{ post.favorited ? '已收藏' : '收藏' }}
@@ -118,7 +118,7 @@
 
       <!-- 空状态 -->
       <view v-else-if="!loading" class="empty-wrap card">
-        <Icon icon="solar:chat-square-like-linear" :size="48" color="var(--color-text-hint)" />
+        <Icon icon="solar:chat-square-like-linear" :size="48" color="var(--text-hint)" />
         <text class="empty-text">还没有帖子，快来发一条吧</text>
       </view>
 
@@ -165,6 +165,7 @@ function goCreate() {
   uni.navigateTo({ url: '/pages/community/create' })
 }
 
+// 详情、发帖等操作
 function goDetail(id: string) {
   uni.navigateTo({ url: '/pages/community/detail?id=' + id })
 }
@@ -280,6 +281,17 @@ const badgeColors = [
 function getPastelBadgeBg(idx: number) {
   return badgeColors[idx % badgeColors.length]
 }
+
+const avatarColors = [
+  'linear-gradient(135deg, #FFE0D0, #FFB088)',
+  'linear-gradient(135deg, #E0D0FF, #B088FF)',
+  'linear-gradient(135deg, #D0E8FF, #88C0FF)',
+  'linear-gradient(135deg, #D0FFE0, #88FFB0)',
+  'linear-gradient(135deg, #FFE8D0, #FFC088)'
+]
+function getPastelAvatarBg(idx: number) {
+  return avatarColors[idx % avatarColors.length]
+}
 </script>
 
 <style scoped>
@@ -288,25 +300,32 @@ function getPastelBadgeBg(idx: number) {
 .page {
   height: 100vh;
   overflow: hidden;
-  background: var(--color-bg-page, #F7F7F8);
+  background: var(--bg-page);
   display: flex;
   flex-direction: column;
 }
 
 /* ---- 顶部导航 ---- */
 .nav-bar {
-  background: var(--color-card, #fff);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(26, 26, 46, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 44px 16px 12px;
-  border-bottom: 1px solid var(--color-border, #eee);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .nav-title {
-  font-size: 28px;
-  font-weight: var(--weight-bold, 700);
-  color: var(--color-text, #111);
+  font-size: var(--font-3xl);
+  font-weight: var(--weight-bold);
+  background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   letter-spacing: var(--letter-spacing-display, -0.5px);
 }
 
@@ -316,11 +335,10 @@ function getPastelBadgeBg(idx: number) {
 }
 
 .nav-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--radius-full, 999px);
-  background: var(--color-card, #fff);
-  border: 1px solid var(--color-border, #eee);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-circle);
+  background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -328,9 +346,9 @@ function getPastelBadgeBg(idx: number) {
 
 /* ---- 话题标签横滑区 ---- */
 .topic-scroll {
-  background: var(--color-card, #fff);
-  padding: 10px 0;
-  border-bottom: 1px solid var(--color-border, #eee);
+  background: var(--bg-card);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-divider);
   white-space: nowrap;
 }
 
@@ -344,26 +362,26 @@ function getPastelBadgeBg(idx: number) {
   display: inline-flex;
   align-items: center;
   padding: 6px 16px;
-  border-radius: var(--radius-full, 999px);
-  background: var(--color-card, #fff);
-  border: 1px solid var(--color-border, #eee);
-  transition: all 0.2s;
+  border-radius: var(--radius-full);
+  background: var(--bg-gray);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .topic-tag.active {
-  background: #111111;
-  border-color: #111111;
+  background: linear-gradient(135deg, var(--color-accent), #7C3AED);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 .topic-text {
-  font-size: var(--font-sm, 12px);
-  color: var(--color-text-secondary, #666);
-  font-weight: var(--weight-medium, 500);
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  font-weight: var(--weight-medium);
+  transition: color 0.2s;
 }
 
 .topic-text.active {
   color: #ffffff;
-  font-weight: var(--weight-bold, 700);
+  font-weight: var(--weight-bold);
 }
 
 /* ---- 帖子列表滚动容器 ---- */
@@ -379,19 +397,21 @@ function getPastelBadgeBg(idx: number) {
   gap: 12px;
 }
 
-/* ---- 帖子卡片 (Figma 高端改版) ---- */
+/* ---- 帖子卡片 ---- */
 .post-card {
-  background: var(--color-card, #fff);
-  border: 1px solid var(--color-border, #eee);
-  border-radius: var(--radius-xl, 20px);
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
   padding: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s;
 }
 
 .post-card:active {
-  background: var(--color-bg-page, #f7f7f8);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .post-header {
@@ -407,22 +427,21 @@ function getPastelBadgeBg(idx: number) {
   gap: 10px;
 }
 
-/* 方形几何圆角头像 */
+/* 几何圆角头像 */
 .user-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 10px;
-  background: var(--color-block-cream, #FFF3E5);
-  border: 1px solid var(--color-border, #eee);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 0 2px var(--color-primary-light);
 }
 
 .avatar-text {
-  font-size: 16px;
-  font-weight: var(--weight-bold, 700);
-  color: #111111;
+  font-size: var(--font-xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
 }
 
 .user-info {
@@ -432,34 +451,34 @@ function getPastelBadgeBg(idx: number) {
 }
 
 .user-name {
-  font-size: var(--font-base, 14px);
-  font-weight: var(--weight-bold, 700);
-  color: var(--color-text, #111);
+  font-size: var(--font-md);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
 }
 
 .post-time {
-  font-size: var(--font-xs, 10px);
-  color: var(--color-text-hint, #999);
+  font-size: var(--font-xs);
+  color: var(--text-hint);
 }
 
-/* 粉彩话题标签徽章 */
+/* 话题标签徽章 */
 .topic-badge {
-  padding: 3px 10px;
-  border-radius: var(--radius-full, 999px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 4px 10px;
+  background: var(--color-primary-light) !important;
+  border-radius: var(--radius-full);
 }
 
 .topic-badge-text {
-  font-size: var(--font-xs, 10px);
-  color: #111111;
-  font-weight: var(--weight-bold, 700);
+  font-size: var(--font-xs);
+  color: var(--color-accent);
+  font-weight: var(--weight-bold);
 }
 
 /* 帖子文字内容 */
 .post-content {
-  font-size: var(--font-base, 14px);
-  color: var(--color-text, #1a1a1a);
-  line-height: 1.6;
+  font-size: var(--font-md);
+  color: var(--text-primary);
+  line-height: 1.5;
   margin-bottom: 12px;
   display: -webkit-box;
   -webkit-line-clamp: 5;
@@ -467,7 +486,7 @@ function getPastelBadgeBg(idx: number) {
   overflow: hidden;
 }
 
-/* ---- 精美图片拼贴网格 ---- */
+/* ---- 图片拼贴网格 ---- */
 .post-images {
   display: flex;
   flex-wrap: wrap;
@@ -478,32 +497,29 @@ function getPastelBadgeBg(idx: number) {
 .post-images.grid-1 .post-img {
   width: 100%;
   height: 200px;
-  border-radius: var(--radius-md, 12px);
-  border: 1px solid var(--color-border, #eee);
+  border-radius: var(--radius-md);
 }
 
 .post-images.grid-2 .post-img {
   width: calc(50% - 3px);
   height: 140px;
-  border-radius: var(--radius-md, 12px);
-  border: 1px solid var(--color-border, #eee);
+  border-radius: var(--radius-md);
 }
 
 .post-images.grid-3 .post-img,
 .post-images:not(.grid-1):not(.grid-2) .post-img {
   width: calc(33.33% - 4px);
   height: 96px;
-  border-radius: var(--radius-sm, 8px);
-  border: 1px solid var(--color-border, #eee);
+  border-radius: var(--radius-sm);
 }
 
-/* ---- 药丸互动栏 (Chip) ---- */
+/* ---- 互动栏 ---- */
 .post-actions {
   display: flex;
   align-items: center;
   gap: 12px;
   padding-top: 12px;
-  border-top: 1px solid var(--color-divider, #f0f0f0);
+  border-top: 1px solid var(--color-divider);
 }
 
 .action-chip {
@@ -511,9 +527,9 @@ function getPastelBadgeBg(idx: number) {
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  border-radius: var(--radius-full, 999px);
-  background: rgba(0, 0, 0, 0.03);
-  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: var(--radius-full);
+  background: var(--bg-gray);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .action-chip:active {
@@ -521,62 +537,73 @@ function getPastelBadgeBg(idx: number) {
 }
 
 .action-count {
-  font-size: var(--font-xs, 10px);
-  color: var(--color-text-secondary, #666);
-  font-weight: var(--weight-medium, 500);
+  font-size: var(--font-xs);
+  color: var(--text-secondary);
+  font-weight: var(--weight-medium);
 }
 
 .action-count.active {
-  font-weight: var(--weight-bold, 700);
+  font-weight: var(--weight-semibold);
 }
 
-/* 点赞高亮激活态（淡珊瑚色） */
+/* 点赞高亮 */
 .action-chip.active:has(.solar\:heart-bold) {
-  background: var(--color-block-coral, #FFCDC4);
+  background: var(--color-danger-light);
+  transform: scale(1.05);
+  animation: jelly 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .action-chip.active:has(.solar\:heart-bold) .action-count {
-  color: #111111;
+  color: var(--color-danger);
 }
 
-/* 收藏高亮激活态（淡奶油色） */
+/* 收藏高亮 */
 .action-chip.active:has(.solar\:star-bold) {
-  background: var(--color-block-cream, #FFF3E5);
+  background: var(--color-warning-light);
+  transform: scale(1.05);
+  animation: jelly 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .action-chip.active:has(.solar\:star-bold) .action-count {
-  color: #111111;
+  color: var(--color-warning);
 }
 
-/* ---- 悬浮发帖黑色胶囊 ---- */
+@keyframes jelly {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.15); }
+  50% { transform: scale(0.9); }
+  100% { transform: scale(1.05); }
+}
+
+/* ---- 悬浮发帖胶囊 ---- */
 .floating-create-post {
   position: fixed;
-  right: 20px;
-  bottom: calc(82px + env(safe-area-inset-bottom, 0px)); /* 定位在自定义TabBar上方 */
-  background: #111111;
+  right: 16px;
+  bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(135deg, var(--color-accent), #7C3AED);
   color: #ffffff;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
-  border-radius: var(--radius-full, 999px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 12px 22px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
   z-index: 998;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .floating-create-post:active {
-  transform: scale(0.95);
-  background: #000;
+  transform: scale(0.9) translateY(2px);
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.2);
 }
 
 .create-post-text {
   font-family: var(--font-mono, monospace);
-  font-size: var(--font-sm, 12px);
+  font-size: var(--font-sm);
   letter-spacing: var(--letter-spacing-mono, 1.5px);
-  font-weight: var(--weight-bold, 700);
+  font-weight: var(--weight-bold);
   color: #ffffff;
 }
 
-/* ---- 空状态/加载/页尾占位 ---- */
+/* ---- 空状态/加载 ---- */
 .empty-wrap {
   display: flex;
   flex-direction: column;
@@ -586,8 +613,8 @@ function getPastelBadgeBg(idx: number) {
 }
 
 .empty-text {
-  font-size: var(--font-sm, 12px);
-  color: var(--color-text-hint, #999);
+  font-size: var(--font-sm);
+  color: var(--text-hint);
 }
 
 .no-more {
@@ -596,8 +623,8 @@ function getPastelBadgeBg(idx: number) {
 }
 
 .no-more-text {
-  font-size: var(--font-sm, 12px);
-  color: var(--color-text-hint, #999);
+  font-size: var(--font-sm);
+  color: var(--text-hint);
 }
 
 .bottom-spacer {

@@ -176,14 +176,7 @@ onLoad((options: any) => {
 }
 
 .nav-bar {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #fff;
-  padding: 44px 16px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: none;
 }
 
 .nav-back {
@@ -202,12 +195,12 @@ onLoad((options: any) => {
 .group-info-card {
   background: #fff;
   margin-bottom: 8px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   margin-left: 16px;
   margin-right: 16px;
   margin-top: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .group-banner {
@@ -312,8 +305,8 @@ onLoad((options: any) => {
   background: #fff;
   padding: 16px;
   margin: 0 16px 8px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .address-card:active {
@@ -369,8 +362,8 @@ onLoad((options: any) => {
   background: #fff;
   padding: 16px;
   margin: 0 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .info-row {
@@ -398,10 +391,9 @@ onLoad((options: any) => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  padding-bottom: calc(24px + var(--safe-area-bottom));
+  padding: 12px 16px calc(10px + var(--safe-area-bottom));
   background: #fff;
-  border-top: 1px solid #f0f0f0;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .checkout-total {
@@ -423,7 +415,7 @@ onLoad((options: any) => {
 .checkout-btn {
   width: 140px;
   height: 44px;
-  border-radius: 20px;
+  border-radius: var(--radius-full);
   border: none;
   background: var(--color-accent);
   color: #fff;

@@ -238,11 +238,7 @@ onUnmounted(() => {
 
 /* 顶部导航 */
 .nav-bar {
-  background: var(--color-primary-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 44px 16px 12px;
+  display: none;
 }
 
 .nav-back {
@@ -262,7 +258,7 @@ onUnmounted(() => {
 /* 时间场次 */
 .time-scroll {
   background: var(--color-primary-gradient);
-  padding: 0 var(--space-lg) var(--space-md);
+  padding: var(--space-sm) var(--space-lg) var(--space-md);
   white-space: nowrap;
 }
 
@@ -272,7 +268,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 2px;
   padding: var(--space-sm) var(--space-lg);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   margin-right: var(--space-sm);
   background: rgba(255,255,255,0.15);
 }
@@ -354,24 +350,26 @@ onUnmounted(() => {
 }
 
 .seckill-card {
+  position: relative;
   background: var(--bg-card);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-}
-
-.seckill-card:active {
-  transform: scale(0.99);
+  display: flex;
+  gap: 14px;
+  padding: 12px;
 }
 
 .card-cover {
-  width: 100%;
-  height: 140px;
+  width: 100px;
+  height: 100px;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
 }
 
 .cover-img {
@@ -389,28 +387,33 @@ onUnmounted(() => {
 
 .card-badge {
   position: absolute;
-  top: var(--space-md);
-  left: var(--space-md);
+  top: 4px;
+  left: 4px;
   background: var(--color-danger);
-  padding: 4px var(--space-md);
-  border-radius: var(--radius-md);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .badge-text {
-  font-size: var(--font-sm);
+  font-size: 10px;
   color: var(--text-white);
   font-weight: var(--weight-semibold);
 }
 
 .card-info {
-  padding: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 0;
 }
 
 .card-title {
-  font-size: var(--font-lg);
+  font-size: var(--font-base);
   font-weight: var(--weight-semibold);
   color: var(--text-primary);
   line-height: 1.4;
@@ -418,20 +421,20 @@ onUnmounted(() => {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 .card-price {
   display: flex;
   align-items: baseline;
-  gap: var(--space-sm);
-  margin-bottom: 10px;
+  gap: var(--space-xs);
+  margin-bottom: 4px;
 }
 
 .price-current {
   display: flex;
   align-items: baseline;
-  font-size: var(--space-2xl);
+  font-size: var(--font-xl);
   font-weight: var(--weight-bold);
   color: var(--color-danger);
 }
@@ -451,8 +454,9 @@ onUnmounted(() => {
 .card-progress {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  gap: var(--space-xs);
+  margin-bottom: 4px;
+  width: 60%;
 }
 
 .progress-bar {
@@ -476,12 +480,15 @@ onUnmounted(() => {
 }
 
 .card-btn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: var(--space-sm) 20px;
+  padding: 6px 14px;
   background: var(--color-danger);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-full);
 }
 
 .card-btn.disabled {
