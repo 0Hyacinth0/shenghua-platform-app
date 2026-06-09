@@ -296,11 +296,11 @@ function goCourse(id: string) { uni.navigateTo({ url: '/pages/course/detail?id='
 }
 
 .banner-swiper {
-  height: 140px;
+  height: 160px;
 }
 
 .banner-card {
-  height: 130px;
+  height: 150px;
   border-radius: var(--radius-xl);
   padding: 20px;
   position: relative;
